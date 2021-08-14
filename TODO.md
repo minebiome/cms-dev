@@ -4,3 +4,9 @@
 2. 创建文章没有及时生成日期
 3. 创建文章没有指定分类不能生成
 ### 需要添加的功能
+
+```
+$:git merge --abort
+$:git reset --merge
+$:git pull
+```
