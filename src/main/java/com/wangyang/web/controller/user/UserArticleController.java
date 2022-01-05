@@ -3,10 +3,10 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.service.IUserService;
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.IHtmlService;
-import com.wangyang.service.service.IUserService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.UserDto;
@@ -15,6 +15,7 @@ import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.service.util.FormatUtil;
+import com.wangyang.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -48,8 +49,8 @@ public class UserArticleController {
 
 
     @GetMapping("/write")
-    public String writeArticle(HttpServletRequest request, Model model, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
-        int userId = (Integer)request.getAttribute("userId");
+    public String writeArticle(){
+//        int userId = AuthorizationUtil.getUserId(request);
 
 //        Page<Article> articlePage = articleService.pageByUserId(userId, pageable);
 //        model.addAttribute("view",articlePage);
@@ -67,7 +68,7 @@ public class UserArticleController {
         if(title==null||title.equals("")){
             return "templates/error";
         }
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         ArticleDetailVO articleDetailVO = fastWriteArticleHtml(categoryId, title, userId);
 
 //        model.addAttribute("view",articleDetailVO);
@@ -95,7 +96,7 @@ public class UserArticleController {
         if(title==null||title.equals("")){
             return "templates/error";
         }
-        int userId = (Integer)request.getAttribute("userId");
+        int userId =AuthorizationUtil.getUserId(request);
         Article article= fastWriteDraftArticleHtml(categoryId, title, userId);
 
 //        model.addAttribute("view",articleDetailVO);
@@ -118,7 +119,7 @@ public class UserArticleController {
 
     @GetMapping("/edit/{id}")
     public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
-        int userId = (Integer)request.getAttribute("userId");//在授权时将userId存入request
+        int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request
         Article article = articleService.findByIdAndUserId(id, userId);
         ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
@@ -128,7 +129,7 @@ public class UserArticleController {
 
     @GetMapping("/info")
     public String info(HttpServletRequest  request,Model model){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         UserDto userDto = userService.findUserDaoById(userId);
         model.addAttribute("view",userDto);
         return "templates/user/info";
@@ -148,7 +149,7 @@ public class UserArticleController {
 
     @GetMapping("/delete/{id}")
     public String deleteArticle(HttpServletRequest request,@PathVariable("id") Integer id){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         return "redirect:/user/articleList";
     }
 
@@ -162,7 +163,7 @@ public class UserArticleController {
      */
     @GetMapping("/articleList")
     public String articleList(HttpServletRequest request, Model model, ArticleQuery articleQuery, @PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
 
         Page<Article> articlePage = articleService.pageByUserId(userId, pageable,articleQuery);
 //        model.addAttribute("view",articleService.convertToAddCategory(articlePage));

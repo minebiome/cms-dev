@@ -25,7 +25,7 @@ public class CmsConst {
     public static final String SYSTEM_HTML_PATH="html";
     public static final String TEMPLATE_PATH="templates";
     public static final String STATIC_HTML_PATH="html";
-    public static final String CONFIGURATION="application.properties";
+    public static final String CONFIGURATION= "a.bak";
     public final static String UPLOAD_SUB_DIR = "upload/";
     public final static String INIT_STATUS = "INIT_STATUS";
     public final static String COMPONENTS_PATH = "html"+ File.separator+"components";

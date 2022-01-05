@@ -29,3 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
+cms_dev.sql.gz
+cms_dev.sql

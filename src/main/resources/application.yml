@@ -1,0 +1,93 @@
+cms:
+  workDir: ${user.home}/cms
+  uploadPrefix: http://47.93.201.74:8080
+  isDebug: false
+  authorizeInit: true
+spring:
+#  mvc:
+#    static-path-pattern: /**
+#  resources:
+#    static-locations: file:${cms.workDir}/html/, file:${cms.workDir}/, classpath:/static/
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false # 在controller层就打开EntityManager
+    properties:
+      hibernate:
+        #        format_sql: true
+        #        generate_statistics: true # 将hibernate的统计打开来看看到底是不是被缓存了
+        enable_lazy_load_no_trans: true # 在没有事务的情况下允许懒加载
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region:
+            factory_class: jcache
+#  cache:
+#    jcache:
+#      config: classpath:ehcache.xml
+
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+############################## h2 start ##################################
+  # 使用H2数据库
+  datasource:
+    platform: h2
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:file:~/Downloads/h2/dbc2m_3
+    username: root
+    password: 1234567
+    #    schema: classpath:db/user.sql #启动时需要初始化的建表语句
+    #    data: classpath:init_data.sql #初始化的数据
+    initialization-mode: always
+  h2:
+    console:
+      settings:
+        web-allow-others: true # 配置h2的远程访问
+      enabled: true # 配置程序开启时就会启动h2 web consloe
+      path: /h2-console #，进行该配置，你就可以通过YOUR_URL/h2-console访问h2 web consloe。YOUR_URL是你程序的访问URl
+############################## h2 end ##################################
+
+
+server:
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript
+    min-response-size: 50
+
+org:
+  quartz:
+    scheduler:
+      instanceName: MyScheduler
+    threadPool:
+      threadCount: 3
+    jobStore:
+      class: org.quartz.simpl.RAMJobStore
+
+
+jwt:
+  header: Authorization
+  base64-secret: ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=
+  token-validity-in-seconds: 3600
+  token-validity-in-seconds-for-remember-me: 3600
+  token-refresh-validity-in-seconds: 7800
+  token-refresh-validity-in-seconds-for-remember-me: 7800
+
+
+
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          servlet: TRACE
+#    com:
+#      wangyang:
+#        web: DEBUG

@@ -16,6 +16,7 @@ import com.wangyang.pojo.params.ArticleParams;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
+import com.wangyang.util.AuthorizationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class ArticleController {
 
     @PostMapping
     public ArticleDetailVO createArticleDetailVO(@RequestBody @Valid ArticleParams articleParams, HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         Article article = new Article();
         BeanUtils.copyProperties(articleParams,article);
         article.setUserId(userId);
@@ -70,7 +71,7 @@ public class ArticleController {
      */
     @PostMapping("/save")
     public Article saveArticle(@Valid @RequestBody ArticleParams articleParams, HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         Article article = new Article();
         BeanUtils.copyProperties(articleParams,article);
         article.setUserId(userId);
@@ -81,7 +82,7 @@ public class ArticleController {
     @GetMapping("/simpleCreate/{categoryId}")
     public ArticleDetailVO createArticleDetailVO(@PathVariable("categoryId") Integer categoryId,
                                                  @RequestParam(required = true) String title, HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         Article article = new Article();
         article.setCategoryId(categoryId);
         article.setTitle(title);
@@ -104,7 +105,7 @@ public class ArticleController {
      */
     @PostMapping("/save/{id}")
     public Article updateArticle(@PathVariable("id") Integer id,@Valid @RequestBody ArticleParams articleParams,HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         Article article = articleService.findArticleById(id);
         checkUser(userId,article);
 
@@ -128,7 +129,7 @@ public class ArticleController {
     @PostMapping("/update/{articleId}")
     public ArticleDetailVO updateArticleDetailVO(@Valid @RequestBody ArticleParams articleParams,
                                          @PathVariable("articleId") Integer articleId,HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         Article article = articleService.findArticleById(articleId);
         checkUser(userId,article);
 
@@ -160,7 +161,7 @@ public class ArticleController {
      */
     @GetMapping("/updateCategory/{articleId}")
     public ArticleDetailVO updateCategory(@PathVariable("articleId") Integer articleId, Integer baseCategoryId,HttpServletRequest request){
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         Article article = articleService.findArticleById(articleId);
         checkUser(userId,article);
 //        String  viewName = article.getViewName();
@@ -410,7 +411,7 @@ public class ArticleController {
     public Category saveArticleMindJs(@PathVariable("categoryId") int categoryId
             ,@RequestBody  List<MindJs> mindJss
             ,HttpServletRequest request) {
-        int userId = (Integer)request.getAttribute("userId");
+        int userId = AuthorizationUtil.getUserId(request);
         List<Article> articles = articleService.listArticleBy(categoryId);
 
         mindJss.remove(0);

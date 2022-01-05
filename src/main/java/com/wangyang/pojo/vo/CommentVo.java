@@ -1,7 +1,7 @@
 package com.wangyang.pojo.vo;
 
+import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CommentDto;
-import com.wangyang.pojo.entity.User;
 
 public class CommentVo extends CommentDto {
     private String content;

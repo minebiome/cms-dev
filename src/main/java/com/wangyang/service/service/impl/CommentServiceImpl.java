@@ -2,15 +2,15 @@ package com.wangyang.service.service.impl;
 
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
+import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CommentDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Comment;
-import com.wangyang.pojo.entity.User;
 import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.service.IUserService;
 import com.wangyang.service.repository.CommentRepository;
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ICommentService;
-import com.wangyang.service.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +41,12 @@ CommentRepository commentRepository;
     @Override
     public Comment add(Comment comment) {
         if(StringUtils.isEmpty(comment.getUsername())&&comment.getUserId()!=null){
-            Optional<User> user = userService.findOptionalBy(comment.getUserId());
-            if(!user.isPresent()){
-                throw new ObjectException("用户对象没有找到,不存在不能添加评论!");
-            }
-            comment.setUsername(user.get().getUsername());
-            comment.setEmail(user.get().getEmail());
+//            Optional<User> user = userService.findOptionalBy(comment.getUserId());
+//            if(!user.isPresent()){
+//                throw new ObjectException("用户对象没有找到,不存在不能添加评论!");
+//            }
+//            comment.setUsername(user.get().getUsername());
+//            comment.setEmail(user.get().getEmail());
         }
 
         Article article = articleService.findArticleById(comment.getArticleId());

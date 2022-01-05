@@ -1,6 +1,6 @@
 package com.wangyang.pojo.dto;
 
-import com.wangyang.pojo.entity.Role;
+import com.wangyang.pojo.authorize.Role;
 import lombok.Data;
 
 import java.util.List;

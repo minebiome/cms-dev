@@ -10,16 +10,16 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 //@EnableJms
-@ComponentScan(basePackages = {"com.wangyang.common","com.wangyang.service","com.wangyang.web","com.wangyang.authorize","com.wangyang.syscall.controller","com.wangyang.schedule"})
-@EnableJpaRepositories(basePackages = {"com.wangyang.service.repository"})
-@EntityScan(basePackages = {"com.wangyang.pojo.entity"})
+//@ComponentScan(basePackages = {"com.wangyang.common","com.wangyang.service","com.wangyang.web","com.wangyang.authorize","com.wangyang.syscall.controller","com.wangyang.schedule"})
+@EnableJpaRepositories(basePackages = {"com.wangyang"})
+@EntityScan(basePackages = {"com.wangyang.pojo"})
 @EnableCaching
 @EnableAsync
 public class CmsApplication {
 
 	public static void main(String[] args) {
 		// Customize the spring config location
-		System.setProperty("spring.config.additional-location", "file:${user.home}/cms/application.properties");
+//		System.setProperty("spring.config.additional-location", "file:${user.home}/cms/application.properties");
 		SpringApplication.run(CmsApplication.class, args);
 	}
 

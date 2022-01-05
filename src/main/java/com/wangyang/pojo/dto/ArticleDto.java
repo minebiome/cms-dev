@@ -1,6 +1,6 @@
 package com.wangyang.pojo.dto;
 
-import com.wangyang.pojo.entity.User;
+import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.enums.ArticleStatus;
 import lombok.Data;
 

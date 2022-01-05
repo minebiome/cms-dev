@@ -4,19 +4,24 @@ import com.wangyang.common.exception.CmsException;
 import com.wangyang.common.utils.ExceptionUtils;
 import com.wangyang.common.utils.ValidationUtils;
 import com.wangyang.common.BaseResponse;
+import com.wangyang.util.AuthorizationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice({"com.wangyang"})
+//@ControllerAdvice
+//@EnableWebMvc
+@RestControllerAdvice
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -31,10 +36,10 @@ public class ControllerExceptionHandler {
     }
     @ExceptionHandler(CmsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BaseResponse cmsException(CmsException e) {
+    public String cmsException(CmsException e) {
         BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        return baseResponse;
+        return "error";
     }
 
 //    @ExceptionHandler(InternalAuthenticationServiceException.class)
@@ -52,7 +57,23 @@ public class ControllerExceptionHandler {
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         return baseResponse;
     }
+//    // TODO 针对动态页面错误的处理；
+//    @ExceptionHandler(AuthorizationException.class)
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    public BaseResponse authorizationException(Exception e) {
+//        BaseResponse baseResponse = handleBaseException(e);
+//        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+//        baseResponse.setStatus(status.value());
+//        baseResponse.setMessage(e.getMessage());
+//        return baseResponse;
+//    }
 
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ModelAndView authorizationException(HttpServletRequest request,AuthorizationException e) {
+
+        return mvException(e,request,HttpStatus.UNAUTHORIZED.value());
+    }
     // TODO 针对动态页面错误的处理；
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -74,7 +95,32 @@ public class ControllerExceptionHandler {
         if (log.isDebugEnabled()) {
             baseResponse.setDevMessage(ExceptionUtils.getStackTrace(t));
         }
-
         return baseResponse;
     }
+
+    private  ModelAndView mvException(Throwable t,HttpServletRequest request,int status) {
+        Assert.notNull(t, "Throwable must not be null");
+
+        log.error("Captured an exception", t);
+        ModelAndView modelAndView;
+        if(!isAjaxRequest(request)){
+            modelAndView= new ModelAndView("myError");
+        }else {
+            modelAndView = new ModelAndView(new MappingJackson2JsonView());
+        }
+        modelAndView.addObject("message",t.getMessage());
+        modelAndView.addObject("status",status);
+
+        return modelAndView;
+    }
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        String accept = request.getHeader("accept");
+        if (accept != null && accept.indexOf("application/json") != -1) {
+            return true;
+        }
+
+
+        return false;
+    }
+
 }

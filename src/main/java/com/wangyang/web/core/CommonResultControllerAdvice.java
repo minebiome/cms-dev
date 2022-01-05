@@ -13,7 +13,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-@ControllerAdvice({"com.wangyang.web.controller","com.wangyang.authorize.controller","com.wangyang.schedule.controller"})
+//@ControllerAdvice({"com.wangyang.web.controller","com.wangyang.authorize.controller","com.wangyang.schedule.controller"})
+@ControllerAdvice
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {

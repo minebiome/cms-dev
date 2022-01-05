@@ -3,23 +3,22 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.UserException;
+import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ITemplateService;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Template;
-import com.wangyang.service.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -27,21 +26,33 @@ import java.io.File;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Controller
+//@RestController
 public class WebController {
 
     @Autowired
     IArticleService articleService;
     @Autowired
     ITemplateService templateService;
-    @Autowired
-    IUserService userService;
 
+    @GetMapping("/login")
+    @Anonymous
+    public String login(HttpServletRequest request){
+        Object user = request.getAttribute("user");
+        if(user!=null&& ((User)user).getId()!=-1){
+            return "redirect:/";
+        }
+        return "templates/user/login";
+    }
 
     @GetMapping("/")
+    @Anonymous
     public String index(HttpServletRequest request){
         return "html/index";
     }
+
+
     @GetMapping("/html/{path}/{viewName}.html")
+    @Anonymous
     public String showArticle(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {
         return "html" + File.separator+path+File.separator+viewName;
     }
@@ -50,6 +61,8 @@ public class WebController {
         return "html" + File.separator+path+File.separator+viewName;
     }
     @GetMapping("/html_{path}.html")
+    @Anonymous
+//    @ResponseBody
     public String showArticleFormat(@PathVariable("path") String path) {
         return "html" + File.separator+path;
     }
@@ -106,6 +119,7 @@ public class WebController {
 
     @GetMapping("/option/increaseViewCount/{id}")
     @ResponseBody
+    @Anonymous
     public BaseResponse increaseVisitsCount(@PathVariable("id") int id) {
         int visits = articleService.increaseVisits(id);
         Integer visitsNumber = articleService.getVisitsNumber(id);
@@ -118,6 +132,7 @@ public class WebController {
 
     @GetMapping("/option/getVisitsCount/{id}")
     @ResponseBody
+    @Anonymous
     public BaseResponse getVisitsCount(@PathVariable("id") int id) {
         Integer visitsNumber = articleService.getVisitsNumber(id);
         return BaseResponse.ok("操作成功",visitsNumber);
