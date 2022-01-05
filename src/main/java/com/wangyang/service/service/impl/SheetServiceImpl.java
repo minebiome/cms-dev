@@ -44,8 +44,11 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
 //        BeanUtils.copyProperties(sheetParam,sheet);
 //        Channel channel = channelService.findById(sheet.getChannelId());
         //如何Channel中没有存储文章路径
-
-        sheet = super.createOrUpdate(sheet);
+        if(sheet.getIsSource()){
+            sheet.setFormatContent(sheet.getOriginalContent());
+        }else {
+            sheet = super.createOrUpdate(sheet);
+        }
         sheet.setPath(CMSUtils.getSheetPath());
 //        sheet.setPath(channel.getPath()+"/"+channel.getName());
         if(sheet.getViewName()==null||"".equals(sheet.getViewName())){

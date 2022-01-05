@@ -67,7 +67,11 @@ public class PreviewController {
     public String previewSheet(@PathVariable("id") Integer id,Model model){
         Sheet sheet = sheetService.findById(id);
         if(sheet.getStatus()!= ArticleStatus.PUBLISHED){
-            sheet = sheetService.createOrUpdate(sheet);
+            if(sheet.getIsSource()){
+                sheet.setFormatContent(sheet.getOriginalContent());
+            }else {
+                sheet = sheetService.createOrUpdate(sheet);
+            }
         }
 //        Template template = templateService.findById(sheetDetailVo.getChannel().getArticleTemplateId());
         Template template = templateService.findByEnName(sheet.getTemplateName());

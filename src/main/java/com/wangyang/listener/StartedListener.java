@@ -142,6 +142,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
                 new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "templates/sheet/@sheet", TemplateType.SHEET,8),
                 new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "templates/sheet/@customSheet", TemplateType.SHEET,8),
+                new Template("空白页面模板",CmsConst.EMPTY_SHEET, "templates/sheet/@emptySheet", TemplateType.SHEET,8),
 
 
                 new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT,9),
@@ -170,7 +171,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 //                }
                 File file = new File(workDir+"/"+template.getTemplateValue()+".html");
                 if(!file.exists()){
-                    FileUtils.saveFile(file,"abcddd");
+                    FileUtils.saveFile(file,"空模板");
                     log.info("创建文件:"+file.getName());
                 }
                 log.info("添加 Template ["+name+"] ");

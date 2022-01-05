@@ -15,7 +15,8 @@ public class SheetParam {
     private String path;
     private Integer channelId;
     private String templateName;
-    private String cssContent;
-    private String jsContent;
+//    private String cssContent;
+//    private String jsContent;
+    private Boolean isSource;
 
 }

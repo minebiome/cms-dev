@@ -51,6 +51,8 @@ public class CmsConst {
 
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
     public final static String CUSTOM_SHEET_TEMPLATE = "CUSTOM_SHEET";
+    public final static String EMPTY_SHEET = "EMPTY_SHEET";
+
     public final static String DEFAULT_COMMENT_TEMPLATE = "DEFAULT_COMMENT";//评论
 
     // 依据模板类型分类列表

@@ -18,6 +18,8 @@ public class BaseTemplate extends  BaseEntity{
     private Boolean status=false;
     @Column(name = "template_value", columnDefinition = "longtext ")
     private String templateValue;
+    @Column(columnDefinition = "longtext ")
+    private String templateContent;
 
     @Column(name = "template_order",columnDefinition = "int default 0")
     private Integer order;

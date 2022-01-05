@@ -14,4 +14,6 @@ public class TemplateParam {
     private String templateValue;
     private Integer order;
     private Boolean isSystem;
+    private String templateContent;
+
 }

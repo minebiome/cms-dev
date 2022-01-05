@@ -2,6 +2,7 @@ package com.wangyang.common.utils;
 
 import com.google.common.base.Joiner;
 import com.wangyang.common.CmsConst;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.ResourceUtils;
@@ -19,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class FileUtils {
 
     private static  String pattern = "<!--#include file=\"(.*?)\"-->";
@@ -99,6 +101,7 @@ public class FileUtils {
             fileOutputStream  = new FileOutputStream(file);
 
             fileOutputStream.write(content.getBytes());
+            log.info("写入文件：{}",file.getPath().toString());
         } catch (IOException e) {
             e.printStackTrace();
         }finally {

@@ -12,8 +12,10 @@ import com.wangyang.pojo.params.TemplateParam;
 import com.wangyang.service.repository.TemplateRepository;
 import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.ITemplateService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,17 +31,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class TemplateServiceImpl implements ITemplateService {
 
     @Autowired
     TemplateRepository templateRepository;
     @Autowired
     ICategoryService categoryService;
-
+    @Value("${cms.workDir}")
+    private String workDir;
     @Override
     public Template add(Template template) {
+//        convert(template,template);
+        createFile(template);
         return templateRepository.save(template);
     }
+
+
 
 
     @Override
@@ -54,39 +62,42 @@ public class TemplateServiceImpl implements ITemplateService {
     @Override
     public Template update(int id, TemplateParam templateParam) {
         Template template = findById(id);
-        BeanUtils.copyProperties(template,template);
-        convert(template,templateParam);
+        BeanUtils.copyProperties(templateParam,template);
+//        convert(template,templateParam);
+        createFile(template);
         return templateRepository.save(template);
     }
+    private void createFile(Template template) {
+        File file = new File(workDir+"/"+template.getTemplateValue()+".html");
 
-    private void convert(Template template, TemplateParam templateParam){
-        BeanUtils.copyProperties(templateParam,template,"templateValue");
-        String templateValue =templateParam.getTemplateValue();
-        //判断是文件还是内容
-        if(templateValue.startsWith("templates")){
-            String templateValueName = templateValue.split("\n")[0];
-            String path = CmsConst.WORK_DIR+"/"+templateValueName+".html";
-            File file = new File(path);
-            String fileTemplateValue = templateParam.getTemplateValue();
-            template.setTemplateValue(templateValueName);
-            String replaceFileTemplateValue = fileTemplateValue.replace(templateValueName+"\n", "");
-            FileUtils.saveFile(file,replaceFileTemplateValue);
-        }else {
-            template.setTemplateValue(templateParam.getTemplateValue());
-        }
+        FileUtils.saveFile(file,template.getTemplateContent());
     }
+//    private void convert(Template template, TemplateParam templateParam){
+//        BeanUtils.copyProperties(templateParam,template,"templateValue");
+//        String templateValue =templateParam.getTemplateValue();
+//        //判断是文件还是内容
+//        if(templateValue.startsWith("templates")){
+//            String templateValueName = templateValue.split("\n")[0];
+//            String path = CmsConst.WORK_DIR+"/"+templateValueName+".html";
+//            File file = new File(path);
+//            String fileTemplateValue = templateParam.getTemplateValue();
+//            template.setTemplateValue(templateValueName);
+//            String replaceFileTemplateValue = fileTemplateValue.replace(templateValueName+"\n", "");
+//            FileUtils.saveFile(file,replaceFileTemplateValue);
+//        }else {
+//            template.setTemplateValue(templateParam.getTemplateValue());
+//        }
+//    }
 
     @Override
     public Template findDetailsById(int id){
         Template template = findById(id);
         String templateValue = template.getTemplateValue();
-        if(templateValue.startsWith("templates")){
-            String path = CmsConst.WORK_DIR+"/"+templateValue+".html";
-            File file = new File(path);
-            if(file.exists()){
-                String openFile = FileUtils.openFile(file);
-                template.setTemplateValue(template.getTemplateValue()+"\n"+openFile);
-            }
+        String path = CmsConst.WORK_DIR+"/"+templateValue+".html";
+        File file = new File(path);
+        if(file.exists()){
+            String openFile = FileUtils.openFile(file);
+            template.setTemplateContent(openFile);
         }
         return template;
     }

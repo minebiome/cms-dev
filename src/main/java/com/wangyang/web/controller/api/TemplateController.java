@@ -1,5 +1,6 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.utils.FileUtils;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.service.service.ITemplateService;
 import com.wangyang.pojo.enums.TemplateType;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -68,7 +70,15 @@ public class TemplateController {
 
     @PostMapping
     public Template add(@RequestBody Template template){
+
         return templateService.add(template);
+    }
+
+    @GetMapping("/delete/{id}")
+    public Template delete(@PathVariable("id") Integer id){
+        Template template = templateService.findById(id);
+        templateService.deleteById(template.getId());
+        return template;
     }
 
     public void deleteById(Integer id){

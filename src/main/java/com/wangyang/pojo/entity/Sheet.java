@@ -11,10 +11,10 @@ import javax.persistence.Entity;
 @DiscriminatorValue("1")
 @Data
 public class Sheet extends BaseArticle {
-    @Column(columnDefinition = "longtext")
-    private String cssContent;
-    @Column(columnDefinition = "longtext")
-    private String jsContent;
+//    @Column(columnDefinition = "longtext")
+//    private String cssContent;
+//    @Column(columnDefinition = "longtext")
+//    private String jsContent;
 
     @Column(columnDefinition = "bit(1) default false")
     private Boolean recommend=false;
