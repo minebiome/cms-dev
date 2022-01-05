@@ -82,12 +82,12 @@ jwt:
 
 
 
-logging:
-  level:
-    org:
-      springframework:
-        web:
-          servlet: TRACE
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        web:
+#          servlet: TRACE
 #    com:
 #      wangyang:
 #        web: DEBUG

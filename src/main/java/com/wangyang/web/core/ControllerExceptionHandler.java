@@ -36,10 +36,10 @@ public class ControllerExceptionHandler {
     }
     @ExceptionHandler(CmsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String cmsException(CmsException e) {
+    public BaseResponse cmsException(CmsException e) {
         BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        return "error";
+        return baseResponse;
     }
 
 //    @ExceptionHandler(InternalAuthenticationServiceException.class)

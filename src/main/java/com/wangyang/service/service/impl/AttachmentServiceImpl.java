@@ -79,7 +79,7 @@ public class AttachmentServiceImpl implements IAttachmentService {
         attachment.setWidth(uploadResult.getWidth());
         attachment.setHeight(uploadResult.getHeight());
         attachment.setSize(uploadResult.getSize());
-        attachment.setType( AttachmentType.LOCAL);
+        attachment.setType( getAttachmentType());
         return attachmentRepository.save(attachment);
     }
 
