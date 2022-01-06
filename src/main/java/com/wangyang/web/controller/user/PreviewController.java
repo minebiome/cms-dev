@@ -2,6 +2,7 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.MarkdownUtils;
+import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.service.service.*;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
@@ -64,6 +65,7 @@ public class PreviewController {
     }
 
     @GetMapping("/sheet/{id}")
+    @Anonymous
     public String previewSheet(@PathVariable("id") Integer id,Model model){
         Sheet sheet = sheetService.findById(id);
         if(sheet.getStatus()!= ArticleStatus.PUBLISHED){
@@ -141,6 +143,7 @@ public class PreviewController {
     }
 
     @GetMapping("/pdf/{articleId}")
+    @Anonymous
     public String previewPdf(@PathVariable("articleId")Integer articleId,Model model){
         Article article = articleService.findArticleById(articleId);
         article.setFormatContent(MarkdownUtils.renderHtmlOutput(article.getOriginalContent()));

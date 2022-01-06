@@ -29,7 +29,7 @@ public class BaseArticle extends BaseEntity{
     //是否开启评论
     @Column(columnDefinition = "bit(1) default false")
     private Boolean openComment=false;
-
+    private String pdfPath;
     private String path;
     @Column(columnDefinition = "bit(1) default false")
     private Boolean isSource=false;

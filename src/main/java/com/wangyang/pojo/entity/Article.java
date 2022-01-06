@@ -18,7 +18,7 @@ public class Article extends BaseArticle {
 //    private Boolean haveHtml=true;
     private String summary;
     private String picPath;
-    private String pdfPath;
+
     private Integer categoryId;
     @Column(name = "article_order", columnDefinition = "int default 0")
     private Integer order;

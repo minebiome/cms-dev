@@ -63,6 +63,7 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
 //            channel = channelService.save(channel);
 //        }
         sheet.setStatus(ArticleStatus.PUBLISHED);
+        sheet.setPath(null);
         Sheet saveSheet = sheetRepository.save(sheet);
         return saveSheet;
 

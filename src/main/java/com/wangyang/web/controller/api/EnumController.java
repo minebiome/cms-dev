@@ -21,7 +21,6 @@ import java.util.Set;
 public class EnumController {
 
     @GetMapping
-    @Anonymous
     public ValueEnum[] listName(@RequestParam String name){
 
         if(name.equals("TemplateType")){
