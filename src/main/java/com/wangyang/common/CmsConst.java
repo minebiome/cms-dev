@@ -37,6 +37,7 @@ public class CmsConst {
 
 
     public final static String DEFAULT_ARTICLE_PDF_TEMPLATE = "DEFAULT_ARTICLE_PDF_TEMPLATE";
+    public final static String DEFAULT_SHEET_PDF_TEMPLATE = "DEFAULT_SHEET_PDF_TEMPLATE";
 //    public final static String DEFAULT_ARTICLE_PREVIEW_TEMPLATE = "DEFAULT_ARTICLE_PREVIEW_TEMPLATE";
 
 

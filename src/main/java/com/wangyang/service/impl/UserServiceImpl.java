@@ -6,6 +6,7 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.pojo.entity.Attachment;
+import com.wangyang.pojo.enums.FileWriteType;
 import com.wangyang.repository.UserRepository;
 import com.wangyang.service.IRoleService;
 import com.wangyang.service.IUserRoleService;
@@ -82,7 +83,7 @@ public class UserServiceImpl extends BaseAuthorizeServiceImpl<User>
         }
 
         if(file!=null){
-            Attachment attachment = attachmentService.upload(file, user.getUsername());
+            Attachment attachment = attachmentService.upload(file, user.getUsername(), FileWriteType.COVER,attachmentService.getAttachmentType());
             user.setAvatar(attachment.getPath());
         }
         return userRepository.save(user);

@@ -115,7 +115,7 @@ public class AliOssFileHandler implements FileHandler {
     }
 
     @Override
-    public UploadResult upload(MultipartFile file, String name) {
+    public UploadResult upload(MultipartFile file, String path) {
         // Get config
         String endPoint = optionService.getPropertyStringValue(PropertyEnum.END_POINT);
         String endPointPublic = optionService.getPropertyStringValue(PropertyEnum.END_POINT_PUBLIC);
@@ -143,9 +143,9 @@ public class AliOssFileHandler implements FileHandler {
                 upFilePath.append(source)
                         .append("/");
             }
-            upFilePath.append(name)
-                    .append(".")
-                    .append(extension);
+            upFilePath.append(path);
+//                    .append(".")
+//                    .append(extension);
 
             String filePath = StringUtils.join(basePath.toString(), upFilePath.toString());
             log.info(basePath.toString());
@@ -155,7 +155,7 @@ public class AliOssFileHandler implements FileHandler {
                 throw  new FileOperationException("File upload failed!!");
             }
             UploadResult uploadResult = new UploadResult();
-            uploadResult.setFilename(name);
+            uploadResult.setFilename(path);
             uploadResult.setFilePath(StringUtils.isBlank(styleRule) ? filePath : filePath + styleRule);
             uploadResult.setKey(upFilePath.toString());
             uploadResult.setMediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())));

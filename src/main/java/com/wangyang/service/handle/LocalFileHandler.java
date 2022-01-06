@@ -149,8 +149,83 @@ public class LocalFileHandler implements FileHandler{
 
 
     @Override
-    public UploadResult upload(MultipartFile file, String name) {
-        return null;
+    public UploadResult upload(MultipartFile file, String path) {
+        Assert.notNull(file, "Multipart file must not be null");
+        Assert.notNull(path, "path must not be null");
+
+        Path uploadPath = Paths.get(workDir, path);
+
+        log.info("Uploading file: [{}]to directory: [{}]", file.getOriginalFilename(), uploadPath.toString());
+
+        try {
+            // TODO Synchronize here
+            // 创建目录
+            Files.createDirectories(uploadPath.getParent());
+            //创建文件
+            Files.createFile(uploadPath);
+
+            // 上传文件
+            file.transferTo(uploadPath);
+
+            // Build upload result
+            UploadResult uploadResult = new UploadResult();
+            //Screenshot from 2020-02-28 15-43-32
+            uploadResult.setFilename(path);
+            ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
+//            if(uploadPrefix!=null){
+//                uploadResult.setFilePath(uploadPrefix+subFilePath); //
+//            }else {
+//                uploadResult.setFilePath(subFilePath); //
+//
+//            }
+            ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
+//            uploadResult.setKey(subFilePath);
+//            //png
+//            uploadResult.setSuffix(extension);
+            //image/png
+            uploadResult.setMediaType(MediaType.valueOf(Objects.requireNonNull(file.getContentType())));
+            uploadResult.setSize(file.getSize());
+            uploadResult.setFilePath(path);
+//
+//            // TODO refactor this: if image is svg ext. extension
+//            boolean isSvg = "svg".equals(extension);
+
+            // Check file type
+//            if (FileHandler.isImageType(uploadResult.getMediaType()) && !isSvg) {
+//                lock.lock();
+//                try (InputStream uploadFileInputStream = new FileInputStream(uploadPath.toFile())) {
+//                    // Upload a thumbnail /upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f-thumbnail.png
+//                    String thumbnailBasename = basename + THUMBNAIL_SUFFIX;
+//                    String thumbnailSubFilePath = subDir + thumbnailBasename + '.' + extension;
+//                    Path thumbnailPath = Paths.get(workDir + thumbnailSubFilePath);
+//
+//                    // Read as image
+//                    BufferedImage originalImage = ImageUtils.getImageFromFile(uploadFileInputStream, extension);
+//                    // Set width and height
+//                    uploadResult.setWidth(originalImage.getWidth());
+//                    uploadResult.setHeight(originalImage.getHeight());
+//
+//                    // Generate thumbnail
+//                    boolean result = generateThumbnail(originalImage, thumbnailPath, extension);
+//                    if (result) {
+//                        // Set thumb path
+//                        uploadResult.setThumbPath(thumbnailSubFilePath);
+//                    } else {
+//                        // If generate error
+//                        uploadResult.setThumbPath(subFilePath);
+//                    }
+//                } finally {
+//                    lock.unlock();
+//                }
+//            } else {
+//                uploadResult.setThumbPath(subFilePath);
+//            }
+
+            log.info("Uploaded file: [{}] to directory: [{}] successfully", file.getOriginalFilename(), uploadPath.toString());
+            return uploadResult;
+        } catch (IOException e) {
+            throw new FileOperationException("上传附件失败").setErrorData(uploadPath);
+        }
     }
 
     @Override

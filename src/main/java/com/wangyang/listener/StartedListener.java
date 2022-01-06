@@ -48,7 +48,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     private String workDir;
 
 //    @Value("${spring.resources.static-locations}")
-//    private String staticResourceLocations;
+//    private String staticResourceLocations;DEFAULT_ARTICLE_PDF_TEMPLATE
 
     @Autowired
     ComponentsRepository componentsRepository;
@@ -128,6 +128,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("默认的文章栏目模板",CmsConst.DEFAULT_ARTICLE_CHANNEL_TEMPLATE, "templates/@articleChannel", TemplateType.ARTICLE,2),
                 new Template("默认的图片文章模板",CmsConst.DEFAULT_ARTICLE_PICTURE_TEMPLATE, "templates/@articlePicture", TemplateType.ARTICLE,3),
                 new Template("默认的pdf导出文章预览模板",CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE, "templates/@articlePDF", TemplateType.ARTICLE,3),
+                new Template("默认的pdf导出Sheet预览模板",CmsConst.DEFAULT_SHEET_PDF_TEMPLATE, "templates/@sheetPDF", TemplateType.SHEET,3),
 
                 //new Template("文章预览模板",CmsConst.DEFAULT_ARTICLE_PREVIEW_TEMPLATE, "templates/@articlePreview", TemplateType.ARTICLE,3),
 

@@ -41,13 +41,13 @@ public class FileHandlers {
         throw new FileOperationException("No available file handler to upload the file").setErrorData(attachmentType);
     }
 
-    public UploadResult upload(@NonNull MultipartFile file, @NonNull AttachmentType attachmentType,String name) {
+    public UploadResult upload(@NonNull MultipartFile file, @NonNull AttachmentType attachmentType,String path) {
         Assert.notNull(file, "Multipart file must not be null");
         Assert.notNull(attachmentType, "Attachment type must not be null");
 
         for (FileHandler fileHandler : fileHandlers) {
             if (fileHandler.supportType(attachmentType)) {
-                return fileHandler.upload(file,name);
+                return fileHandler.upload(file,path);
             }
         }
 

@@ -36,6 +36,9 @@ public class MyCustomView implements View {
             return;
         }
         String viewNamePath = viewName.replace("_", File.separator);
+        if(viewName.equals("error")){
+            viewNamePath = "templates/error";
+        }
         String path = CmsConst.WORK_DIR+ File.separator+viewNamePath+".html";
         User user = AuthorizationUtil.getUser(request);
         if(user!=null){
@@ -49,12 +52,9 @@ public class MyCustomView implements View {
         String[] pathArgs = viewName.split("_");
         if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs)){
             viewNamePath = "templates/error";
-//            if(map.containsKey("message")){
-//                ctx.setVariable("error",map.get("message"));
-//            }else{
-//                ctx.setVariable("error","文件不存在！！！");
-//            }
-
+            if(!Paths.get(path).toFile().exists()){
+                ctx.setVariable("message","模板不存在："+path);
+            }
             response.setStatus(HttpStatus.NOT_FOUND.value());
         }
         templateEngine.process(viewNamePath,ctx,response.getWriter());
@@ -65,7 +65,7 @@ public class MyCustomView implements View {
      * @see GenerateHtml
      * @param pathArgs
      */
-    public boolean invokeGenerateHtml(String[] pathArgs){
+    public boolean invokeGenerateHtml(String[] pathArgs) {
         if(pathArgs.length<2){
             return false;
         }

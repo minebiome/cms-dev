@@ -18,7 +18,7 @@ public interface FileHandler {
 
 
     @NonNull
-    UploadResult upload(@NonNull MultipartFile file, String name);
+    UploadResult upload(@NonNull MultipartFile file, String path);
 
     UploadResult upload(String url, String name);
 

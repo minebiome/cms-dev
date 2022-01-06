@@ -1,6 +1,8 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.entity.Attachment;
 import com.wangyang.service.service.IHtmlService;
 import com.wangyang.service.service.ITemplateService;
 import com.wangyang.pojo.enums.TemplateType;
@@ -10,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -31,7 +35,13 @@ public class TemplateController {
         return null;
     }
 
-
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @RequestPart("file")
+    @Anonymous
+    public Template upload(@RequestPart("file") MultipartFile file){
+        Template template = templateService.addZipFile(file);
+        return  template;
+    }
     /**
      * 根据template类型获取Template
      * @param type
@@ -76,12 +86,10 @@ public class TemplateController {
 
     @GetMapping("/delete/{id}")
     public Template delete(@PathVariable("id") Integer id){
-        Template template = templateService.findById(id);
-        templateService.deleteById(template.getId());
-        return template;
+        return templateService.deleteById(id);
     }
 
-    public void deleteById(Integer id){
-        templateService.deleteById(id);
-    }
+//    public void deleteById(Integer id){
+//        templateService.deleteById(id);
+//    }
 }
