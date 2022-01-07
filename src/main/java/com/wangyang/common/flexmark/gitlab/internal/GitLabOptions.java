@@ -32,6 +32,7 @@ public class GitLabOptions implements MutableDataSetter {
     final public String videoImageLinkTextFormat;
     final public String videoImageExtensions;
     final public String imageExtensions;
+    final public String imageSrcTag;
     final public HashSet<String> videoImageExtensionSet;
     final public HashSet<String> imageExtensionSet;
 
@@ -66,6 +67,7 @@ public class GitLabOptions implements MutableDataSetter {
         videoImageClass = GitLabExtension.VIDEO_IMAGE_CLASS.get(options);
         videoImageLinkTextFormat = GitLabExtension.VIDEO_IMAGE_LINK_TEXT_FORMAT.get(options);
         videoImageExtensions = GitLabExtension.VIDEO_IMAGE_EXTENSIONS.get(options);
+        imageSrcTag = GitLabExtension.IMAGE_SRC_TAG.get(options);
         videoImageExtensionSet = new HashSet<>();
 
         String[] extensions = videoImageExtensions.split(",");
@@ -106,6 +108,7 @@ public class GitLabOptions implements MutableDataSetter {
         dataHolder.set(GitLabExtension.VIDEO_IMAGE_LINK_TEXT_FORMAT, videoImageLinkTextFormat);
         dataHolder.set(GitLabExtension.VIDEO_IMAGE_EXTENSIONS, videoImageExtensions);
         dataHolder.set(GitLabExtension.IMAGE_EXTENSIONS, imageExtensions);
+        dataHolder.set(GitLabExtension.IMAGE_SRC_TAG, imageSrcTag);
         return dataHolder;
     }
 }

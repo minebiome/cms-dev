@@ -41,6 +41,7 @@ public class GitLabExtension implements Parser.ParserExtension
     final public static DataKey<String> BLOCK_MATH_CLASS = new DataKey<>("BLOCK_MATH_CLASS", "katex");
     final public static DataKey<String> BLOCK_MERMAID_CLASS = new DataKey<>("BLOCK_MERMAID_CLASS", "mermaid");
     final public static DataKey<String> VIDEO_IMAGE_CLASS = new DataKey<>("VIDEO_IMAGE_CLASS", "video-container");
+    final public static DataKey<String> IMAGE_SRC_TAG = new DataKey<>("IMAGE_SRC_TAG", "data-original");
     final public static DataKey<String> VIDEO_IMAGE_LINK_TEXT_FORMAT = new DataKey<>("VIDEO_IMAGE_LINK_TEXT_FORMAT", "Download '%s'");
 
     /**

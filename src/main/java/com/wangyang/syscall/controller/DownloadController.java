@@ -3,6 +3,7 @@ package com.wangyang.syscall.controller;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ArticleException;
+import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Sheet;
 import com.wangyang.pojo.enums.ArticleStatus;
@@ -29,6 +30,7 @@ public class DownloadController {
     ISheetService sheetService;
 
     @GetMapping("/sheet/{id}")
+    @Anonymous
     public String  generateSheetPdf(@PathVariable("id") Integer id) {
         Sheet sheet = sheetService.findById(id);
 

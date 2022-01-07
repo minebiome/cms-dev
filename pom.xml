@@ -109,10 +109,10 @@
             <artifactId>flexmark-ext-media-tags</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.vladsch.flexmark</groupId>-->
-        <!--            <artifactId>flexmark-ext-gitlab</artifactId>-->
-        <!--        </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>com.vladsch.flexmark</groupId>-->
+<!--                    <artifactId>flexmark-ext-gitlab</artifactId>-->
+<!--                </dependency>-->
 
         <!--        扩展的依赖-->
         <dependency>

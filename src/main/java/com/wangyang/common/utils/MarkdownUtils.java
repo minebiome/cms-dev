@@ -17,6 +17,7 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+//import com.wangyang.common.flexmark.gitlab.GitLabExtension;
 import com.wangyang.common.flexmark.gitlab.GitLabExtension;
 import com.wangyang.pojo.entity.base.BaseArticle;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,9 @@ import java.util.Arrays;
 
 public class MarkdownUtils {
 
-
+    /**
+     * 图片懒加载
+     */
     private static final DataHolder OPTIONS = new MutableDataSet()
             .set(Parser.EXTENSIONS,Arrays.asList(
                     EmojiExtension.create(),
@@ -40,7 +43,8 @@ public class MarkdownUtils {
                     FootnoteExtension.create(),
                     AdmonitionExtension.create()
 
-            )).set(HtmlRenderer.SOFT_BREAK, "<br/>")
+            )) .set(GitLabExtension.IMAGE_SRC_TAG,"data-original")
+            .set(HtmlRenderer.SOFT_BREAK, "<br/>")
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
             .set(TocExtension.LEVELS, 255)
             .set(TocExtension.LIST_CLASS,"toc")
@@ -48,24 +52,11 @@ public class MarkdownUtils {
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
-    private static final DataHolder OPTIONS_OUTPUT = new MutableDataSet()
-            .set(Parser.EXTENSIONS,Arrays.asList(
-                    EmojiExtension.create(),
-                    TablesExtension.create(),
-                    GitLabExtension.create(),
-                    MediaTagsExtension.create(),
-                    FootnoteExtension.create(),
-                    AdmonitionExtension.create()
 
-            )).set(HtmlRenderer.SOFT_BREAK, "<br/>")
-            .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
-            .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
     private static final Parser PARSER = Parser.builder(OPTIONS).build();
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
-    private static final Parser PARSER_OUTPUT = Parser.builder(OPTIONS_OUTPUT).build();
-    private static final HtmlRenderer RENDERER_OUTPUT = HtmlRenderer.builder(OPTIONS_OUTPUT).build();
 
     public static BaseArticle renderHtml(BaseArticle article) {
         if(StringUtils.isBlank(article.getOriginalContent())){
@@ -81,6 +72,30 @@ public class MarkdownUtils {
     }
 
     /**
+     * 打印PDF
+     */
+    private static final DataHolder OPTIONS_OUTPUT = new MutableDataSet()
+            .set(Parser.EXTENSIONS,Arrays.asList(
+                    EmojiExtension.create(),
+                    TablesExtension.create(),
+                    GitLabExtension.create(),
+                    TocExtension.create(),
+                    MediaTagsExtension.create(),
+                    FootnoteExtension.create(),
+                    AdmonitionExtension.create()
+
+            )).set(GitLabExtension.IMAGE_SRC_TAG,"src")
+            .set(HtmlRenderer.SOFT_BREAK, "<br/>")
+//            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
+            .set(TocExtension.LEVELS, 255)
+            .set(TocExtension.LIST_CLASS,"toc")
+            .set(TocExtension.IS_NUMBERED,false)
+            .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
+            .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
+    private static final Parser PARSER_OUTPUT = Parser.builder(OPTIONS_OUTPUT).build();
+    private static final HtmlRenderer RENDERER_OUTPUT = HtmlRenderer.builder(OPTIONS_OUTPUT).build();
+
+    /**
      * 不使用图片懒加载
      * @param markdown
      * @return
@@ -89,7 +104,7 @@ public class MarkdownUtils {
         if(StringUtils.isBlank(markdown)){
             return null;
         }
-        Node document = PARSER_OUTPUT.parse(markdown);
+        Node document = PARSER_OUTPUT.parse("[TOC]\n "+markdown);
         String render = RENDERER_OUTPUT.render(document);
         return render;
     }

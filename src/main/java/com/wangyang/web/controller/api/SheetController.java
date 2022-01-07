@@ -85,6 +85,8 @@ public class SheetController {
     @GetMapping("/generate/{id}")
     public Sheet generate(@PathVariable("id") Integer id){
         Sheet sheet = sheetService.findById(id);
+        sheet.setPdfPath(null);
+        sheet = sheetService.save(sheet);
         htmlService.convertArticleListBy(sheet);
         return sheet;
     }

@@ -172,7 +172,8 @@ public class GitLabNodeRenderer implements NodeRenderer
                 }else {
                     html.tag("picture");
                     html.attr("class","lazy");
-                    html.attr("data-original", url);
+//                    html.attr("data-original", url);
+                    html.attr(options.imageSrcTag, url);
                     html.attr("alt", altText);
                     html.attr(resolvedLink.getNonNullAttributes());
                     html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
