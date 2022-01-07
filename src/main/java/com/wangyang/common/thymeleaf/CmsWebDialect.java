@@ -20,14 +20,14 @@ public class CmsWebDialect extends AbstractProcessorDialect {
     @Override
     public Set<IProcessor> getProcessors(final String dialectPrefix) {
         final Set<IProcessor> processors = new HashSet<IProcessor>();
-//        processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));
-////        processors.add(new StandardValueTagProcessor(dialectPrefix));
+        processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardValueTagProcessor(dialectPrefix));
        processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
-////        processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
-////        processors.add(new StandardFragmentTagProcessor(TemplateMode.HTML, dialectPrefix));
-////        processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
+       processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
+       processors.add(new StandardFragmentTagProcessor(TemplateMode.HTML, dialectPrefix));
+       processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
 //
-////        processors.add(new IncludeElementTagProcessor(dialectPrefix));
+        processors.add(new IncludeElementTagProcessor(dialectPrefix));
 //
 //        /*
 //         * It is important that we create new instances here because, if there are
@@ -51,58 +51,58 @@ public class CmsWebDialect extends AbstractProcessorDialect {
 //        /*
 //         * HTML: ATTRIBUTE TAG PROCESSORS
 //         */
-//        processors.add(new StandardActionTagProcessor(dialectPrefix));
-//        processors.add(new StandardAltTitleTagProcessor(dialectPrefix));
-//        processors.add(new StandardAssertTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardAttrTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardAttrappendTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardAttrprependTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardCaseTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardClassappendTagProcessor(dialectPrefix));
-//        for (final String attrName : StandardConditionalFixedValueTagProcessor.ATTR_NAMES) {
-//            processors.add(new StandardConditionalFixedValueTagProcessor(dialectPrefix, attrName));
-//        }
-//        for (final String attrName : StandardDOMEventAttributeTagProcessor.ATTR_NAMES) {
-//            processors.add(new StandardDOMEventAttributeTagProcessor(dialectPrefix, attrName));
-//        }
-//        processors.add(new StandardEachTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardFragmentTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardHrefTagProcessor(dialectPrefix));
-//        processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardIncludeTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
-//        processors.add(new StandardInsertTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardLangXmlLangTagProcessor(dialectPrefix));
-//        processors.add(new StandardMethodTagProcessor(dialectPrefix));
-//        for (final String attrName : StandardNonRemovableAttributeTagProcessor.ATTR_NAMES) {
-//            processors.add(new StandardNonRemovableAttributeTagProcessor(dialectPrefix, attrName));
-//        }
-//        processors.add(new StandardObjectTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        for (final String attrName : StandardRemovableAttributeTagProcessor.ATTR_NAMES) {
-//            processors.add(new StandardRemovableAttributeTagProcessor(dialectPrefix, attrName));
-//        }
-//        processors.add(new StandardRemoveTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardActionTagProcessor(dialectPrefix));
+        processors.add(new StandardAltTitleTagProcessor(dialectPrefix));
+        processors.add(new StandardAssertTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardAttrTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardAttrappendTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardAttrprependTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardCaseTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardClassappendTagProcessor(dialectPrefix));
+        for (final String attrName : StandardConditionalFixedValueTagProcessor.ATTR_NAMES) {
+            processors.add(new StandardConditionalFixedValueTagProcessor(dialectPrefix, attrName));
+        }
+        for (final String attrName : StandardDOMEventAttributeTagProcessor.ATTR_NAMES) {
+            processors.add(new StandardDOMEventAttributeTagProcessor(dialectPrefix, attrName));
+        }
+        processors.add(new StandardEachTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardFragmentTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardHrefTagProcessor(dialectPrefix));
+        processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardIncludeTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
+        processors.add(new StandardInsertTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardLangXmlLangTagProcessor(dialectPrefix));
+        processors.add(new StandardMethodTagProcessor(dialectPrefix));
+        for (final String attrName : StandardNonRemovableAttributeTagProcessor.ATTR_NAMES) {
+            processors.add(new StandardNonRemovableAttributeTagProcessor(dialectPrefix, attrName));
+        }
+        processors.add(new StandardObjectTagProcessor(TemplateMode.HTML, dialectPrefix));
+        for (final String attrName : StandardRemovableAttributeTagProcessor.ATTR_NAMES) {
+            processors.add(new StandardRemovableAttributeTagProcessor(dialectPrefix, attrName));
+        }
+        processors.add(new StandardRemoveTagProcessor(TemplateMode.HTML, dialectPrefix));
         processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardSrcTagProcessor(dialectPrefix));
-//        processors.add(new StandardStyleappendTagProcessor(dialectPrefix));
-//        processors.add(new StandardSubstituteByTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardSwitchTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardUnlessTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardUtextTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardValueTagProcessor(dialectPrefix));
-//        processors.add(new StandardWithTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardXmlBaseTagProcessor(dialectPrefix));
-//        processors.add(new StandardXmlLangTagProcessor(dialectPrefix));
-//        processors.add(new StandardXmlSpaceTagProcessor(dialectPrefix));
-//        processors.add(new StandardXmlNsTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardRefAttributeTagProcessor(TemplateMode.HTML, dialectPrefix));
-//        processors.add(new StandardDefaultAttributesTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardSrcTagProcessor(dialectPrefix));
+        processors.add(new StandardStyleappendTagProcessor(dialectPrefix));
+        processors.add(new StandardSubstituteByTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardSwitchTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardUnlessTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardUtextTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardValueTagProcessor(dialectPrefix));
+        processors.add(new StandardWithTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardXmlBaseTagProcessor(dialectPrefix));
+        processors.add(new StandardXmlLangTagProcessor(dialectPrefix));
+        processors.add(new StandardXmlSpaceTagProcessor(dialectPrefix));
+        processors.add(new StandardXmlNsTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardRefAttributeTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new StandardDefaultAttributesTagProcessor(TemplateMode.HTML, dialectPrefix));
 //
 //        /*
 //         * HTML: ELEMENT TAG PROCESSORS
 //         */
-//        processors.add(new StandardBlockTagProcessor(TemplateMode.HTML, dialectPrefix, StandardBlockTagProcessor.ELEMENT_NAME));
+        processors.add(new StandardBlockTagProcessor(TemplateMode.HTML, dialectPrefix, StandardBlockTagProcessor.ELEMENT_NAME));
 //
 //        /*
 //         * HTML: TEXT PROCESSORS
@@ -113,7 +113,7 @@ public class CmsWebDialect extends AbstractProcessorDialect {
 //         * are added here, it should be for a really compelling reason.
 //         * See EngineConfiguration#isModelReshapable()
 //         */
-//        processors.add(new StandardInliningTextProcessor(TemplateMode.HTML));
+        processors.add(new StandardInliningTextProcessor(TemplateMode.HTML));
 //
 //        /*
 //         * HTML: CDATASection PROCESSORS
@@ -121,12 +121,12 @@ public class CmsWebDialect extends AbstractProcessorDialect {
 //         * NOTE as happens with text processors, adding a processor here would convert models in non-reshapable.
 //         * See EngineConfiguration#isModelReshapable()
 //         */
-//        processors.add(new StandardInliningCDATASectionProcessor(TemplateMode.HTML));
+        processors.add(new StandardInliningCDATASectionProcessor(TemplateMode.HTML));
 //
 //        /*
 //         * HTML: DOCTYPE PROCESSORS
 //         */
-//        processors.add(new StandardTranslationDocTypeProcessor());
+        processors.add(new StandardTranslationDocTypeProcessor());
 //
 //        /*
 //         * HTML: COMMENT PROCESSORS
@@ -134,13 +134,13 @@ public class CmsWebDialect extends AbstractProcessorDialect {
 //         * NOTE as happens with text processors, adding a processor here would convert models in non-reshapable.
 //         * See EngineConfiguration#isModelReshapable()
 //         */
-//        processors.add(new StandardInliningCommentProcessor(TemplateMode.HTML));
-//        processors.add(new StandardConditionalCommentProcessor());
+        processors.add(new StandardInliningCommentProcessor(TemplateMode.HTML));
+        processors.add(new StandardConditionalCommentProcessor());
 //
 //        /*
 //         * HTML: TEMPLATE BOUNDARIES PROCESSORS
 //         */
-//        processors.add(new StandardInlineEnablementTemplateBoundariesProcessor(TemplateMode.HTML));
+        processors.add(new StandardInlineEnablementTemplateBoundariesProcessor(TemplateMode.HTML));
 //
 //
 //

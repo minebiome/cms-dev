@@ -96,7 +96,6 @@ public class UserServiceImpl extends BaseAuthorizeServiceImpl<User>
             throw new UserException("需要操作的用户不存在!!");
         }
         User user = userOptional.get();
-        user.setPassword("");
         return  user;
     }
 
@@ -115,6 +114,14 @@ public class UserServiceImpl extends BaseAuthorizeServiceImpl<User>
                 }
         ).collect(Collectors.toList());
         return userDtos;
+    }
+
+    @Override
+    public User findById(Integer Id) {
+        User user = new User();
+        BeanUtils.copyProperties(super.findById(Id),user);
+        user.setPassword(null);
+        return user;
     }
 
     @Override
@@ -181,7 +188,6 @@ public class UserServiceImpl extends BaseAuthorizeServiceImpl<User>
     @Override
     public UserDto findUserDaoById(int userId) {
         User user = findById(userId);
-        user.setPassword(null);
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user, userDto);
         List<Role> roles = roleService.findByUser(user.getId());
