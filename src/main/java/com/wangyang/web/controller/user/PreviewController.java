@@ -3,6 +3,7 @@ package com.wangyang.web.controller.user;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.params.TemplateParam;
 import com.wangyang.service.service.*;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
@@ -30,6 +31,20 @@ public class PreviewController {
 
     @Autowired
     ITemplateService templateService;
+
+
+
+    @PostMapping("/templates/update/{id}")
+    public String update(@PathVariable("id") Integer id,TemplateParam templateParam){
+        Template template = templateService.update(id, templateParam);
+        return template.getTemplateValue();
+    }
+    @PostMapping("/templates/add")
+    public String add(Template inputTemplate){
+        return inputTemplate.getTemplateValue();
+    }
+
+
 
     @GetMapping("/article/{articleId}")
 //    @ResponseBody
