@@ -10,6 +10,7 @@ import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.service.service.IArticleService;
 import com.wangyang.service.service.ISheetService;
 import com.wangyang.syscall.utils.NodeJsUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.io.File;
 
 @Controller
 @RequestMapping("/download")
+@Slf4j
 public class DownloadController {
 
     @Autowired
@@ -46,8 +48,11 @@ public class DownloadController {
             String node = NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR + "/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR+File.separator+pdfPath);
             sheet.setPdfPath(pdfPath);
             sheet = sheetService.save(sheet);
-        }
-        return "redirect:/"+sheet.getPdfPath();
+            log.info("生成：{}",pdfPath);
+        }else {
+            log.info("使用原来：{}",pdfPath);
+
+        }        return "redirect:/"+sheet.getPdfPath();
     }
     @GetMapping("/article/{articleId}")
     public String  generatePdf(@PathVariable("articleId") Integer articleId) {
