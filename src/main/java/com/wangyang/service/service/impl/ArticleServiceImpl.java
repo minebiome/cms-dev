@@ -477,11 +477,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         Category category = categoryService.findById(article.getCategoryId());
         article.setPath(CMSUtils.getArticlePath());
 
-        if(article.getTemplateName()==null){
-            //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
-            article.setTemplateName(category.getArticleTemplateName());
-        }
-
+//        if(article.getTemplateName()==null){
+//            //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
+//
+//        }
+        article.setTemplateName(category.getArticleTemplateName());
         article = super.createOrUpdate(article);
         //图片展示
         if(article.getPicPath()==null|| "".equals(article.getPicPath())){

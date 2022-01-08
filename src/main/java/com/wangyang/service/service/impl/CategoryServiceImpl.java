@@ -4,9 +4,11 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.repository.CategoryRepository;
@@ -261,6 +263,7 @@ public class CategoryServiceImpl implements ICategoryService {
      */
     @Override
     public List<CategoryDto> listAllDto() {
+
         return convertTo(listAll());
     }
 
@@ -357,8 +360,12 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     public List<CategoryDto> convertTo(List<Category> categories){
+        List<Template> templates = templateService.findAll();
+        Map<String, Template> templateMap = ServiceUtil.convertToMap(templates, Template::getEnName);
+
         return  categories.stream().map(category -> {
             CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setResource(templateMap.get(category.getArticleTemplateName()).getResource());
             BeanUtils.copyProperties(category, categoryDto);
             return categoryDto;
         }).collect(Collectors.toList());

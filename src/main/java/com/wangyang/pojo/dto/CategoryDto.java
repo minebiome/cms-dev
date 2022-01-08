@@ -13,5 +13,6 @@ public class CategoryDto {
     private String path;
     private String linkPath;
     private Integer order;
+    private String resource;
 
 }

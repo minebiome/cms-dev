@@ -25,5 +25,6 @@ public class BaseTemplate extends  BaseEntity{
     private Integer order;
 
     private Boolean isSystem;
-
+    @Column(columnDefinition = "longtext ")
+    private String resource;
   }

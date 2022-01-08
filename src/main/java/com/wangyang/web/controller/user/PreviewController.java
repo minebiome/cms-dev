@@ -70,7 +70,8 @@ public class PreviewController {
         if(articleDetailVo.getCategory()==null&&!articleDetailVo.getStatus().equals(ArticleStatus.PUBLISHED)){
             articleDetailVo.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
         }
-        Template template = templateService.findByEnName(articleDetailVo.getTemplateName());
+        Category category = categoryService.findById(article.getCategoryId());
+        Template template = templateService.findByEnName(category.getArticleTemplateName());
 //        ModelAndView modelAndView = new ModelAndView();
         model.addAttribute("view",articleDetailVo);
 //        modelAndView.setViewName(template.getTemplateValue());

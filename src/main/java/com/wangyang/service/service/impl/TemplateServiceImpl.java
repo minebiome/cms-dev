@@ -1,6 +1,7 @@
 package com.wangyang.service.service.impl;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.ObjectException;
@@ -31,6 +32,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.standard.expression.IStandardExpression;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,10 +42,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -63,13 +64,44 @@ public class TemplateServiceImpl implements ITemplateService {
     @Value("${cms.workDir}")
     private String workDir;
 
-    private final static  String INSTALL_TEMPLATE_PATH = "templates/install";
+    private static String varPattern2 = "(.*)";
+    private static Pattern rv = Pattern.compile(varPattern2);
 
+    private final static  String INSTALL_TEMPLATE_PATH = "templates/install";
+    private final static  Pattern css = Pattern.compile("href=\"(.*)\\.css");
+    private final static  Pattern js = Pattern.compile("src=\"(.*)\\.js");
+
+    public List<String> getLink(Pattern pattern,String content,String suffix){
+        List<String> links = new ArrayList<>();
+        Matcher matcher = pattern.matcher(content);
+        while (matcher.find()){
+            String attr = matcher.group(1);
+            links.add(attr+suffix);
+        }
+        return links;
+    }
+
+    public Template addCssAndJs(Template template){
+        List<String> cssSet = getLink(css, template.getTemplateContent(),".css");
+        List<String> jsSet = getLink(js, template.getTemplateContent(),".js");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("css",cssSet);
+        jsonObject.put("js",jsSet);
+
+        template.setResource(jsonObject.toJSONString());
+        return template;
+    }
+
+    public Template save(Template template){
+        addCssAndJs(template);
+        return templateRepository.save(template);
+
+    }
     @Override
     public Template add(Template template) {
 //        convert(template,template);
         createFile(template);
-        return templateRepository.save(template);
+        return save(template);
     }
 
 
@@ -81,6 +113,7 @@ public class TemplateServiceImpl implements ITemplateService {
     }
     @Override
     public List<Template> saveAll(List<Template> templates) {
+        templates.forEach(template -> addCssAndJs(template));
         return templateRepository.saveAll(templates);
     }
 
@@ -90,7 +123,7 @@ public class TemplateServiceImpl implements ITemplateService {
         BeanUtils.copyProperties(templateParam,template);
 //        convert(template,templateParam);
         createFile(template);
-        return templateRepository.save(template);
+        return save(template);
     }
     private void createFile(Template template) {
         File file = new File(workDir+"/"+template.getTemplateValue()+".html");
@@ -273,7 +306,7 @@ public class TemplateServiceImpl implements ITemplateService {
             template.setTemplateContent(openFile);
             FileUtils.saveFile(templateFile,template.getTemplateContent());
         }
-        template = templateRepository.save(template);
+        template = save(template);
 
 
 
