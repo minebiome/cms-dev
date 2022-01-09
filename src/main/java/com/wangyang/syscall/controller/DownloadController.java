@@ -68,6 +68,7 @@ public class DownloadController {
             String node = NodeJsUtil.execNodeJs("node", CmsConst.WORK_DIR + "/templates/nodejs/generatePdf.js", url, CmsConst.WORK_DIR+File.separator+pdfPath);
             article.setPdfPath(pdfPath);
             article = articleService.save(article);
+            log.info("生成：{}",pdfPath);
         }else {
             log.info("使用原来：{}",pdfPath);
 

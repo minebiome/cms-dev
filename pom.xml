@@ -338,6 +338,12 @@
 <!--            <artifactId>ant</artifactId>-->
 <!--            <version>1.10.12</version>-->
 <!--        </dependency>-->
+        <dependency>
+            <!-- jsoup HTML parser library @ https://jsoup.org/ -->
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.14.3</version>
+        </dependency>
     </dependencies>
 
     <build>

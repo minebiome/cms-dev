@@ -27,4 +27,6 @@ public class BaseTemplate extends  BaseEntity{
     private Boolean isSystem;
     @Column(columnDefinition = "longtext ")
     private String resource;
+    @Column(columnDefinition = "longtext ")
+    private String base;
   }

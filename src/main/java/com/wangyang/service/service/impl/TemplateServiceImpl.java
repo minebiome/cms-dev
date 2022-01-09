@@ -23,6 +23,9 @@ import com.wangyang.service.service.ICategoryService;
 import com.wangyang.service.service.ITemplateService;
 import com.wangyang.util.ZipHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,6 +92,11 @@ public class TemplateServiceImpl implements ITemplateService {
         jsonObject.put("js",jsSet);
 
         template.setResource(jsonObject.toJSONString());
+        Document html = Jsoup.parse(template.getTemplateContent());
+//         <div  th:utext="${view.formatContent}">
+        Elements formatContent = html.body().getElementsByAttributeValueContaining("th:utext", "formatContent");
+        String formatContentHtml = formatContent.html();
+        template.setBase(formatContentHtml);
         return template;
     }
 
