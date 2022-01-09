@@ -17,7 +17,10 @@
 <https://github.com/wangyang1749/cms-android.git>
 + 前端静态化使用的模板文件
 
-
+#### 2.3 快速远程部署
+```shell
+ssh roor@XXX.XXX "cd XXX && git pull && ./mvnw clean && ./mvnw install && ./init.sh"
+```
 
 ### 三、系统开发
 ```

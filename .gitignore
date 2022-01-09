@@ -32,3 +32,4 @@ build/
 cms_dev.sql.gz
 cms_dev.sql
 bioinfo.log
+push.sh
