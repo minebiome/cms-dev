@@ -1,5 +1,7 @@
 #!/bin/bash
-#git pull
+git pull
+./mvnw clean
+./mvnw install
 dir=`pwd`
 app="cms-dev-0.0.1-SNAPSHOT.jar"
 jar="${dir}/target/${app}"
