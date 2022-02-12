@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class CmsApplication {
 
+
 	public static void main(String[] args) {
 		// Customize the spring config location
 		System.setProperty("spring.config.additional-location", "file:${user.home}/cms/application.yml");
