@@ -1,25 +1,18 @@
 package com.wangyang.web.core.view;
 
 import com.wangyang.common.CmsConst;
-import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Template;
-import com.wangyang.service.service.IArticleService;
-import com.wangyang.service.service.ICategoryService;
-import com.wangyang.service.service.IHtmlService;
-import com.wangyang.service.service.ITemplateService;
+import com.wangyang.service.IArticleService;
+import com.wangyang.service.ICategoryService;
+import com.wangyang.service.IHtmlService;
+import com.wangyang.service.ITemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.thymeleaf.ITemplateEngine;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

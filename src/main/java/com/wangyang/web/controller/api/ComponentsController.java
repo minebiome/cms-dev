@@ -1,7 +1,7 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.utils.TemplateUtil;
-import com.wangyang.service.service.IComponentsService;
+import com.wangyang.service.IComponentsService;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.common.BaseResponse;

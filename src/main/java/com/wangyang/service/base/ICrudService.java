@@ -1,8 +1,10 @@
 package com.wangyang.service.base;
 
+import com.wangyang.pojo.enums.CrudType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -29,6 +31,7 @@ public interface ICrudService<DOMAIN, ID> {
     void delete(DOMAIN t);
 
     Page<DOMAIN> pageBy(Pageable pageable);
+    Page<DOMAIN> pageBy(Pageable pageable,String keywords);
 
     void deleteAll(Iterable<DOMAIN> domains);
 
@@ -41,4 +44,6 @@ public interface ICrudService<DOMAIN, ID> {
     List<DOMAIN> tsvToBean(String filePath);
     DOMAIN delBy(ID id);
     List<DOMAIN> initData(String filePath,Boolean isEmpty);
+    boolean supportType(@Nullable CrudType type);
+
 }

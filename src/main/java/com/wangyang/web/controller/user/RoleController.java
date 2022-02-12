@@ -1,7 +1,7 @@
 package com.wangyang.web.controller.user;
 
 import com.wangyang.pojo.authorize.*;
-import com.wangyang.service.IRoleService;
+import com.wangyang.service.authorize.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

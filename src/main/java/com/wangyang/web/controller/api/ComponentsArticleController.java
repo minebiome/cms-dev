@@ -1,7 +1,7 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.BaseResponse;
-import com.wangyang.service.service.IComponentsArticleService;
+import com.wangyang.service.IComponentsArticleService;
 import com.wangyang.pojo.entity.ComponentsArticle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

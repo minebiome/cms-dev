@@ -1,7 +1,6 @@
 package com.wangyang.web.core.jms.consumer;
 
-import com.wangyang.web.core.jms.producer.DestinationConst;
-import com.wangyang.service.service.IHtmlService;
+import com.wangyang.service.IHtmlService;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

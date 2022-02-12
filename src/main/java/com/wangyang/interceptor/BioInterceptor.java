@@ -6,7 +6,7 @@ import com.wangyang.pojo.authorize.ApiUserDetailDTO;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserDetailDTO;
-import com.wangyang.service.IPermissionService;
+import com.wangyang.service.authorize.IPermissionService;
 import com.wangyang.util.AuthorizationException;
 import com.wangyang.util.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;

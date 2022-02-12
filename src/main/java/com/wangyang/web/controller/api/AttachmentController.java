@@ -1,8 +1,7 @@
 package com.wangyang.web.controller.api;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wangyang.pojo.params.UserParam;
-import com.wangyang.service.service.IAttachmentService;
+import com.wangyang.service.IAttachmentService;
 import com.wangyang.pojo.entity.Attachment;
 import com.wangyang.pojo.params.AttachmentParam;
 import org.springframework.beans.factory.annotation.Autowired;

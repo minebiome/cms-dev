@@ -2,7 +2,7 @@ package com.wangyang.web.controller.user;
 
 
 import com.wangyang.pojo.authorize.UserRole;
-import com.wangyang.service.IUserRoleService;
+import com.wangyang.service.authorize.IUserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

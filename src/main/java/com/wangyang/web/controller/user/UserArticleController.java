@@ -3,10 +3,10 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
-import com.wangyang.service.IUserService;
-import com.wangyang.service.service.IArticleService;
-import com.wangyang.service.service.ICategoryService;
-import com.wangyang.service.service.IHtmlService;
+import com.wangyang.service.authorize.IUserService;
+import com.wangyang.service.IArticleService;
+import com.wangyang.service.ICategoryService;
+import com.wangyang.service.IHtmlService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.UserDto;
@@ -14,7 +14,7 @@ import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.service.util.FormatUtil;
+import com.wangyang.util.FormatUtil;
 import com.wangyang.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 

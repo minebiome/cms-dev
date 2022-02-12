@@ -2,7 +2,7 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.pojo.authorize.Resource;
 import com.wangyang.pojo.authorize.ResourceVO;
-import com.wangyang.service.IResourceService;
+import com.wangyang.service.authorize.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

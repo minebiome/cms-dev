@@ -6,7 +6,7 @@ import com.wangyang.common.utils.ImageUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.service.service.*;
+import com.wangyang.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

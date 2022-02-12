@@ -1,8 +1,8 @@
 package com.wangyang.web.controller.api;
 
-import com.wangyang.service.service.IComponentsService;
-import com.wangyang.service.service.IHtmlService;
-import com.wangyang.service.service.IMenuService;
+import com.wangyang.service.IComponentsService;
+import com.wangyang.service.IHtmlService;
+import com.wangyang.service.IMenuService;
 import com.wangyang.pojo.entity.Menu;
 import com.wangyang.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;

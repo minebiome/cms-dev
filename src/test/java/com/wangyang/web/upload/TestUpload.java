@@ -1,6 +1,6 @@
 package com.wangyang.web.upload;
 
-import com.wangyang.service.handle.FileHandlers;
+import com.wangyang.handle.FileHandlers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

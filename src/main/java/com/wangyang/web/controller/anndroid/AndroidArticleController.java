@@ -1,6 +1,6 @@
 package com.wangyang.web.controller.anndroid;
 
-import com.wangyang.service.service.IArticleService;
+import com.wangyang.service.IArticleService;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Article;
 import com.google.common.base.Joiner;

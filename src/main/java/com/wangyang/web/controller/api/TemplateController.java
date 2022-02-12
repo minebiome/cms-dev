@@ -1,10 +1,8 @@
 package com.wangyang.web.controller.api;
 
-import com.wangyang.common.utils.FileUtils;
 import com.wangyang.pojo.annotation.Anonymous;
-import com.wangyang.pojo.entity.Attachment;
-import com.wangyang.service.service.IHtmlService;
-import com.wangyang.service.service.ITemplateService;
+import com.wangyang.service.IHtmlService;
+import com.wangyang.service.ITemplateService;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.params.TemplateParam;
@@ -16,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;

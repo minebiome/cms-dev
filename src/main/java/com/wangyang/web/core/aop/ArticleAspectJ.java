@@ -2,24 +2,18 @@ package com.wangyang.web.core.aop;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
-import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.service.service.IHtmlService;
+import com.wangyang.service.IHtmlService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.lang.reflect.Method;
 
 /**
  * @author wangyang

@@ -6,6 +6,7 @@ import com.univocity.parsers.tsv.TsvWriterSettings;
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.UserException;
 import com.wangyang.pojo.annotation.QueryField;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.util.File2Tsv;
 import com.wangyang.util.ObjectToCollection;
@@ -292,4 +293,11 @@ public abstract class AbstractCrudService<DOMAIN, ID extends Serializable> imple
         repository.delete(domain);
         return domain;
     }
+
+    @Override
+    public Page<DOMAIN> pageBy(Pageable pageable, String keywords) {
+        return null;
+    }
+
+
 }
