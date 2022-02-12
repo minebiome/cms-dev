@@ -19,7 +19,7 @@ import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.common.flexmark.gitlab.GitLabExtension;
 import com.wangyang.common.flexmark.gitlab.GitLabExtension;
-import com.wangyang.pojo.entity.base.BaseArticle;
+import com.wangyang.pojo.entity.base.Content;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public class MarkdownUtils {
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
 
-    public static BaseArticle renderHtml(BaseArticle article) {
+    public static Content renderHtml(Content article) {
         if(StringUtils.isBlank(article.getOriginalContent())){
             return null;
         }

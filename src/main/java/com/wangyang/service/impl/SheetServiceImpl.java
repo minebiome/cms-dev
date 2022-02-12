@@ -7,11 +7,14 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.entity.Menu;
 import com.wangyang.pojo.entity.Sheet;
 import com.wangyang.pojo.enums.ArticleStatus;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.repository.MenuRepository;
 import com.wangyang.repository.SheetRepository;
+import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.ISheetService;
 import com.wangyang.service.ITemplateService;
+import com.wangyang.service.base.AbstractContentServiceImpl;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,10 +28,9 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements ISheetService {
+public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet> implements ISheetService {
 
-    @Autowired
-    SheetRepository sheetRepository;
+
 
     @Autowired
     ITemplateService templateService;
@@ -37,6 +39,13 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
 
     @Autowired
     MenuRepository menuRepository;
+
+
+    private SheetRepository sheetRepository;
+    public SheetServiceImpl(SheetRepository sheetRepository) {
+        super(sheetRepository);
+        this.sheetRepository =sheetRepository;
+    }
 
     @Override
     public Sheet addOrUpdate(Sheet sheet){
@@ -173,5 +182,10 @@ public class SheetServiceImpl extends BaseArticleServiceImpl<Sheet> implements I
 
         }
         return  sheetRepository.save(sheet);
+    }
+
+    @Override
+    public boolean supportType(CrudType type) {
+        return false;
     }
 }

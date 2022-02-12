@@ -6,19 +6,25 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.ArticleDto;
+import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.service.IArticleService;
+import com.wangyang.service.ICategoryService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Template;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import com.wangyang.handle.CrudHandlers;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
@@ -32,6 +38,11 @@ public class WebController {
     IArticleService articleService;
     @Autowired
     ITemplateService templateService;
+    @Autowired
+    CrudHandlers crudHandlers;
+    @Autowired
+    ICategoryService categoryService;
+
 
     @GetMapping("/login")
     @Anonymous
@@ -61,12 +72,18 @@ public class WebController {
     }
     @GetMapping("/html_{path}.html")
     @Anonymous
-//    @ResponseBody
     public String showArticleFormat(@PathVariable("path") String path) {
         return "html" + File.separator+path;
     }
 
-
+//    @GetMapping("/html_articleList_{path}.html")
+//    @Anonymous
+//    public String articleList(@PathVariable("path") String path) {
+//        Category category = categoryService.findByViewName(path);
+//        PageRequest pageRequest = PageRequest.of(0, 10);
+//        Page<? extends BaseEntity> baseEntities = crudHandlers.pageBy(CrudType.ARTICLE, pageRequest, "");
+//        return "html" + File.separator+path;
+//    }
 
     /**
      * 没有登录用户的文章列表和搜索

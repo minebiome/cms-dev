@@ -9,6 +9,7 @@ import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.support.TemplateOption;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.service.base.IContentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 
 
 @TemplateOption
-public interface IArticleService extends IBaseArticleService<Article> {
+public interface IArticleService extends IContentService<Article> {
 
     /**
      * 为文章添加类别和标签

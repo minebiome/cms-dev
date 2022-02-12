@@ -1,12 +1,12 @@
 package com.wangyang.pojo.entity;
 
-import com.wangyang.pojo.entity.base.BaseArticle;
+import com.wangyang.pojo.entity.base.Content;
 import lombok.Data;
 import javax.persistence.*;
 @Entity
 @DiscriminatorValue(value = "0")
 @Data
-public class Article extends BaseArticle {
+public class Article extends Content {
 
 
     @Column(name = "likes", columnDefinition = "int default 0")

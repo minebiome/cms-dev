@@ -5,10 +5,10 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Entity(name = "BaseArticle")
+@Entity(name = "base_article")
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER, columnDefinition = "int default 0")
 @Data
-public class BaseArticle extends BaseEntity{
+public class Content extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

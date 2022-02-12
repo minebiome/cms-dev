@@ -2,7 +2,7 @@ package com.wangyang.repository.authorize;
 
 
 import com.wangyang.pojo.authorize.APIUser;
-import com.wangyang.repository.base.BaseAuthorizeRepository;
+import com.wangyang.repository.base.AuthorizeRepository;
 
-public interface ApiUserRepository extends BaseAuthorizeRepository<APIUser> {
+public interface ApiUserRepository extends AuthorizeRepository<APIUser> {
 }

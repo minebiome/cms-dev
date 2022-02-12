@@ -165,7 +165,10 @@ public abstract class AbstractCrudService<DOMAIN, ID extends Serializable> imple
     public Page<DOMAIN> pageBy(Pageable pageable){
         return repository.findAll(pageable);
     }
-
+    @Override
+    public Page<DOMAIN> pageBy(Pageable pageable, String keywords) {
+        return repository.findAll(pageable);
+    }
     @Override
     public void deleteAll(Iterable<DOMAIN> domains){
         repository.deleteAll(domains);
@@ -294,10 +297,7 @@ public abstract class AbstractCrudService<DOMAIN, ID extends Serializable> imple
         return domain;
     }
 
-    @Override
-    public Page<DOMAIN> pageBy(Pageable pageable, String keywords) {
-        return null;
-    }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.wangyang.repository;
 
 import com.wangyang.pojo.entity.Article;
+import com.wangyang.repository.base.ContentRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,8 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ArticleRepository extends JpaRepository<Article,Integer>
-        , JpaSpecificationExecutor<Article> {
+public interface ArticleRepository extends ContentRepository<Article> {
 
     /**
      * update article likes by article id

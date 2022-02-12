@@ -13,13 +13,16 @@ import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.*;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.repository.*;
+import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
+import com.wangyang.service.base.AbstractContentServiceImpl;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -46,7 +49,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implements IArticleService {
+public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> implements IArticleService {
+
     enum ArticleList{
         INCLUDE_TOP,
         NO_INCLUDE_TOP,
@@ -54,14 +58,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         ALL_ARTICLE
     }
 
-    @Autowired
-    ArticleRepository articleRepository;
 
-    @Autowired
-    ArticleTagsRepository articleTagsRepository;
     @Autowired
     TagsRepository tagsRepository;
-
+    @Autowired
+    ArticleTagsRepository articleTagsRepository;
     @Autowired
     ICategoryService categoryService;
     @Autowired
@@ -71,6 +72,11 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
     @Autowired
     IUserService userService;
 
+    private  ArticleRepository articleRepository;
+    public ArticleServiceImpl(ArticleRepository articleRepository) {
+        super(articleRepository);
+        this.articleRepository = articleRepository;
+    }
     private  List<Predicate> listPredicate(ArticleQuery articleQuery, Root<Article> root, CriteriaBuilder criteriaBuilder, CriteriaQuery<?> query){
         List<Predicate> predicates = new LinkedList<>();
 
@@ -1184,5 +1190,8 @@ public class ArticleServiceImpl extends BaseArticleServiceImpl<Article> implemen
         articleRepository.updateCommentNum(id,num);
     }
 
-
+    @Override
+    public boolean supportType(CrudType type) {
+        return type.equals(CrudType.ARTICLE);
+    }
 }
