@@ -25,6 +25,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.wangyang.handle.CrudHandlers;
+import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
@@ -78,11 +80,12 @@ public class WebController {
 
 //    @GetMapping("/html_articleList_{path}.html")
 //    @Anonymous
-//    public String articleList(@PathVariable("path") String path) {
+//    public ModelAndView articleList(@PathVariable("path") String path) {
 //        Category category = categoryService.findByViewName(path);
 //        PageRequest pageRequest = PageRequest.of(0, 10);
 //        Page<? extends BaseEntity> baseEntities = crudHandlers.pageBy(CrudType.ARTICLE, pageRequest, "");
-//        return "html" + File.separator+path;
+//        ModelAndView modelAndView = new ModelAndView("html" +File.separator+ "articleList_"+path);
+//        return modelAndView;
 //    }
 
     /**
