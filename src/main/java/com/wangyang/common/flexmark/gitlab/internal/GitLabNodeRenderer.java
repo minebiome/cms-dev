@@ -84,7 +84,7 @@ public class GitLabNodeRenderer implements NodeRenderer
     }
 
     private void render(GitLabBlockQuote node, NodeRendererContext context, HtmlWriter html) {
-        html.withAttr().tagLineIndent("blockquote", () -> context.renderChildren(node));
+        html.withAttr().tagLineIndent("section", () -> context.renderChildren(node));
     }
     //行间公式渲染
     private void render(FencedCodeBlock node, NodeRendererContext context, HtmlWriter html) {

@@ -28,7 +28,7 @@ public class GitLabExtension implements Parser.ParserExtension
     final public static DataKey<Boolean> INS_PARSER = new DataKey<>("INS_PARSER", true);
     final public static DataKey<Boolean> DEL_PARSER = new DataKey<>("DEL_PARSER", true);
     final public static DataKey<Boolean> BLOCK_QUOTE_PARSER = new DataKey<>("BLOCK_QUOTE_PARSER", true);
-    final public static DataKey<Boolean> NESTED_BLOCK_QUOTES = new DataKey<>("NESTED_BLOCK_QUOTES", true);
+    final public static DataKey<Boolean> NESTED_BLOCK_QUOTES = new DataKey<>("NESTED_BLOCK_QUOTES", false);
     final public static DataKey<Boolean> INLINE_MATH_PARSER = new DataKey<>("INLINE_MATH_PARSER", true);
     final public static DataKey<Boolean> RENDER_BLOCK_MATH = new DataKey<>("RENDER_BLOCK_MATH", true);
     final public static DataKey<Boolean> RENDER_BLOCK_MERMAID = new DataKey<>("RENDER_BLOCK_MERMAID", true);

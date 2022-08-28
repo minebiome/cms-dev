@@ -1,6 +1,14 @@
 package com.wangyang.web.util;
 
+import com.google.common.base.Joiner;
+import com.wangyang.common.utils.MarkdownUtils;
 import org.junit.jupiter.api.Test;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestMarkDown {
 
@@ -11,8 +19,9 @@ public class TestMarkDown {
 //
 //        List<String> list = reader.lines().collect(Collectors.toList());
 //        String content = Joiner.on("\n").join(list);
-//        String[] html = MarkdownUtils.renderHtml(content);
-//        System.out.println(html[1]);
+//        String html = MarkdownUtils.renderHtmlOutput(content);
+//        System.out.println(html);
+
     }
 
     class A{

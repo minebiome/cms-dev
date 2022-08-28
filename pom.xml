@@ -99,9 +99,15 @@
             <version>1.13.1</version>
         </dependency>
 
+
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-typographic</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
         <dependency>
