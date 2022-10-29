@@ -351,13 +351,39 @@ public class CategoryServiceImpl implements ICategoryService {
 
 
     public List<CategoryVO> convertCategory2CategoryVO(List<Category> categories){
-        return categories.stream().map(category -> {
+        List<CategoryVO> collect = categories.stream().map(category -> {
             CategoryVO categoryVO = new CategoryVO();
-            BeanUtils.copyProperties(category,categoryVO);
+            BeanUtils.copyProperties(category, categoryVO);
             categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
             return categoryVO;
         }).collect(Collectors.toList());
+        return listWithTree(collect);
     }
+    public List<CategoryVO> listWithTree(List<CategoryVO> list) {
+        // 1. 先查出所有数据
+//        List<ProjectLeader> list = projectLeaderService.list(Condition.getLikeQueryWrapper(projectLeader));
+        List<CategoryVO> collect = list.stream()
+                // 2. 找出所有顶级（规定 0 为顶级）
+                .filter(o -> o.getParentId().equals(0))
+                // 3.给当前父级的 childList 设置子
+                .peek(o -> o.setChildCategories(getChildList(o, list)))
+                // 4.收集
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    // 根据当前父类 找出子类， 并通过递归找出子类的子类
+    private List<CategoryVO> getChildList(CategoryVO categoryVO, List<CategoryVO> list) {
+        return list.stream()
+                //筛选出父节点id == parentId 的所有对象 => list
+                .filter(o -> o.getParentId().equals(categoryVO.getId()))
+                .peek(o -> o.setChildCategories(getChildList(o, list)))
+                .sorted(Comparator.comparing(CategoryVO::getOrder))
+                .collect(Collectors.toList());
+    }
+
+
+
 
     public List<CategoryDto> convertTo(List<Category> categories){
         List<Template> templates = templateService.findAll();
@@ -439,5 +465,33 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public Category findByViewName(String viewName){
         return categoryRepository.findByViewName(viewName);
+    }
+
+
+    @Override
+    public void updateOrder(List<CategoryVO> categoryVOList) {
+        List<Category> saveCategories = new ArrayList<>();
+        List<Category> categories = categoryRepository.findAll();
+        Map<Integer, Category> categoryMap = ServiceUtil.convertToMap(categories, Category::getId);
+
+        updateOrder(categoryMap,saveCategories,categoryVOList,0);
+        categoryRepository.saveAll(saveCategories);
+    }
+
+    private void updateOrder(Map<Integer, Category> categoryMap ,List<Category> saveCategories,List<CategoryVO> categoryVOList, Integer pId) {
+
+        for(int i=0;i<categoryVOList.size();i++){
+            CategoryVO categoryVO = categoryVOList.get(i);
+            Category category = categoryMap.get(categoryVO.getId());
+            category.setOrder(i);
+            category.setParentId(pId);
+            saveCategories.add(category);
+
+            List<CategoryVO> childCategories = categoryVO.getChildCategories();
+            if(childCategories.size()>0){
+                updateOrder(categoryMap,saveCategories,childCategories,category.getId());
+            }
+
+        }
     }
 }

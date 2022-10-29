@@ -89,4 +89,6 @@ public interface ICategoryService{
 
 
     Category findByViewName(String viewName);
+
+    void updateOrder(List<CategoryVO> categoryVOList);
 }
