@@ -9,10 +9,13 @@ import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.CategoryRepository;
+import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.*;
+import com.wangyang.service.base.AbstractCrudService;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -36,10 +39,10 @@ import java.util.stream.Collectors;
 //@TemplateOption
 @Transactional
 @Slf4j
-public class CategoryServiceImpl implements ICategoryService {
+public class CategoryServiceImpl extends AbstractCrudService<Category,Category,CategoryVO,Integer> implements ICategoryService
+        {
 
-    @Autowired
-    CategoryRepository categoryRepository;
+
     @Autowired
     ITemplateService templateService;
     @Autowired
@@ -50,8 +53,14 @@ public class CategoryServiceImpl implements ICategoryService {
     @Autowired
     IMenuService menuService;
 
+    private  CategoryRepository categoryRepository;
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+        super(categoryRepository);
+        this.categoryRepository =categoryRepository;
+    }
 
-    @Override
+
+            @Override
     public Category save(Category category){
         return categoryRepository.save(category);
     }
@@ -305,7 +314,7 @@ public class CategoryServiceImpl implements ICategoryService {
         for (CategoryVO categoryVO : rootCategory) {
             /* 获取根节点下的所有子节点 使用getChild方法*/
             List<CategoryVO> childList = getChild(categoryVO.getId(), categoryVOS);
-            categoryVO.setChildCategories(childList);//给根节点设置子节点
+            categoryVO.setChildren(childList);//给根节点设置子节点
         }
         return rootCategory;
     }
@@ -327,7 +336,7 @@ public class CategoryServiceImpl implements ICategoryService {
         }
         //递归
         for (CategoryVO categoryVO : childList) {
-            categoryVO.setChildCategories(getChild(categoryVO.getId(), categoryVOS));
+            categoryVO.setChildren(getChild(categoryVO.getId(), categoryVOS));
         }
         Collections.sort(childList,categoryOrder()); //排序
         //如果节点下没有子节点，返回一个空List（递归退出）
@@ -357,31 +366,33 @@ public class CategoryServiceImpl implements ICategoryService {
             categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
             return categoryVO;
         }).collect(Collectors.toList());
-        return listWithTree(collect);
-    }
-    public List<CategoryVO> listWithTree(List<CategoryVO> list) {
-        // 1. 先查出所有数据
-//        List<ProjectLeader> list = projectLeaderService.list(Condition.getLikeQueryWrapper(projectLeader));
-        List<CategoryVO> collect = list.stream()
-                // 2. 找出所有顶级（规定 0 为顶级）
-                .filter(o -> o.getParentId().equals(0))
-                // 3.给当前父级的 childList 设置子
-                .peek(o -> o.setChildCategories(getChildList(o, list)))
-                .sorted(Comparator.comparing(CategoryVO::getOrder))
-                // 4.收集
-                .collect(Collectors.toList());
-        return collect;
+        return super.listWithTree(collect);
     }
 
-    // 根据当前父类 找出子类， 并通过递归找出子类的子类
-    private List<CategoryVO> getChildList(CategoryVO categoryVO, List<CategoryVO> list) {
-        return list.stream()
-                //筛选出父节点id == parentId 的所有对象 => list
-                .filter(o -> o.getParentId().equals(categoryVO.getId()))
-                .peek(o -> o.setChildCategories(getChildList(o, list)))
-                .sorted(Comparator.comparing(CategoryVO::getOrder))
-                .collect(Collectors.toList());
-    }
+//
+//    public List<CategoryVO> listWithTree(List<CategoryVO> list) {
+//        // 1. 先查出所有数据
+////        List<ProjectLeader> list = projectLeaderService.list(Condition.getLikeQueryWrapper(projectLeader));
+//        List<CategoryVO> collect = list.stream()
+//                // 2. 找出所有顶级（规定 0 为顶级）
+//                .filter(o -> o.getParentId().equals(0))
+//                // 3.给当前父级的 childList 设置子
+//                .peek(o -> o.setChildCategories(getChildList(o, list)))
+//                .sorted(Comparator.comparing(CategoryVO::getOrder))
+//                // 4.收集
+//                .collect(Collectors.toList());
+//        return collect;
+//    }
+//
+//    // 根据当前父类 找出子类， 并通过递归找出子类的子类
+//    private List<CategoryVO> getChildList(CategoryVO categoryVO, List<CategoryVO> list) {
+//        return list.stream()
+//                //筛选出父节点id == parentId 的所有对象 => list
+//                .filter(o -> o.getParentId().equals(categoryVO.getId()))
+//                .peek(o -> o.setChildCategories(getChildList(o, list)))
+//                .sorted(Comparator.comparing(CategoryVO::getOrder))
+//                .collect(Collectors.toList());
+//    }
 
 
 
@@ -469,30 +480,35 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
 
+//    @Override
+//    public void updateOrder(List<CategoryVO> categoryVOList) {
+//        List<Category> saveCategories = new ArrayList<>();
+//        List<Category> categories = categoryRepository.findAll();
+//        Map<Integer, Category> categoryMap = ServiceUtil.convertToMap(categories, Category::getId);
+//
+//        updateOrder(categoryMap,saveCategories,categoryVOList,0);
+//        categoryRepository.saveAll(saveCategories);
+//    }
+
+//    private void updateOrder(Map<Integer, Category> categoryMap ,List<Category> saveCategories,List<CategoryVO> categoryVOList, Integer pId) {
+//
+//        for(int i=0;i<categoryVOList.size();i++){
+//            CategoryVO categoryVO = categoryVOList.get(i);
+//            Category category = categoryMap.get(categoryVO.getId());
+//            category.setOrder(i);
+//            category.setParentId(pId);
+//            saveCategories.add(category);
+//
+//            List<CategoryVO> childCategories = categoryVO.getChildCategories();
+//            if(childCategories.size()>0){
+//                updateOrder(categoryMap,saveCategories,childCategories,category.getId());
+//            }
+//
+//        }
+//    }
+
     @Override
-    public void updateOrder(List<CategoryVO> categoryVOList) {
-        List<Category> saveCategories = new ArrayList<>();
-        List<Category> categories = categoryRepository.findAll();
-        Map<Integer, Category> categoryMap = ServiceUtil.convertToMap(categories, Category::getId);
-
-        updateOrder(categoryMap,saveCategories,categoryVOList,0);
-        categoryRepository.saveAll(saveCategories);
-    }
-
-    private void updateOrder(Map<Integer, Category> categoryMap ,List<Category> saveCategories,List<CategoryVO> categoryVOList, Integer pId) {
-
-        for(int i=0;i<categoryVOList.size();i++){
-            CategoryVO categoryVO = categoryVOList.get(i);
-            Category category = categoryMap.get(categoryVO.getId());
-            category.setOrder(i);
-            category.setParentId(pId);
-            saveCategories.add(category);
-
-            List<CategoryVO> childCategories = categoryVO.getChildCategories();
-            if(childCategories.size()>0){
-                updateOrder(categoryMap,saveCategories,childCategories,category.getId());
-            }
-
-        }
+    public boolean supportType(CrudType type) {
+        return false;
     }
 }

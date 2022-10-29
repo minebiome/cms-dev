@@ -8,9 +8,9 @@ import javax.persistence.*;
 @Data
 public class Attachment extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     private String name;
     private String path;
     private String fileKey;

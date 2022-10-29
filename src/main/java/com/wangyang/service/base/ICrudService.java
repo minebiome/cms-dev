@@ -15,7 +15,7 @@ import java.util.List;
  * @author wangyang
  * @date 2021/6/27
  */
-public interface ICrudService<DOMAIN, ID> {
+public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     List<DOMAIN> listAll();
     DOMAIN add(@NonNull DOMAIN domain);
     DOMAIN save(@NonNull DOMAIN domain);
@@ -46,4 +46,11 @@ public interface ICrudService<DOMAIN, ID> {
     List<DOMAIN> initData(String filePath,Boolean isEmpty);
     boolean supportType(@Nullable CrudType type);
 
+    List<DOMAINVO> listWithTree(List<DOMAINVO> list);
+
+    void updateOrder(List<DOMAIN> domains, List<DOMAINVO> domainvos);
+
+    void updateOrder(List<DOMAINVO> domainvos);
+
+    //    @Override
 }

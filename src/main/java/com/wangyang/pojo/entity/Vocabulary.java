@@ -1,15 +1,16 @@
 package com.wangyang.pojo.entity;
 
 
+import com.wangyang.pojo.entity.base.BaseEntity;
 import lombok.Data;
 import javax.persistence.*;
 
 @Data
 @Entity(name = "t_vocabulary")
-public class Vocabulary {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Vocabulary extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     @Column(name = "word")
     private String word;
     @Column(name = "explains")

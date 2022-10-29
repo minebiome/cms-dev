@@ -3,6 +3,7 @@ package com.wangyang.service.authorize.impl;
 
 import com.wangyang.pojo.authorize.APIUser;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.authorize.ApiUserRepository;
 import com.wangyang.service.authorize.IAPIUserService;
 import com.wangyang.service.base.AbstractAuthorizeServiceImpl;

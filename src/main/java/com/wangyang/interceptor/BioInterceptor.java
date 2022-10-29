@@ -42,7 +42,8 @@ public class BioInterceptor implements HandlerInterceptor {
         String token = getToken(request, "Authorization");
 
         if(needRoleStr.contains("anonymous")){
-            User user = new User(-1);
+            User user = new User();
+            user.setId(-1);
             if(token!=null && tokenProvider.validateToken(token)){
                 user = tokenProvider.getAuthentication(token);
             }

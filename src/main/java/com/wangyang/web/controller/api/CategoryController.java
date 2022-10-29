@@ -54,22 +54,7 @@ public class CategoryController {
         return saveCategory;
     }
 
-    @PostMapping("/addPos")
-    public BaseResponse addPos(@RequestBody List<CategoryVO> categoryVOList){
-//        Category category = new Category();
-//        BeanUtils.copyProperties(categoryParam,category);
-//        Category saveCategory = categoryService.create(category);
-//        //生成category列表Html
-//        htmlService.generateCategoryListHtml();
-//        if(saveCategory.getHaveHtml()){
-//            //生成文章第一页的列表
-//            htmlService.convertArticleListBy(saveCategory);
-//        }
-        categoryService.updateOrder(categoryVOList);
-        //重新生成分类的列表
-        htmlService.generateCategoryListHtml();
-        return BaseResponse.ok("success");
-    }
+
 
 
 
@@ -196,10 +181,17 @@ public class CategoryController {
         return category;
     }
 
-    @GetMapping("/listCategoryVo")
+    @GetMapping("/listVoTree")
     public List<CategoryVO> listCategoryVo(){
         return categoryService.listAdminCategoryVo();
     }
+    @PostMapping("/updatePos")
+    public BaseResponse addPos(@RequestBody List<CategoryVO> categoryVOList){
 
+        categoryService.updateOrder(categoryVOList);
+        //重新生成分类的列表
+        htmlService.generateCategoryListHtml();
+        return BaseResponse.ok("success");
+    }
 
 }

@@ -17,6 +17,8 @@ import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.*;
 import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.authorize.IUserService;
@@ -39,6 +41,7 @@ import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -49,7 +52,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> implements IArticleService {
+public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Article,ArticleVO> implements IArticleService {
 
     enum ArticleList{
         INCLUDE_TOP,
@@ -575,7 +578,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
     public ArticleDetailVO convert(Article article) {
         ArticleDetailVO articleDetailVo = new ArticleDetailVO();
         BeanUtils.copyProperties(article,articleDetailVo);
-        
+
         //find tags
         List<Tags> tags = tagsRepository.findTagsByArticleId(article.getId());
         if(!CollectionUtils.isEmpty(tags)){
@@ -694,7 +697,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
 //    }
 
     @Override
-    public Page<ArticleVO> convertToListVo(Page<Article> articlePage) {
+    public Page<ArticleVO> convertToPageVo(Page<Article> articlePage) {
         List<Article> articles = articlePage.getContent();
         //Get article Ids
         Set<Integer> articleIds = ServiceUtil.fetchProperty(articles, Article::getId);
@@ -708,29 +711,33 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
         articleTags.forEach(
                 articleTag->{
                     tagsListMap.computeIfAbsent(articleTag.getArticleId(),
-                            tagsId->new LinkedList<>())
+                                    tagsId->new LinkedList<>())
                             .add(tagsMap.get(articleTag.getTagsId()));
                 }
 
         );
-        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
-        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
-            CategoryDto categoryDto = new CategoryDto();
-            BeanUtils.copyProperties(category, categoryDto);
-            return categoryDto;
-        }).collect(Collectors.toList());
-        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
+        Set<Integer> userIds = ServiceUtil.fetchProperty(articles, Article::getUserId);
+        List<User> users = userService.findAllById(userIds);
+
+        Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
+//        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
+//        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
+//            CategoryDto categoryDto = new CategoryDto();
+//            BeanUtils.copyProperties(category, categoryDto);
+//            return categoryDto;
+//        }).collect(Collectors.toList());
+//        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
 
 
         Page<ArticleVO> articleVOS = articlePage.map(article -> {
             ArticleVO articleVO = new ArticleVO();
             BeanUtils.copyProperties(article,articleVO);
-
-            if(categoryMap.containsKey(article.getCategoryId())){
-                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
-
-            }
-
+            articleVO.setUser(userMap.get(article.getUserId()));
+//            if(categoryMap.containsKey(article.getCategoryId())){
+//                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
+//
+//            }
+//            articleVO.setLinkPath(FormatUtil.articleListFormat(article));
             articleVO.setTags(Optional.ofNullable(tagsListMap.get(article.getId()))
                     .orElseGet(LinkedList::new)
                     .stream()
@@ -746,8 +753,63 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
         });
         return articleVOS;
     }
+    @Override
+    public List<ArticleVO> convertToListVo(List<Article> articles) {
+//        List<Article> articles = articlePage.getContent();
+        //Get article Ids
+        Set<Integer> articleIds = ServiceUtil.fetchProperty(articles, Article::getId);
+
+        List<ArticleTags> articleTags = articleTagsRepository.findAllByArticleIdIn(articleIds);
+
+        Set<Integer> tagIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getTagsId);
+        List<Tags> tags = tagsRepository.findAllById(tagIds);
+        Map<Integer, Tags> tagsMap = ServiceUtil.convertToMap(tags, Tags::getId);
+        Map<Integer,List<Tags>> tagsListMap = new HashMap<>();
+        articleTags.forEach(
+                articleTag->{
+                    tagsListMap.computeIfAbsent(articleTag.getArticleId(),
+                                    tagsId->new LinkedList<>())
+                            .add(tagsMap.get(articleTag.getTagsId()));
+                }
+
+        );
+        Set<Integer> userIds = ServiceUtil.fetchProperty(articles, Article::getUserId);
+        List<User> users = userService.findAllById(userIds);
+
+        Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
+//        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
+//        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
+//            CategoryDto categoryDto = new CategoryDto();
+//            BeanUtils.copyProperties(category, categoryDto);
+//            return categoryDto;
+//        }).collect(Collectors.toList());
+//        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
 
 
+        List<ArticleVO> articleVOS = articles.stream().map(article -> {
+            ArticleVO articleVO = new ArticleVO();
+            BeanUtils.copyProperties(article,articleVO);
+            articleVO.setUser(userMap.get(article.getUserId()));
+//            if(categoryMap.containsKey(article.getCategoryId())){
+//                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
+//
+//            }
+//            articleVO.setLinkPath(FormatUtil.articleListFormat(article));
+            articleVO.setTags(Optional.ofNullable(tagsListMap.get(article.getId()))
+                    .orElseGet(LinkedList::new)
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .map(tag->{
+                        TagsDto tagsDto = new TagsDto();
+                        BeanUtils.copyProperties(tag,tagsDto);
+                        return tagsDto;
+                    })
+                    .collect(Collectors.toList()));
+//            articleVO.setTags(tagsListMap.get(article.getId()));
+            return articleVO;
+        }).collect(Collectors.toList());
+        return articleVOS;
+    }
 //    @Override
 //    public Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable){
 //        Page<Article> articles = articleRepository.findAll(specification, pageable);
@@ -899,18 +961,48 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
     }
 
 
+//    @Override
+//    public CategoryArticleListDao findCategoryArticleBy(Category category) {
+//        CategoryArticleListDao articleListVo = new CategoryArticleListDao();
+//
+////        Page<Article> articles = articleRepository.findAll(articleSpecification(category, ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
+////        Page<ArticleVO> articleVOS = convertToListVo(articles);
+//        List<ArticleVO> articleVOS = listVoTree(category.getId());
+//        articleListVo.setList(articleVOS);
+//        articleListVo.setCategory(category);
+//        articleListVo.setViewName(category.getViewName());
+//        articleListVo.setPath(category.getPath());
+//        /**
+//         * 分页路径的格式生成
+//         */
+//        articleListVo.setLinkPath(FormatUtil.categoryList2Format(category));
+//        return articleListVo;
+//    }
+
     /**
      * 动态分页使用
      * @param category
      * @return
      */
     @Override
-    public CategoryArticleListDao findCategoryArticleBy(Category category, int page){
+    public CategoryArticleListDao findCategoryArticleBy(Category category, Template template,int page){
         CategoryArticleListDao articleListVo = new CategoryArticleListDao();
+        List<ArticleVO> contents;
+        if(!template.getTree()){
+            Page<Article> articles = articleRepository.findAll(articleSpecification(category, ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
+            Page<ArticleVO> articleVOS = convertToPageVo(articles);
+            int totalPages = articleVOS.getTotalPages();
+            int size = articleVOS.getSize();
+            long totalElements = articleVOS.getTotalElements();
+            articleListVo.setTotalPages(totalPages);
+            articleListVo.setSize(size);
+            articleListVo.setTotalElements(totalElements);
+            contents = articleVOS.getContent();
+        }else {
+            contents=listVoTree(category.getId());
+        }
 
-        Page<Article> articles = articleRepository.findAll(articleSpecification(category, ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
-        Page<ArticleDto> articleDtoPage = convertToSimple(articles);
-        articleListVo.setPage(articleDtoPage);
+        articleListVo.setContents(contents);
         articleListVo.setCategory(category);
         articleListVo.setViewName(category.getViewName());
         articleListVo.setPath(category.getPath());
@@ -1067,13 +1159,13 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
 
     @Override
     public List<ArticleDto> listByTitle(String title){
-       Specification<Article> specification = new Specification<Article>() {
-           @Override
-           public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-               String likeCondition = String.format("%%%s%%",title);
-               return criteriaQuery.where(criteriaBuilder.like(root.get("title"),likeCondition)).getRestriction();
-           }
-       };
+        Specification<Article> specification = new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                String likeCondition = String.format("%%%s%%",title);
+                return criteriaQuery.where(criteriaBuilder.like(root.get("title"),likeCondition)).getRestriction();
+            }
+        };
         return articleRepository.findAll(specification).stream().map(article -> {
             ArticleDto articleDto = new ArticleDto();
             BeanUtils.copyProperties(article, articleDto);
@@ -1178,6 +1270,61 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article> impl
             article.setTop(true);
         }
         return  article;
+    }
+
+
+    @Override
+    public List<ArticleVO> listVoTree(Integer categoryId) {
+        Category category = categoryService.findById(categoryId);
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setCategoryId(category.getId());
+        articleQuery.setDesc(category.getDesc());
+        Specification<Article> specification = buildPublishByQuery(articleQuery);
+        List<Article> articles = articleRepository.findAll(specification);
+//                .stream().map(article -> {
+//            ArticleVO articleVO = new ArticleVO();
+//            BeanUtils.copyProperties(article, articleVO);
+//            return articleVO;
+//        }).collect(Collectors.toList());
+        List<ArticleVO> articleVOS = convertToListVo(articles);
+        List<ArticleVO> articleVOTree = super.listWithTree(articleVOS);
+//        List<ArticleDto> listWithTree = listWithTree(articleDtos);
+        return articleVOTree;
+    }
+
+
+
+
+    //    public List<ArticleDto> listWithTree(List<ArticleDto> list) {
+//        // 1. 先查出所有数据
+////        List<ProjectLeader> list = projectLeaderService.list(Condition.getLikeQueryWrapper(projectLeader));
+//        List<ArticleDto> collect = list.stream()
+//                // 2. 找出所有顶级（规定 0 为顶级）
+//                .filter(o -> o.getParentId().equals(0))
+//                // 3.给当前父级的 childList 设置子
+//                .peek(o -> o.setChildren(getChildList(o, list)))
+//                .sorted(Comparator.comparing(ArticleDto::getOrder))
+//                // 4.收集
+//                .collect(Collectors.toList());
+//        return collect;
+//    }
+//
+//    // 根据当前父类 找出子类， 并通过递归找出子类的子类
+//    private List<ArticleDto> getChildList(ArticleDto articleDto, List<ArticleDto> list) {
+//        return list.stream()
+//                //筛选出父节点id == parentId 的所有对象 => list
+//                .filter(o -> o.getParentId().equals(articleDto.getId()))
+//                .peek(o -> o.setChildren(getChildList(o, list)))
+//                .sorted(Comparator.comparing(ArticleDto::getOrder))
+//                .collect(Collectors.toList());
+//    }
+
+
+    @Override
+    public void updateOrder(Integer id, List<ArticleVO> articleVOS) {
+        Category category = categoryService.findById(id);
+        List<Article> articles = listArticleBy(category.getId());
+        super.updateOrder(articles,articleVOS);
     }
 
     @Override

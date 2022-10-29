@@ -113,6 +113,8 @@ public class TemplateServiceImpl implements ITemplateService {
 
 
 
+
+
     @Override
     public Optional<Template> findOptionalById(int id){
         return templateRepository.findById(id);
@@ -237,9 +239,12 @@ public class TemplateServiceImpl implements ITemplateService {
     }
 
     @Override
-    public Optional<Template> findOptionalByEnName(String enName){
+    public Template findOptionalByEnName(String enName){
         Template template = templateRepository.findByEnName(enName);
-        return Optional.ofNullable(template);
+        if(template==null){
+            throw new ObjectException(enName+"不存在！！！");
+        }
+        return template;
     }
 
 
@@ -354,5 +359,17 @@ public class TemplateServiceImpl implements ITemplateService {
         ZipHelper.deleteFile(file);
         ZipHelper.deleteFile(new File(destDirPath));
         return template;
+    }
+
+    @Override
+    public Template tree(int id) {
+        Template template = findById(id);
+        if(template.getTree()){
+            template.setTree(false);
+        }else {
+            template.setTree(true);
+        }
+        Template save = templateRepository.save(template);
+        return save;
     }
 }

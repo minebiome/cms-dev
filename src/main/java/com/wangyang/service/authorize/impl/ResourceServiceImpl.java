@@ -6,6 +6,7 @@ import com.wangyang.pojo.authorize.Resource;
 import com.wangyang.pojo.authorize.ResourceVO;
 import com.wangyang.pojo.authorize.RoleResource;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.authorize.ResourceRepository;
 import com.wangyang.service.authorize.IResourceService;
 import com.wangyang.service.authorize.IRoleResourceService;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
  * @date 2021/5/5
  */
 @Service
-public class ResourceServiceImpl extends AbstractCrudService<Resource,Integer>
+public class ResourceServiceImpl extends AbstractCrudService<Resource,Resource, BaseVo,Integer>
         implements IResourceService {
 
     private final ResourceRepository resourceRepository;

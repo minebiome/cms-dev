@@ -5,13 +5,22 @@ import com.univocity.parsers.tsv.TsvWriter;
 import com.univocity.parsers.tsv.TsvWriterSettings;
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.UserException;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.QueryField;
+import com.wangyang.pojo.dto.ArticleDto;
+import com.wangyang.pojo.entity.Article;
+import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.params.ArticleQuery;
+import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.util.File2Tsv;
 import com.wangyang.util.ObjectToCollection;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,12 +42,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author wangyang
  * @date 2021/6/27
  */
-public abstract class AbstractCrudService<DOMAIN, ID extends Serializable> implements ICrudService<DOMAIN, ID> {
+public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO extends BaseEntity,DOMAINVO extends BaseVo, ID extends Serializable> implements ICrudService<DOMAIN,DOMAINDTO,DOMAINVO, ID> {
 
     @PersistenceContext
     private EntityManager em;
@@ -298,6 +308,74 @@ public abstract class AbstractCrudService<DOMAIN, ID extends Serializable> imple
     }
 
 
+
+////    @Override
+//    @Override
+//    public List<DOMAINVO> listVoTree(List<DOMAINVO> domainvos) {
+//        List<DOMAINVO> listWithTree = listWithTree(domainvos);
+//        return listWithTree;
+//    }
+
+    @Override
+    public List<DOMAINVO> listWithTree(List<DOMAINVO> list) {
+        // 1. 先查出所有数据
+//        List<ProjectLeader> list = projectLeaderService.list(Condition.getLikeQueryWrapper(projectLeader));
+        List<DOMAINVO> collect = list.stream()
+                // 2. 找出所有顶级（规定 0 为顶级）
+                .filter(o -> o.getParentId().equals(0))
+                // 3.给当前父级的 childList 设置子
+                .peek(o -> o.setChildren(getChildList(o, list)))
+                .sorted(Comparator.comparing(DOMAINVO::getOrder))
+                // 4.收集
+                .collect(Collectors.toList());
+        return collect;
+    }
+
+    // 根据当前父类 找出子类， 并通过递归找出子类的子类
+    private List<DOMAINVO> getChildList(DOMAINVO domainvo, List<DOMAINVO> list) {
+        return list.stream()
+                //筛选出父节点id == parentId 的所有对象 => list
+                .filter(o -> o.getParentId().equals(domainvo.getId()))
+                .peek(o -> o.setChildren(getChildList(o, list)))
+                .sorted(Comparator.comparing(DOMAINVO::getOrder))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public void updateOrder(List<DOMAIN> domains,List<DOMAINVO> domainvos) {
+        List<DOMAIN> saveDomains = new ArrayList<>();
+
+        Map<Integer, DOMAIN> domainMap = ServiceUtil.convertToMap(domains, DOMAIN::getId);
+
+        updateOrder(domainMap,saveDomains,domainvos,0);
+        repository.saveAll(domains);
+    }
+    @Override
+    public void updateOrder(List<DOMAINVO> domainvos) {
+        List<DOMAIN> saveDomains = new ArrayList<>();
+        List<DOMAIN> domains = repository.findAll();
+        Map<Integer, DOMAIN> domainMap = ServiceUtil.convertToMap(domains, DOMAIN::getId);
+
+        updateOrder(domainMap,saveDomains,domainvos,0);
+        repository.saveAll(domains);
+    }
+    //
+//
+    private void updateOrder(Map<Integer, DOMAIN> domainMap , List<DOMAIN> saveDomains, List<DOMAINVO> domainvos, Integer pId) {
+
+        for(int i=0;i<domainvos.size();i++){
+            DOMAINVO domainvo = domainvos.get(i);
+            DOMAIN domain = domainMap.get(domainvo.getId());
+            domain.setOrder(i);
+            domain.setParentId(pId);
+            saveDomains.add(domain);
+
+            List<DOMAINVO> childCategories = domainvo.getChildren();
+            if(childCategories.size()>0){
+                updateOrder(domainMap,saveDomains,childCategories,domain.getId());
+            }
+
+        }
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package com.wangyang.pojo.authorize;
 
+import com.wangyang.pojo.entity.base.BaseEntity;
 import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -16,10 +17,10 @@ import javax.persistence.*;
 @Data
 @Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Role extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     private String name;
     private String enName;
 

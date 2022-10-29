@@ -6,7 +6,18 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CategoryVO extends CategoryDto {
+public class CategoryVO extends BaseVo<CategoryVO> {
+
+//    private Integer id;
+//    private Integer parentId;
+//
+    private String name;
+
+    private String viewName;
+    private String path;
+    private String linkPath;
+    private Integer order;
+    private String resource;
     private Boolean haveHtml;
     private Boolean recommend;
     private Boolean existNav;
@@ -14,6 +25,6 @@ public class CategoryVO extends CategoryDto {
     private String templateName;
     private String articleTemplateName;
 
-    List<CategoryVO> childCategories;
+
 
 }

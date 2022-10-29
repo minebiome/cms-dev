@@ -12,10 +12,10 @@ import javax.persistence.Id;
 @Data
 @Entity(name = "t_sys_task")
 public class SysTask extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     private String jobName;
     private String description;
     private String cornExpression;

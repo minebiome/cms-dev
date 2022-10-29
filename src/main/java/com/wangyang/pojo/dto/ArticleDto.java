@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ArticleDto  implements Serializable {
@@ -16,6 +17,7 @@ public class ArticleDto  implements Serializable {
     private Date updateDate;
 //    private Integer templateId;
     private String templateName;
+    private Integer parentId;
     private ArticleStatus status;
     private Integer likes;
     private Integer visits;
@@ -41,5 +43,6 @@ public class ArticleDto  implements Serializable {
     // 路径格式
     private String linkPath ;
     private Boolean top;
+
 
 }

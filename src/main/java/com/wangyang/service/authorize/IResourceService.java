@@ -3,6 +3,7 @@ package com.wangyang.service.authorize;
 
 import com.wangyang.pojo.authorize.Resource;
 import com.wangyang.pojo.authorize.ResourceVO;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author wangyang
  * @date 2021/5/5
  */
-public interface IResourceService  extends ICrudService<Resource, Integer> {
+public interface IResourceService  extends ICrudService<Resource, Resource, BaseVo,Integer> {
     Resource findRoleById(int id);
     Resource delResource(int id);
     Page<Resource> pageResource(Pageable pageable);

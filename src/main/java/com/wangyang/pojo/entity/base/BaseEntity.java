@@ -1,13 +1,22 @@
 package com.wangyang.pojo.entity.base;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import lombok.Data;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass
+@Data
 public class BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Column(columnDefinition = "int default 0")
+    private Integer parentId=0;
+    @Column(name = "order_",columnDefinition = "int default 0")
+    private Integer order;
+
+
     @Column(name = "create_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate=new Date();
@@ -16,19 +25,4 @@ public class BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate=new Date();
 
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
 }

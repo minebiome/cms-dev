@@ -6,6 +6,7 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.RoleDto;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.authorize.RoleRepository;
 import com.wangyang.service.authorize.IRoleResourceService;
 import com.wangyang.service.authorize.IRoleService;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 //@Transactional
 @Slf4j
-public class RoleServiceImpl extends AbstractCrudService<Role,Integer>
+public class RoleServiceImpl extends AbstractCrudService<Role,Role, BaseVo,Integer>
             implements IRoleService {
 
 

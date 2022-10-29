@@ -29,7 +29,7 @@ public interface ITemplateService {
 
     Template findByEnName(String enName);
 
-    Optional<Template> findOptionalByEnName(String enName);
+    Template findOptionalByEnName(String enName);
 
     void deleteAll();
     List<Template> findByTemplateType(TemplateType type);
@@ -37,4 +37,6 @@ public interface ITemplateService {
     Template setStatus(int id);
 
     Template addZipFile(MultipartFile file);
+
+    Template tree(int id);
 }

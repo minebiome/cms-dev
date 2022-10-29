@@ -1,5 +1,6 @@
 package com.wangyang.pojo.authorize;
 
+import com.wangyang.pojo.entity.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
@@ -16,10 +17,10 @@ import javax.persistence.*;
 @Setter
 @Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
-public class Resource {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class Resource extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     private String name;
     private String url;
     private String method;

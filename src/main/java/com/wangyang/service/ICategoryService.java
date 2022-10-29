@@ -2,8 +2,10 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
-public interface ICategoryService{
+public interface ICategoryService  extends ICrudService<Category,Category,CategoryVO,Integer> {
     Category save(Category category);
 
     /**

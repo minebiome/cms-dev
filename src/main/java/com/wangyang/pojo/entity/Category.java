@@ -9,12 +9,12 @@ import javax.persistence.*;
 @Data
 public class Category extends BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
     private String name;
-    @Column(columnDefinition = "int default 0")
-    private Integer parentId;
+//    @Column(columnDefinition = "int default 0")
+//    private Integer parentId;
     private String description;
     @Column(columnDefinition = "int default 0")
     private Integer articleNumber;
@@ -28,8 +28,8 @@ public class Category extends BaseEntity implements Serializable {
 //    private Boolean status=true;
     private String picPath;
     private String path;
-    @Column(name = "category_order",columnDefinition = "int default 1")
-    private Integer order;
+//    @Column(name = "category_order",columnDefinition = "int default 1")
+//    private Integer order;
     @Column(columnDefinition = "bit(1) default false")
     private Boolean recommend=false;
     @Column(columnDefinition = "bit(1) default false")

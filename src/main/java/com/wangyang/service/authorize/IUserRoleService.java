@@ -2,11 +2,12 @@ package com.wangyang.service.authorize;
 
 
 import com.wangyang.pojo.authorize.UserRole;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 
 import java.util.List;
 
-public interface IUserRoleService  extends ICrudService<UserRole, Integer> {
+public interface IUserRoleService  extends ICrudService<UserRole, UserRole, BaseVo,Integer> {
 
     UserRole findBy(Integer userId, Integer roleId);
 

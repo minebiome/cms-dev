@@ -2,6 +2,8 @@ package com.wangyang.web.controller.api;
 
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.*;
+import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IHtmlService;
@@ -316,6 +318,7 @@ public class ArticleController {
                 if(article.getTop()==null){
                     article.setTop(false);
                 }
+
                 Category category = categoryService.findById(article.getCategoryId());
                 article.setPath(CMSUtils.getArticlePath());
                 article.setTemplateName(category.getArticleTemplateName());
@@ -339,16 +342,19 @@ public class ArticleController {
         return articleDetailVO;
     }
 
+    @PostMapping("/updatePos/{id}")
+    public BaseResponse addPos(@PathVariable("id") Integer id,@RequestBody List<ArticleVO> articleVOS){
+        articleService.updateOrder(id,articleVOS);
+        //重新生成分类的列表
+//        htmlService.generateCategoryListHtml();
+        return BaseResponse.ok("success");
+    }
 
 
-
-    @GetMapping("/pageDtoBy/{categoryId}")
-    public Page<ArticleDto> pageDtoBy(@PathVariable("categoryId") Integer categoryId,@RequestParam(value = "page", defaultValue = "1") Integer page){
-        if(page<=0) page=1;
-        page = page-1;
-        Page<ArticleDto> articleDtoPage = articleService.pageDtoByCategoryId(categoryId, page);
-
-        return articleDtoPage;
+    @GetMapping("/listVoTree/{categoryId}")
+    public List<ArticleVO> listDtoTree(@PathVariable("categoryId") Integer categoryId){
+        List<ArticleVO> listDtoTree = articleService.listVoTree(categoryId);
+        return listDtoTree;
     }
 
     @GetMapping("/updateOrderBy/{articleId}")
@@ -527,14 +533,15 @@ public class ArticleController {
     }
 
     @GetMapping
-    public Page<? extends ArticleDto> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
+    public Page<? extends ArticleVO> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
                                                   @RequestParam(value = "more", defaultValue = "true") Boolean more,
                                                   ArticleQuery articleQuery){
         Page<Article> articles = articleService.pageAllBy(pageable,articleQuery);
-        if(more){
-            return articleService.convertToListVo(articles);
-        }
-        return articleService.convertToSimple(articles);
+//        if(more){
+//
+//        }
+        return articleService.convertToPageVo(articles);
+//        return articleService.convertToSimple(articles);
     }
 
     @GetMapping("/findArticleDetail/{id}")

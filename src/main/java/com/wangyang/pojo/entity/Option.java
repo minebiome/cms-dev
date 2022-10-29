@@ -1,14 +1,17 @@
 package com.wangyang.pojo.entity;
 
 import com.wangyang.pojo.entity.base.BaseEntity;
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "options")
+@Data
 public class Option extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
     /**
      * option key
      */
@@ -34,43 +37,4 @@ public class Option extends BaseEntity {
     }
 
 
-    public Integer getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

@@ -100,7 +100,7 @@ public class WebController {
         Page<Article> articlePage = articleService.pagePublishBy(pageable, articleQuery);
         Page<ArticleDto> articleDtoPage = articleService.convertToSimple(articlePage);
         model.addAttribute("view",articleDtoPage);
-        Template template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE).get();
+        Template template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
         return template.getTemplateValue();
     }
 

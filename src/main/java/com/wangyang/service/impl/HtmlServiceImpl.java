@@ -12,6 +12,7 @@ import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.vo.ArticleDetailVO;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CommentVo;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.repository.ArticleRepository;
@@ -140,18 +141,23 @@ public class HtmlServiceImpl implements IHtmlService {
 //        if(!TemplateUtil.componentsExist(category.getTemplateName())){
 //                generateCategoryListHtml();
 //        }
+        Template template = templateService.findOptionalByEnName(category.getTemplateName());
+        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category,template, 0);
+//        if(template.getTree()){
+////            categoryArticle = articleService.findCategoryArticleBy(category);
+//        }else {
+//
+//        }
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
-        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, 0);
 
-        Optional<Template> template = templateService.findOptionalByEnName(category.getTemplateName());
-        if(template.isPresent()){
-            String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template.get());
-            //生成文章列表组件,用于首页嵌入
-            String content = DocumentUtil.getDivContent(html, "#components");
-            if(StringUtils.isNotEmpty(content)){
-                TemplateUtil.saveFile(CMSUtils.getComponentsPath(),category.getViewName(),content);
-            }
+
+        String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template);
+        //生成文章列表组件,用于首页嵌入
+        String content = DocumentUtil.getDivContent(html, "#components");
+        if(StringUtils.isNotEmpty(content)){
+            TemplateUtil.saveFile(CMSUtils.getComponentsPath(),category.getViewName(),content);
         }
+
         return categoryArticle;
     }
 
@@ -166,19 +172,19 @@ public class HtmlServiceImpl implements IHtmlService {
         if(page<=0){
             return "Page is not exist!!";
         }
-        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category, page-1);
-        Page<ArticleDto> articlePage = categoryArticle.getPage();
-        if(page>articlePage.getTotalPages()){
+        Template template = templateService.findOptionalByEnName(category.getTemplateName());
+
+        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category,template, page-1);
+//        Page<ArticleVO> articlePage = categoryArticle.getContents();
+        if(page>categoryArticle.getTotalPages()){
             return "Page is not exist!!";
         }
         log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
-        Optional<Template> template = templateService.findOptionalByEnName(category.getTemplateName());
-        if(template.isPresent()){
-            String path = category.getPath()+"/"+category.getViewName()+"/"+String.valueOf(page);
+        String path = category.getPath()+"/"+category.getViewName()+"/"+String.valueOf(page);
 //            String viewName = String.valueOf(page);
-            return TemplateUtil.convertHtmlAndSave(path,"page",categoryArticle,template.get());
-        }
-        return null;
+        return TemplateUtil.convertHtmlAndSave(path,"page",categoryArticle,template);
+
+
     }
 
     public String renderMindJs(int categoryId){
@@ -202,28 +208,28 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public String convertArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage, String viewName) {
 //        log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
-        Optional<Template> template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
-        if(template.isPresent()){
-            Map<String,Object> map = new HashMap<>();
-            map.put("view",articleDtoPage);
-            map.put("request",request);
-            String path = "articleList/queryTemp";
-            return TemplateUtil.convertHtmlAndSave(path,viewName,map,template.get());
-        }
-        return null;
+        Template template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",articleDtoPage);
+        map.put("request",request);
+        String path = "articleList/queryTemp";
+        return TemplateUtil.convertHtmlAndSave(path,viewName,map,template);
+
+
     }
 
     @Override
     public String previewArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage) {
 //        log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
-        Optional<Template> template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
-        if(template.isPresent()){
-            Map<String,Object> map = new HashMap<>();
-            map.put("view",articleDtoPage);
-            map.put("request",request);
-            return TemplateUtil.convertHtmlAndPreview(map,template.get());
-        }
-        return null;
+        Template template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",articleDtoPage);
+        map.put("request",request);
+        return TemplateUtil.convertHtmlAndPreview(map,template);
+
+
     }
 
 

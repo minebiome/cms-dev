@@ -1,7 +1,9 @@
 package com.wangyang.service.base;
 
 import com.wangyang.common.utils.MarkdownUtils;
+import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.entity.base.Content;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.ArticleRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.repository.base.ContentRepository;
@@ -10,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 //@Component
-public abstract class AbstractContentServiceImpl<ARTICLE extends Content>  extends AbstractCrudService<ARTICLE,Integer>
-        implements IContentService<ARTICLE> {
+public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLEDTO extends BaseEntity,ARTICLEVO extends BaseVo>  extends AbstractCrudService<ARTICLE,ARTICLEDTO,ARTICLEVO,Integer>
+        implements IContentService<ARTICLE,ARTICLEDTO,ARTICLEVO> {
 
 //    @Autowired
 //    IOptionService optionService;

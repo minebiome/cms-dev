@@ -5,6 +5,7 @@ import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.support.TemplateOption;
 import com.wangyang.pojo.vo.ArticleDetailVO;
@@ -18,7 +19,7 @@ import java.util.Set;
 
 
 @TemplateOption
-public interface IArticleService extends IContentService<Article> {
+public interface IArticleService extends IContentService<Article,Article,ArticleVO> {
 
     /**
      * 为文章添加类别和标签
@@ -157,7 +158,7 @@ public interface IArticleService extends IContentService<Article> {
 
     Page<ArticleDto> convertToSimple(Page<Article> articlePage);
 //    Page<ArticleVO> convertToAddCategory(Page<Article> articlePage);
-    Page<ArticleVO> convertToListVo(Page<Article> articlePage);
+    Page<ArticleVO> convertToPageVo(Page<Article> articlePage);
 //    Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable);
 //    Page<ArticleDto> pageDtoBy(Category category, int page);
 
@@ -166,9 +167,7 @@ public interface IArticleService extends IContentService<Article> {
     Page<ArticleDto> pageByTagId(int tagId, Pageable pageable);
 
 
-
-
-
+    List<ArticleVO> convertToListVo(List<Article> articles);
 
     /**
      * Increase article like
@@ -179,6 +178,9 @@ public interface IArticleService extends IContentService<Article> {
     int increaseVisits(int id);
     Integer getVisitsNumber(int id);
     void generateSummary(Article article);
+
+    List<ArticleVO> listVoTree(Integer categoryId);
+
     Integer getCommentNum(int id);
     /**
      * 动态分页使用
@@ -186,10 +188,16 @@ public interface IArticleService extends IContentService<Article> {
      * @param page
      * @return
      */
-    CategoryArticleListDao findCategoryArticleBy(Category category, int page);
+//    CategoryArticleListDao findCategoryArticleBy(Category category);
+    CategoryArticleListDao findCategoryArticleBy(Category category, Template template ,int page);
     void updateCommentNum(int id, int num);
     ArticleAndCategoryMindDto listArticleMindDto(int categoryId);
     String jsMindFormat(ArticleAndCategoryMindDto articleAndCategoryMindDto);
 
+    void updateOrder(Integer id, List<ArticleVO> articleVOS);
 
+
+//    List<ArticleDto> listDtoTree(Integer categoryId);
+
+//    void updateOrder(List<ArticleDto> articleDtos);
 }

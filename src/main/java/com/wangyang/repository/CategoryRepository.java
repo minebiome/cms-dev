@@ -1,13 +1,14 @@
 package com.wangyang.repository;
 
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.repository.base.BaseRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface CategoryRepository extends JpaRepository<Category,Integer>
+public interface CategoryRepository extends BaseRepository<Category,Integer>
         , JpaSpecificationExecutor<Category> {
 
     /**

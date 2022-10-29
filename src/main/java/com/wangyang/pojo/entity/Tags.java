@@ -12,9 +12,9 @@ import java.io.Serializable;
 @Entity
 @Data
 public class Tags extends BaseEntity  implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
     private String name;
     private String description;
     private String slugName;

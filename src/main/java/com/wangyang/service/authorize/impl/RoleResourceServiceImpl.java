@@ -3,6 +3,7 @@ package com.wangyang.service.authorize.impl;
 
 import com.wangyang.pojo.authorize.RoleResource;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.authorize.ResourceRepository;
 import com.wangyang.repository.authorize.RoleRepository;
 import com.wangyang.repository.authorize.RoleResourceRepository;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class RoleResourceServiceImpl extends AbstractCrudService<RoleResource,Integer>
+public class RoleResourceServiceImpl extends AbstractCrudService<RoleResource,RoleResource, BaseVo,Integer>
         implements IRoleResourceService {
 
 

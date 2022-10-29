@@ -8,9 +8,9 @@ import javax.persistence.*;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER, columnDefinition = "int default 0")
 @Data
 public class BaseTemplate extends  BaseEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     private String name;
     private String enName;
     private String description;
@@ -21,12 +21,14 @@ public class BaseTemplate extends  BaseEntity{
     @Column(columnDefinition = "longtext ")
     private String templateContent;
 
-    @Column(name = "template_order",columnDefinition = "int default 0")
-    private Integer order;
+//    @Column(name = "template_order",columnDefinition = "int default 0")
+//    private Integer order;
 
     private Boolean isSystem;
     @Column(columnDefinition = "longtext ")
     private String resource;
     @Column(columnDefinition = "longtext ")
     private String base;
+    @Column(columnDefinition = "bit(1) default false")
+    private Boolean tree=false;
   }

@@ -45,6 +45,7 @@ public class CmsFileReplaceTagProcessor extends AbstractAttributeTagProcessor {
                 Matcher matcher = rv.matcher(attributeValue);
                 while (matcher.find()){
                     String attr = matcher.group(1);
+                    attr = attr.replace(":: #fragment","");
                     final IStandardExpression expression = parser.parseExpression(context, attr);
                     Object execute = expression.execute(context);
                     String path ;

@@ -9,9 +9,7 @@ import javax.persistence.*;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER, columnDefinition = "int default 0")
 @Data
 public class Content extends BaseEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+
 
     @Column(name = "status", columnDefinition = "int default 1")
     private ArticleStatus status =ArticleStatus.PUBLISHED;

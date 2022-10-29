@@ -1,6 +1,7 @@
 package com.wangyang.pojo.dto;
 
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.vo.ArticleVO;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -13,7 +14,8 @@ import java.util.List;
 public class CategoryArticleListDao {
 
     private String viewName;
-    private Page<ArticleDto> page;
+//    private Page<ArticleVO> page;
+    private List<ArticleVO> contents;
     private Category category;
     private List<Category> children;
     private Category parent;
@@ -32,4 +34,9 @@ public class CategoryArticleListDao {
      * </li>
      */
     private String linkPath;
+
+
+    int totalPages ;
+    int size ;
+    long totalElements ;
 }

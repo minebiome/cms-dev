@@ -4,6 +4,7 @@ import com.wangyang.common.exception.UserException;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserRole;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.authorize.UserRepository;
 import com.wangyang.repository.authorize.UserRoleRepository;
 import com.wangyang.service.authorize.IUserRoleService;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class UserRoleServiceImpl extends AbstractCrudService<UserRole,Integer>
+public class UserRoleServiceImpl extends AbstractCrudService<UserRole,UserRole, BaseVo,Integer>
         implements IUserRoleService {
 
 

@@ -1,6 +1,7 @@
 package com.wangyang.service;
 
 import com.wangyang.pojo.entity.Sheet;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.service.base.IContentService;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface ISheetService extends IContentService<Sheet> {
+public interface ISheetService extends IContentService<Sheet,Sheet, BaseVo> {
 
     List<Sheet> listAll();
     Sheet save(Sheet sheet);

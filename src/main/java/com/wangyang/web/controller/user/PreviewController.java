@@ -125,10 +125,11 @@ public class PreviewController {
 //    @ResponseBody
     public String previewCategory(@PathVariable("id") Integer id,Model model){
         Category category = categoryService.findById(id);
-        //预览
-        CategoryArticleListDao articleListVo = articleService.findCategoryArticleBy(category,0);
-
         Template template = templateService.findByEnName(category.getTemplateName());
+
+        //预览
+        CategoryArticleListDao articleListVo = articleService.findCategoryArticleBy(category,template,0);
+
 //        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
 //        String convertHtml = FileUtils.convertByString(html);
         model.addAttribute("view", articleListVo);
