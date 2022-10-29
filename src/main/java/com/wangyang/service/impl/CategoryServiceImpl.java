@@ -367,6 +367,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 .filter(o -> o.getParentId().equals(0))
                 // 3.给当前父级的 childList 设置子
                 .peek(o -> o.setChildCategories(getChildList(o, list)))
+                .sorted(Comparator.comparing(CategoryVO::getOrder))
                 // 4.收集
                 .collect(Collectors.toList());
         return collect;
