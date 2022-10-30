@@ -29,9 +29,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Arrays;
-import java.util.List;
 
-import static sun.plugin.javascript.navig.JSType.Element;
 
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
