@@ -83,6 +83,8 @@ public class MarkdownUtils {
             getTocList(elements,jsonArray);
             String tocJSON = jsonArray.toJSONString();
             article.setTocJSON(tocJSON);
+        }else {
+            article.setTocJSON(null);
         }
 
         return article;
