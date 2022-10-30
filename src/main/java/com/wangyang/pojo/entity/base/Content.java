@@ -22,6 +22,8 @@ public class Content extends BaseEntity{
     private String formatContent;
     @Column(name = "toc_content", columnDefinition = "longtext")
     private String toc;
+    @Column(name = "toc_json", columnDefinition = "longtext")
+    private String tocJSON;
     private String templateName;
     private String commentTemplateName;
     //是否开启评论

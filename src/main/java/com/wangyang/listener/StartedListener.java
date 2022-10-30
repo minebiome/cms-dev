@@ -125,6 +125,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         List<Option> options = new ArrayList<>();
         List<Template> templates = Arrays.asList(
                 new Template("默认的文章模板",CmsConst.DEFAULT_ARTICLE_TEMPLATE,"templates/@article", TemplateType.ARTICLE,1),
+                new Template("Tree的文章模板",CmsConst.DEFAULT_TREE_ARTICLE_TEMPLATE,"templates/@articleTree", TemplateType.ARTICLE,1),
                 new Template("默认的文章栏目模板",CmsConst.DEFAULT_ARTICLE_CHANNEL_TEMPLATE, "templates/@articleChannel", TemplateType.ARTICLE,2),
                 new Template("默认的图片文章模板",CmsConst.DEFAULT_ARTICLE_PICTURE_TEMPLATE, "templates/@articlePicture", TemplateType.ARTICLE,3),
                 new Template("默认的pdf导出文章预览模板",CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE, "templates/@articlePDF", TemplateType.ARTICLE,3),

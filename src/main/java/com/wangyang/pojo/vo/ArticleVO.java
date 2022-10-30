@@ -37,7 +37,7 @@ public class ArticleVO extends BaseVo<ArticleVO> {
     private String toc;
     private User user;
     private Integer categoryId;
-
+    private String tocJSON;
     private String commentTemplateName;
     //是否开启评论
     private Boolean openComment;

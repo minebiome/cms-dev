@@ -1,5 +1,8 @@
 package com.wangyang.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.CMSUtils;
@@ -149,9 +152,10 @@ public class HtmlServiceImpl implements IHtmlService {
 //
 //        }
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
-
-
+        String json = JSON.toJSON(categoryArticle).toString();
+        TemplateUtil.saveFile(CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
         String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template);
+
         //生成文章列表组件,用于首页嵌入
         String content = DocumentUtil.getDivContent(html, "#components");
         if(StringUtils.isNotEmpty(content)){

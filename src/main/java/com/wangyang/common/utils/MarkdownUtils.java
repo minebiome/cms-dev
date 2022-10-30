@@ -4,6 +4,8 @@ package com.wangyang.common.utils;
 //import com.vladsch.flexmark.ext.tables.TablesExtension;
 //import com.vladsch.flexmark.ext.toc.TocExtension;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiImageType;
@@ -21,8 +23,15 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 import com.wangyang.common.flexmark.gitlab.GitLabExtension;
 import com.wangyang.pojo.entity.base.Content;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.Arrays;
+import java.util.List;
+
+import static sun.plugin.javascript.navig.JSType.Element;
 
 //import com.wangyang.cms.gitlab.GitLabExtension;
 //import com.wangyang.cms.media.tags.MediaTagsExtension;
@@ -46,8 +55,8 @@ public class MarkdownUtils {
             )) .set(GitLabExtension.IMAGE_SRC_TAG,"data-original")
             .set(HtmlRenderer.SOFT_BREAK, "<br/>")
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
-            .set(TocExtension.LEVELS, 255)
-            .set(TocExtension.LIST_CLASS,"toc")
+            .set(TocExtension.LEVELS, -1)
+            .set(TocExtension.LIST_CLASS,"thisToc")
             .set(TocExtension.IS_NUMBERED,false)
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
@@ -68,7 +77,40 @@ public class MarkdownUtils {
         String[] split = render.split("<p>@@@</p>");
         article.setFormatContent(split[1]);
         article.setToc(split[0]);
+        Document doc = Jsoup.parse(split[0]);
+        Element searchInfo= doc.getElementsByClass("thisToc").first();
+        if(searchInfo!=null){
+            Elements elements = searchInfo.select(" > li");
+            JSONArray jsonArray = new JSONArray();
+            getTocList(elements,jsonArray);
+            String tocJSON = jsonArray.toJSONString();
+            article.setTocJSON(tocJSON);
+        }
+
         return article;
+    }
+
+    private static void getTocList( Elements elements, JSONArray jsonArray){
+        for (Element element : elements) {
+            Elements a = element.getElementsByTag("a");
+            String href = a.attr("href");
+            String html = a.html();
+            JSONArray newArray = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("title",html);
+            jsonObject.put("linkPath",href);
+            jsonObject.put("children",newArray);
+            jsonArray.add(jsonObject);
+//            jsonArray.add(JSONObject.parse("{title:" + html + ",children:[]}"));
+            Elements ul = element.getElementsByTag("ul");
+
+            if(ul.size()>0){
+                Elements lis = ul.get(0).select(" > li");
+                getTocList(lis,newArray);
+            }
+
+        }
+
     }
 
     /**
@@ -87,8 +129,10 @@ public class MarkdownUtils {
             )).set(GitLabExtension.IMAGE_SRC_TAG,"src")
             .set(HtmlRenderer.SOFT_BREAK, "<br/>")
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
-            .set(TocExtension.LEVELS, 255)
-            .set(TocExtension.LIST_CLASS,"toc")
+            .set(TocExtension.LEVELS, -1)
+            .set(TocExtension.LIST_CLASS,"thisToc")
+//            .set(TocExtension.C,"thisToc")
+
             .set(TocExtension.IS_NUMBERED,false)
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
             .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
@@ -115,6 +159,9 @@ public class MarkdownUtils {
         }
         String txtcontent = content.replaceAll("</?[^>]+>", ""); //剔出<html>的标签  
         txtcontent = txtcontent.replaceAll("<a>\\s*|\t|\r|\n|</a>", "");//去除字符串中的空格,回车,换行符,制表符
+
+
+
         return txtcontent;
     }
 

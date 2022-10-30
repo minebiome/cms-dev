@@ -28,6 +28,9 @@ public class CMSUtils {
     public static String getComponentsPath(){
         return CmsConst.COMPONENTS_PATH;
     }
+    public static String getArticleListJs(){
+        return CmsConst.ARTICLE_LIST_JS_PATH;
+    }
 
     public static String getSheetPath(){
         return CmsConst.SHEET_PATH;

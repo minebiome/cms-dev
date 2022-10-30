@@ -29,6 +29,7 @@ public class CmsConst {
     public final static String UPLOAD_SUB_DIR = "upload/";
     public final static String INIT_STATUS = "INIT_STATUS";
     public final static String COMPONENTS_PATH = "html"+ File.separator+"components";
+    public final static String ARTICLE_LIST_JS_PATH = "html"+ File.separator+"articleListJs";
     public final static String CATEGORY_MENU = "categoryMenu";
 
     public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";
@@ -42,6 +43,7 @@ public class CmsConst {
 
 
     public final static String DEFAULT_ARTICLE_TEMPLATE = "DEFAULT_ARTICLE";
+    public final static String DEFAULT_TREE_ARTICLE_TEMPLATE = "DEFAULT_TREE_ARTICLE_TEMPLATE";
     public final static String DEFAULT_ARTICLE_CHANNEL_TEMPLATE = "DEFAULT_ARTICLE_CHANNEL";
     public final static String DEFAULT_ARTICLE_PICTURE_TEMPLATE = "DEFAULT_ARTICLE_PICTURE";
 

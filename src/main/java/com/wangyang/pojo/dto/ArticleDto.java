@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class ArticleDto  implements Serializable {
 
-
+    private String tocJSON;
     private Integer id;
     private Date createDate;
     private Date updateDate;

@@ -188,8 +188,7 @@ public class TemplateUtil {
 
     /**
      *
-     * @param needInclude 是否需要引入header
-     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler) 
+     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
      * @return
      */
     public static ITemplateEngine getWebEngine() {
@@ -206,8 +205,10 @@ public class TemplateUtil {
         TemplateEngine templateEngine = HtmlTemplateEngine.getFileInstance(workDir, ".html");
         return templateEngine;
     }
-
     public static String saveFile(String path,String viewName,String html) {
+        return saveFile(path,viewName,html,"html");
+    }
+    public static String saveFile(String path,String viewName,String html,String suffix) {
         // 路径 + 视图名称
         path = workDir+File.separator+path;
         if(viewName==null||"".equals(viewName)){
@@ -222,7 +223,7 @@ public class TemplateUtil {
             }
         }
 
-        try(FileWriter write = new FileWriter(path+"/"+viewName+".html")) {
+        try(FileWriter write = new FileWriter(path+"/"+viewName+"."+suffix)) {
             write.write(html);
             log.info("### Write file["+path+"/"+viewName+".html] success!!");
         } catch (IOException e) {
