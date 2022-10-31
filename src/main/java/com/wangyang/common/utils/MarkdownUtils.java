@@ -92,15 +92,20 @@ public class MarkdownUtils {
 
     private static void getTocList( Elements elements, JSONArray jsonArray){
         for (Element element : elements) {
-            Element a = element.getElementsByTag("a").get(0);
-            String href = a.attr("href");
-            String html = a.html();
+            Elements as = element.getElementsByTag("a");
             JSONArray newArray = new JSONArray();
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("title",html);
-            jsonObject.put("linkPath",href);
-            jsonObject.put("children",newArray);
-            jsonArray.add(jsonObject);
+
+            if(as.size()>0){
+                Element a = as.get(0);
+                String href = a.attr("href");
+                String html = a.html();
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("title",html);
+                jsonObject.put("linkPath",href);
+                jsonObject.put("children",newArray);
+                jsonArray.add(jsonObject);
+            }
+
 //            jsonArray.add(JSONObject.parse("{title:" + html + ",children:[]}"));
             Elements ul = element.getElementsByTag("ul");
 
