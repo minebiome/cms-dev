@@ -22,6 +22,9 @@ import java.util.List;
 
 @Slf4j
 @Configuration
+//@EnableWebMvc
+//https://blog.csdn.net/Yinbin_/article/details/102647745
+//https://blog.csdn.net/hou_ge/article/details/119931067
 public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport  {
     @Value("${cms.workDir}")
     private String workDir;

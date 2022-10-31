@@ -32,5 +32,7 @@ public interface IUserService  extends IAuthorizeService<User> {
     User findUserByUsername(String username);
 
     UserDto findUserDaoById(int userId);
+
+    User addUser(UserParam inputUser, MultipartFile file);
     // ---------------------------------------
 }

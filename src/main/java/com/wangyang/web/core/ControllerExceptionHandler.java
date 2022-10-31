@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -84,6 +85,17 @@ public class ControllerExceptionHandler {
         baseResponse.setMessage(e.getMessage());
         return baseResponse;
     }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public BaseResponse noHandleFoundException(NoHandlerFoundException e) {
+        BaseResponse baseResponse = handleBaseException(e);
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        baseResponse.setStatus(status.value());
+        baseResponse.setMessage(e.getMessage());
+        return baseResponse;
+    }
+
+
     private <T> BaseResponse<T> handleBaseException(Throwable t) {
         Assert.notNull(t, "Throwable must not be null");
 

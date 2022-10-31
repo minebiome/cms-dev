@@ -4,7 +4,10 @@ cms:
   isDebug: false
   authorizeInit: true
 spring:
-#  mvc:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
 #    static-path-pattern: /**
 #  resources:
 #    static-locations: file:${cms.workDir}/html/, file:${cms.workDir}/, classpath:/static/

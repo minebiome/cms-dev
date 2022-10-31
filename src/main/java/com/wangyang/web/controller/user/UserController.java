@@ -74,8 +74,9 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody @Validated UserParam inputUser){
-        return userService.addUser(inputUser);
+    public User addUser(@Validated UserParam inputUser,
+                        @RequestPart(value = "file",required = false) MultipartFile file){
+        return userService.addUser(inputUser,file);
     }
 
 //    @PostMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

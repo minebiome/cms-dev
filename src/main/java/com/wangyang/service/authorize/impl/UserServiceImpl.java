@@ -197,6 +197,17 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     }
 
     @Override
+    public User addUser(UserParam inputUser, MultipartFile file) {
+        User user =new User();
+        BeanUtils.copyProperties(inputUser,user);
+        if(file!=null){
+            Attachment attachment = attachmentService.upload(file, user.getUsername(), FileWriteType.COVER,attachmentService.getAttachmentType());
+            user.setAvatar(attachment.getPath());
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
     public boolean supportType(CrudType type) {
         return false;
     }
