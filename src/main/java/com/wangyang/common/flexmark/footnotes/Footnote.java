@@ -1,7 +1,7 @@
-package com.vladsch.flexmark.ext.footnotes;
+package com.wangyang.common.flexmark.footnotes;
 
 import com.vladsch.flexmark.ast.LinkRendered;
-import com.vladsch.flexmark.ext.footnotes.internal.FootnoteRepository;
+import com.wangyang.common.flexmark.footnotes.internal.FootnoteRepository;
 import com.vladsch.flexmark.util.ast.*;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
 import org.jetbrains.annotations.NotNull;

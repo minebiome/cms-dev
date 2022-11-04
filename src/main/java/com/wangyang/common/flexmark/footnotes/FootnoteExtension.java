@@ -1,6 +1,6 @@
-package com.vladsch.flexmark.ext.footnotes;
+package com.wangyang.common.flexmark.footnotes;
 
-import com.vladsch.flexmark.ext.footnotes.internal.*;
+import com.wangyang.common.flexmark.footnotes.internal.*;
 import com.vladsch.flexmark.formatter.Formatter;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;

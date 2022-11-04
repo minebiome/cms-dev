@@ -1,4 +1,4 @@
-package com.vladsch.flexmark.ext.footnotes;
+package com.wangyang.common.flexmark.footnotes;
 
 import com.vladsch.flexmark.util.ast.VisitHandler;
 

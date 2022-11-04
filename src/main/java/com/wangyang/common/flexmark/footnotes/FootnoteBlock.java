@@ -1,8 +1,8 @@
-package com.vladsch.flexmark.ext.footnotes;
+package com.wangyang.common.flexmark.footnotes;
 
 import com.vladsch.flexmark.ast.Paragraph;
 import com.vladsch.flexmark.ast.ParagraphItemContainer;
-import com.vladsch.flexmark.ext.footnotes.internal.FootnoteRepository;
+import com.wangyang.common.flexmark.footnotes.internal.FootnoteRepository;
 import com.vladsch.flexmark.parser.ListOptions;
 import com.vladsch.flexmark.util.ast.Block;
 import com.vladsch.flexmark.util.ast.Node;

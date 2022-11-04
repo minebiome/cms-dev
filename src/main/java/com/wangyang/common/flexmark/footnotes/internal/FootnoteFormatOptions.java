@@ -1,6 +1,6 @@
-package com.vladsch.flexmark.ext.footnotes.internal;
+package com.wangyang.common.flexmark.footnotes.internal;
 
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
+import com.wangyang.common.flexmark.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.format.options.ElementPlacement;
 import com.vladsch.flexmark.util.format.options.ElementPlacementSort;

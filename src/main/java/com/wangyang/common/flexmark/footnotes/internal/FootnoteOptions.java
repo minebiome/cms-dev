@@ -1,6 +1,5 @@
-package com.vladsch.flexmark.ext.footnotes.internal;
-
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
+package com.wangyang.common.flexmark.footnotes.internal;
+import com.wangyang.common.flexmark.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.DataHolder;
 

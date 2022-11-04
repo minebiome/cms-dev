@@ -1,7 +1,7 @@
-package com.vladsch.flexmark.ext.footnotes.internal;
+package com.wangyang.common.flexmark.footnotes.internal;
 
-import com.vladsch.flexmark.ext.footnotes.FootnoteBlock;
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
+import com.wangyang.common.flexmark.footnotes.FootnoteBlock;
+import com.wangyang.common.flexmark.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.parser.block.*;
 import com.vladsch.flexmark.util.ast.Block;
 import com.vladsch.flexmark.util.ast.BlockContent;
