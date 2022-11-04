@@ -133,6 +133,11 @@
             <artifactId>flexmark-ext-admonition</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-xwiki-macros</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
         <!--        <dependency>-->
         <!--            <groupId>com.vladsch.flexmark</groupId>-->
         <!--            <artifactId>flexmark-ext-media-tags</artifactId>-->
@@ -147,11 +152,11 @@
             <artifactId>flexmark-ext-emoji</artifactId>
             <version>${flexmark.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-ext-footnotes</artifactId>
-            <version>${flexmark.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladsch.flexmark</groupId>-->
+<!--            <artifactId>flexmark-ext-footnotes</artifactId>-->
+<!--            <version>${flexmark.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
