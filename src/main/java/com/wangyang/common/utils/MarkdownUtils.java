@@ -14,6 +14,7 @@ import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
 import com.vladsch.flexmark.ext.media.tags.MediaTagsExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.ext.toc.TocExtension;
+import com.vladsch.flexmark.ext.xwiki.macros.MacroExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
@@ -48,7 +49,9 @@ public class MarkdownUtils {
                     TocExtension.create(),
                     MediaTagsExtension.create(),
                     FootnoteExtension.create(),
-                    AdmonitionExtension.create()
+                    AdmonitionExtension.create(),
+                    MacroExtension.create()
+
 
             )) .set(GitLabExtension.IMAGE_SRC_TAG,"data-original")
             .set(HtmlRenderer.SOFT_BREAK, "<br/>")
@@ -56,6 +59,7 @@ public class MarkdownUtils {
             .set(TocExtension.LEVELS, -1)
             .set(TocExtension.LIST_CLASS,"thisToc")
             .set(TocExtension.IS_NUMBERED,false)
+
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
 
@@ -129,7 +133,9 @@ public class MarkdownUtils {
                     TocExtension.create(),
                     MediaTagsExtension.create(),
                     FootnoteExtension.create(),
-                    AdmonitionExtension.create()
+                    AdmonitionExtension.create(),
+                    MacroExtension.create()
+
 
             )).set(GitLabExtension.IMAGE_SRC_TAG,"src")
             .set(HtmlRenderer.SOFT_BREAK, "<br/>")

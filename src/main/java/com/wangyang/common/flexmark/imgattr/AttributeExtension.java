@@ -23,7 +23,7 @@ public class AttributeExtension implements HtmlRenderer.HtmlRendererExtension {
     @Override
     public void extend(HtmlRenderer.@NotNull Builder builder, @NotNull String s) {
         builder.attributeProviderFactory(SampleAttributeProvider.Factory());
-//        builder.nodeRendererFactory()
+//        builder.nodeRendererFacdata-originaltory()
     }
 
     public  static AttributeExtension create() {

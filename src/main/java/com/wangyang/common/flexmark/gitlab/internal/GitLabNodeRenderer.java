@@ -24,13 +24,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GitLabNodeRenderer implements NodeRenderer
         // , PhasedNodeRenderer
 {
     final public static AttributablePart VIDEO = new AttributablePart("VIDEO");
     final public static AttributablePart VIDEO_LINK = new AttributablePart("VIDEO_LINK");
-
+    final static Pattern pImgWH = Pattern.compile("html=\\((.*)\\)");
     final GitLabOptions options;
     final private boolean codeContentBlock;
     final private ReferenceRepository referenceRepository;
@@ -124,7 +126,31 @@ public class GitLabNodeRenderer implements NodeRenderer
         if (pos != -1) {
             bareUrl = url.substring(0, pos);
         }
+        if(bareUrl.replace(" ","" ).startsWith("http://player.bilibili.com/")){
+            html.withAttr().attr("class","meta-media").withAttr().tag("div");
+//            html.attr("class","lazy");
+//                    html.attr("data-original", url);
+//            String altTextImg =altText;
+//            html.attr(options.imageSrcTag, url);
 
+//            html.attr("alt", altTextImg);
+            html.attr(resolvedLink.getNonNullAttributes());
+            html.withAttr()
+                    .attr("src",url)
+                    .attr("class","video")
+                    .attr("class","iframe-video")
+                    .attr("autoplay","autoplay")
+                    .attr("allowfullscreen","true")
+                    .attr("framespacing","0")
+                    .attr("frameborder","no")
+                    .attr("border","0")
+                    .attr("scrolling","no")
+                    .withAttr().tag("iframe");
+//            html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("iframe");
+            html.tag("/iframe");
+            html.tag("/div");
+            return true;
+        }
         pos = bareUrl.lastIndexOf('.');
         if (pos != -1) {
             String extension = bareUrl.substring(pos + 1);
@@ -170,11 +196,23 @@ public class GitLabNodeRenderer implements NodeRenderer
                     html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
                     html.tag("/picture");
                 }else {
-                    html.tag("picture");
+                    html.withAttr().attr("class",options.imageSrcTag).withAttr().tag("picture");
                     html.attr("class","lazy");
 //                    html.attr("data-original", url);
+                    String altTextImg =altText;
                     html.attr(options.imageSrcTag, url);
-                    html.attr("alt", altText);
+                    Matcher matcher = pImgWH.matcher(altTextImg);
+                    if (matcher.find()){
+                        String group = matcher.group(1);
+                        altTextImg = matcher.replaceAll("");
+                        String[] groups = group.split(",");
+                        for (int i=0;i<groups.length;i++){
+                            String[] items = groups[i].split("=");
+//                            System.out.println(items[0]);
+                            html.attr(items[0], items[1]);
+                        }
+                    }
+                    html.attr("alt", altTextImg);
                     html.attr(resolvedLink.getNonNullAttributes());
                     html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
                     html.tag("/picture");
