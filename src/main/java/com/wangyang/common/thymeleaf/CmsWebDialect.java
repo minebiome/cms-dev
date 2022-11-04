@@ -121,7 +121,7 @@ public class CmsWebDialect extends AbstractProcessorDialect {
 ////         * See EngineConfiguration#isModelReshapable()
 ////         */
         //   let viewName = String([[${view.category.viewName}]]) 解析出来会有引号
-//        processors.add(new StandardInliningCDATASectionProcessor(TemplateMode.HTML));
+        processors.add(new StandardInliningCDATASectionProcessor(TemplateMode.HTML));
 ////
 ////        /*
 ////         * HTML: DOCTYPE PROCESSORS

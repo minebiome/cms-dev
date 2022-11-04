@@ -3,6 +3,8 @@ package com.wangyang.common.thymeleaf;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 import org.thymeleaf.standard.StandardDialect;
+import org.thymeleaf.standard.processor.StandardInlineHTMLTagProcessor;
+import org.thymeleaf.standard.processor.StandardInliningCDATASectionProcessor;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import java.util.HashSet;
@@ -24,6 +26,17 @@ public class CmsFileDialect extends AbstractProcessorDialect {
     public Set<IProcessor> getProcessors(final String dialectPrefix) {
         final Set<IProcessor> processors = new HashSet<IProcessor>();
         processors.add(new CmsFileReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
+        //   let viewName = String([[${view.category.viewName}]]) 解析出来会有引号
+        processors.add(new StandardInliningCDATASectionProcessor(TemplateMode.HTML));
+        processors.add(new CmsFileStandardInlineHTMLTagProcessor(dialectPrefix));
+
+
+//        processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));
+//        processors.add(new StandardValueTagProcessor(dialectPrefix));
+//        processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
+//        processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
+//        processors.add(new StandardFragmentTagProcessor(TemplateMode.HTML, dialectPrefix));
+//        processors.add(new IncludeElementTagProcessor(dialectPrefix));
         return processors;
     }
 }
