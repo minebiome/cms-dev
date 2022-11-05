@@ -2,14 +2,20 @@ package com.wangyang.service.impl;
 
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
+import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CommentDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Comment;
+import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.repository.CommentRepository;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICommentService;
+import com.wangyang.service.base.AbstractCrudService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +26,31 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
-public class CommentServiceImpl implements ICommentService {
+public class CommentServiceImpl
+        extends AbstractCrudService<Comment, BaseEntity, CommentVo,Integer> implements ICommentService {
 //    @Autowired
 //    UserRepository userRepository;
-    @Autowired
-CommentRepository commentRepository;
+//    @Autowired
+
     @Autowired
     IArticleService articleService;
     @Autowired
     IUserService userService;
+    private CommentRepository commentRepository;
+    public CommentServiceImpl(CommentRepository commentRepository) {
+        super(commentRepository);
+        this.commentRepository = commentRepository;
+    }
+
     @Override
     public Comment add(Comment comment) {
         if(StringUtils.isEmpty(comment.getUsername())&&comment.getUserId()!=null){
@@ -61,6 +75,11 @@ CommentRepository commentRepository;
     }
 
     @Override
+    public boolean supportType(CrudType type) {
+        return false;
+    }
+
+    @Override
     public void deleteById(int id) {
         Comment comment = findById(id);
         commentRepository.deleteById(id);
@@ -73,11 +92,12 @@ CommentRepository commentRepository;
     }
 
     @Override
-    public Page<CommentVo> listVoBy(int articleId){
+    public List<CommentVo> listVoBy(int articleId){
         //TODO 这里需要从数据库设置
-        Page<Comment> comments = pageBy(articleId, PageRequest.of(0, 100, Sort.by(Sort.Order.desc("id"))));
-
-        return convertTo(comments);
+        List<Comment> comments = listBy(articleId);
+        List<CommentVo> voList = convertTo(comments);
+        List<CommentVo> commentVos = listWithTree(voList);
+        return commentVos;
     }
 
     @Override
@@ -91,6 +111,20 @@ CommentRepository commentRepository;
             BeanUtils.copyProperties(comment,commentVo);
             return commentVo;
         });
+    }
+
+    public List<CommentVo> convertTo(List<Comment> list){
+        Set<Integer> userIds = ServiceUtil.fetchProperty(list, Comment::getUserId);
+        List<User> users = userService.findAllById(userIds);
+        Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
+
+        List<CommentVo> commentVos = list.stream().map(comment -> {
+            CommentVo commentVo = new CommentVo();
+            BeanUtils.copyProperties(comment, commentVo);
+            commentVo.setUser(userMap.get(comment.getUserId()));
+            return commentVo;
+        }).collect(Collectors.toList());
+        return commentVos;
     }
 
 
@@ -108,6 +142,20 @@ CommentRepository commentRepository;
         };
 
         return commentRepository.findAll(specification,pageable);
+    }
+
+    public List<Comment> listBy(int articleId){
+//        Comment comment = new Comment();
+//        comment.setResourceId(id);
+//        comment.setCommentType(commentType);
+        Specification<Comment> specification = new Specification<Comment>() {
+            @Override
+            public Predicate toPredicate(Root<Comment> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("articleId"),articleId)
+                ).getRestriction();
+            }
+        };
+        return commentRepository.findAll(specification,Sort.by(Sort.Order.asc("id")));
     }
 
     @Override

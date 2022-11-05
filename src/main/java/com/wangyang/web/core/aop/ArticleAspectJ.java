@@ -1,6 +1,7 @@
 package com.wangyang.web.core.aop;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.vo.ArticleDetailVO;
@@ -14,6 +15,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author wangyang
@@ -61,8 +64,9 @@ public class ArticleAspectJ {
      * 需要执行删除
      */
     @Around("execution(* com.wangyang.web.controller.api.CategoryController.update(..)) or " +
-            "execution(* com.wangyang.web.controller.api.CategoryController.deleteById(..)) or" +
-            "execution(* com.wangyang.web.controller.api.CategoryController.haveHtml(..)) ")
+            "execution(* com.wangyang.web.controller.api.CategoryController.deleteById(..)) or " +
+            "execution(* com.wangyang.web.controller.api.CategoryController.haveHtml(..)) or "+
+            "execution(* com.wangyang.web.controller.api.CategoryController.generateHtml(..))")
     public Category categoryAop(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object o = joinPoint.proceed();
@@ -86,7 +90,17 @@ public class ArticleAspectJ {
     @Async
     public void deleteTemp(Category category){
         log.info("####删除分类分页文件-"+category.getName());
-        FileUtils.remove(CmsConst.WORK_DIR+File.separator+category.getPath()+File.separator+category.getViewName());
+        File dir = new File(CmsConst.WORK_DIR+File.separator+ CMSUtils.getCategoryPath());
+        File[] files = dir.listFiles();
+        for(File file : files){
+            String name = file.getName();
+            Pattern pattern = Pattern.compile(category.getViewName()+"-(.*).html");
+            Matcher matcher = pattern.matcher(name);
+            if(matcher.find()){
+                file.delete();
+            }
+        }
+//        FileUtils.remove(CmsConst.WORK_DIR+File.separator+ CMSUtils.getCategoryPath()+category.getViewName()+"-");
         //移除临时文章分类
 //        FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
 //        FileUtils.remove(CmsConst.WORK_DIR+"/html/mind/"+category.getId()+".html");

@@ -238,7 +238,7 @@ public class ArticleController {
 
 
 
-    @RequestMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public ArticleDetailVO delete(@PathVariable("id") Integer id){
         Article article = articleService.deleteByArticleId(id);
         //删除文章

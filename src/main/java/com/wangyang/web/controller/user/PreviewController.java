@@ -3,7 +3,9 @@ package com.wangyang.web.controller.user;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.params.TemplateParam;
+import com.wangyang.pojo.vo.CommentVo;
 import com.wangyang.service.*;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
@@ -15,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -157,6 +161,24 @@ public class PreviewController {
 ////        String convertHtml = FileUtils.convertByString(html);
         model.addAllAttributes(o);
         return  components.getTemplateValue();
+    }
+
+    @GetMapping("/template/{id}")
+    public String previewTemplate(@PathVariable("id") Integer id,Model model){
+        Template template = templateService.findById(id);
+        List<CommentVo> commentVos = new ArrayList<>();
+        CommentVo commentVo = new CommentVo("1111111111111111111");
+        User user = new User();
+        user.setUsername("wangyang");
+        user.setAvatar("http://wangyang-bucket.oss-cn-beijing.aliyuncs.com/cms/image/admin.jpg");
+        commentVo.setUser(user);
+        commentVos.add(commentVo);
+        model.addAttribute("comments",commentVos);
+//        Map<String,Object> o = componentsService.getModel(components);
+////        String html = TemplateUtil.convertHtmlAndPreview(o, components);
+//////        String convertHtml = FileUtils.convertByString(html);
+//        model.addAllAttributes(o);
+        return  template.getTemplateValue();
     }
 
     @GetMapping("/pdf/{articleId}")

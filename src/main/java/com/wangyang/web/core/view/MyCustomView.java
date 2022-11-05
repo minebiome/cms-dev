@@ -1,9 +1,12 @@
 package com.wangyang.web.core.view;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.config.CmsConfig;
+import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
+import com.wangyang.pojo.authorize.UserDetailDTO;
 import com.wangyang.util.AuthorizationUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.View;
@@ -16,7 +19,9 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class MyCustomView implements View {
@@ -40,10 +45,16 @@ public class MyCustomView implements View {
             viewNamePath = "templates/error";
         }
         String path = CmsConst.WORK_DIR+ File.separator+viewNamePath+".html";
-        User user = AuthorizationUtil.getUser(request);
+        UserDetailDTO user = AuthorizationUtil.getUser(request);
         if(user!=null){
             map.put("username",user.getUsername());
             map.put("userId",user.getId());
+            if(user.getRoles()!=null && user.getRoles().size()>0){
+                Set<String> strings = ServiceUtil.fetchProperty(user.getRoles(), Role::getEnName);
+                map.put("roles",strings);
+            }else {
+                map.put("roles",new HashSet<>());
+            }
         }
 
         WebContext ctx = new WebContext(request, response, request.getServletContext(), request.getLocale(),map);
@@ -69,6 +80,8 @@ public class MyCustomView implements View {
         if(pathArgs.length<2){
             return false;
         }
+        pathArgs = pathArgs[1].split("-");
+
         try {
             GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
             Method[] methods = generateHtml.getClass().getDeclaredMethods();

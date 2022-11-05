@@ -192,6 +192,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
     CategoryArticleListDao findCategoryArticleBy(Category category, Template template ,int page);
     void updateCommentNum(int id, int num);
     ArticleAndCategoryMindDto listArticleMindDto(int categoryId);
+    ArticleAndCategoryMindDto listArticleMindDto(String viewName);
     String jsMindFormat(ArticleAndCategoryMindDto articleAndCategoryMindDto);
 
     void updateOrder(Integer id, List<ArticleVO> articleVOS);

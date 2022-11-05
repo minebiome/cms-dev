@@ -3,6 +3,7 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.pojo.annotation.CommentRole;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
@@ -128,6 +129,7 @@ public class UserArticleController {
     }
 
     @GetMapping("/info")
+    @CommentRole
     public String info(HttpServletRequest  request,Model model){
         int userId = AuthorizationUtil.getUserId(request);
         UserDto userDto = userService.findUserDaoById(userId);

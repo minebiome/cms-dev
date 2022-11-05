@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -91,11 +92,18 @@ public class TokenProvider implements InitializingBean {
                 }).collect(Collectors.toSet());
 
         int id = (Integer)claims.get("ID");
+//        String authorities = (String) claims.get(AUTHORITIES_KEY);
+//        String[] items = authorities.split(",");
+//        Set<String> ruleStr = new HashSet<>();
+//        for(String item : items){
+//            ruleStr.add(item);
+//        }
         String subject = claims.getSubject();
         UserDetailDTO user=new UserDetailDTO();
         user.setId(id);
         user.setRoles(roles);
         user.setUsername(subject);
+//        user.setRolesStr(ruleStr);
         return user;
     }
 }

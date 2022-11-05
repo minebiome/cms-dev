@@ -1,6 +1,7 @@
 package com.wangyang.util;
 
 import com.wangyang.pojo.authorize.User;
+import com.wangyang.pojo.authorize.UserDetailDTO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,15 +10,15 @@ public class AuthorizationUtil {
     public static Integer getUserId(HttpServletRequest request){
         Object obj = request.getAttribute("user");
         if(obj!=null){
-            return ((User)obj).getId();
+            return ((UserDetailDTO)obj).getId();
         }
         throw new AuthorizationException("用户id不存在！");
 
     }
-    public static User getUser(HttpServletRequest request){
+    public static UserDetailDTO getUser(HttpServletRequest request){
         Object obj = request.getAttribute("user");
         if(obj!=null){
-            return ((User)obj);
+            return ((UserDetailDTO)obj);
         }
         return null;
     }

@@ -28,11 +28,18 @@ public class CmsConst {
     public static final String CONFIGURATION= "application.yml";
     public final static String UPLOAD_SUB_DIR = "upload/";
     public final static String INIT_STATUS = "INIT_STATUS";
-    public final static String COMPONENTS_PATH = "html"+ File.separator+"components";
-    public final static String ARTICLE_LIST_JS_PATH = "html"+ File.separator+"articleListJs";
+    public final static String COMMENT_PATH = "html"+ File.separator+"comment";
+    public final static String COMMENT_PATH_JSON =COMMENT_PATH+File.separator+"json";
+
+    public final static String CATEGORY_PATH = "html"+ File.separator+"articleList";
+    public final static String FIRST_ARTICLE_LIST = CATEGORY_PATH+ File.separator+"firstArticleList";
+    public final static String ARTICLE_LIST_JS_PATH = CATEGORY_PATH+ File.separator+"articleListJs";
+
+
+    public final static String COMPONENT_PATH = "html"+ File.separator+"components";
     public final static String CATEGORY_MENU = "categoryMenu";
 
-    public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";
+//    public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";
     public final static String ARTICLE_DETAIL_PATH = "html"+File.separator+"article";
     public final static String SHEET_PATH = "html"+File.separator+"sheet";
 

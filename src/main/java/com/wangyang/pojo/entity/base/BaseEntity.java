@@ -14,7 +14,7 @@ public class BaseEntity {
     @Column(columnDefinition = "int default 0")
     private Integer parentId=0;
     @Column(name = "order_",columnDefinition = "int default 0")
-    private Integer order;
+    private Integer order=0;
 
 
     @Column(name = "create_time")

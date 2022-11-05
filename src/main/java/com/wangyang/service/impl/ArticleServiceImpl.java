@@ -1208,6 +1208,26 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     }
 
     @Override
+    public ArticleAndCategoryMindDto listArticleMindDto(String viewName) {
+        Category category = categoryService.findByViewName(viewName);
+
+        ArticleAndCategoryMindDto articleAndCategoryMindDto = new ArticleAndCategoryMindDto();
+        List<Article> articles = listArticleBy(category.getId());
+        List<ArticleMindDto> articleMindDtoList =articles.stream().map(article -> {
+            ArticleMindDto articleMindDto = new ArticleMindDto();
+            BeanUtils.copyProperties(article, articleMindDto);
+            return articleMindDto;
+        }).collect(Collectors.toList());
+
+        articleAndCategoryMindDto.setCategory(category);
+        articleAndCategoryMindDto.setList(articleMindDtoList);
+        articleAndCategoryMindDto.setLinkPath(FormatUtil.categoryList2Format(category));
+        return  articleAndCategoryMindDto;
+    }
+
+
+
+    @Override
     public ArticleAndCategoryMindDto listArticleMindDto(int categoryId){
 
         ArticleAndCategoryMindDto articleAndCategoryMindDto = new ArticleAndCategoryMindDto();

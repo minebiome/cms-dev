@@ -28,7 +28,7 @@ public class Content extends BaseEntity{
     private String commentTemplateName;
     //是否开启评论
     @Column(columnDefinition = "bit(1) default false")
-    private Boolean openComment=false;
+    private Boolean openComment=true;
     private String pdfPath;
     private String path;
     @Column(columnDefinition = "bit(1) default false")

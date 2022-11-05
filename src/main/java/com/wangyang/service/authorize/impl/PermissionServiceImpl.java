@@ -5,6 +5,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.annotation.CommentRole;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.support.RoleUrl;
 import com.wangyang.service.authorize.*;
@@ -128,8 +129,21 @@ public class PermissionServiceImpl implements IPermissionService {
         return apiUserDetailDTO;
     }
 
+//    public void initCommentUser(){
+//
+//
+//        List<RoleResource> roleResources = new ArrayList<>();
+//        RoleResource roleResource = new RoleResource();
+//        Resource resource = new Resource();
+//        roleResource.setRoleId(role.getId());
+//        roleResource.setResourceId(resource.getId());
+//        roleResources.add(roleResource);
+//        roleResourceService.saveAll(roleResources);
+//    }
+
     @Override
     public void init() {
+
         Role role = roleService.findByEnName("ADMIN");
         if (role == null) {
             role = new Role();
@@ -146,6 +160,25 @@ public class PermissionServiceImpl implements IPermissionService {
             user.setPassword("123456");
             userService.addUser(user);
             UserRole userRole = new UserRole(user.getId(), role.getId());
+            userRoleService.save(userRole);
+        }
+
+
+        Role commentRole = roleService.findByEnName("COMMENT");
+        if (commentRole == null) {
+            commentRole = new Role();
+            commentRole.setName("COMMENT");
+            commentRole.setEnName("COMMENT");
+            commentRole = roleService.save(commentRole);
+        }
+        User commentUser = userService.findUserByUsername("test");
+        if (commentUser == null) {
+            commentUser = new User();
+            commentUser.setUsername("test");
+            commentUser.setGender(0);
+            commentUser.setPassword("123456");
+            userService.addUser(user);
+            UserRole userRole = new UserRole(commentUser.getId(), commentRole.getId());
             userRoleService.save(userRole);
         }
 //        Map<String, Object> controllers = applicationContext.getBeansWithAnnotation(RequestMapping.class);
@@ -177,6 +210,12 @@ public class PermissionServiceImpl implements IPermissionService {
                 RoleUrl roleUrl = new RoleUrl(role.getId(), url, methodName);
                 roleResourceName.add(roleUrl);
             }
+
+            if(method.isAnnotationPresent(CommentRole.class)){
+                RoleUrl roleUrl = new RoleUrl(commentRole.getId(), url, methodName);
+                roleResourceName.add(roleUrl);
+            }
+
             resources.add(resource);
         }
         List<Resource> dataBaseResource = resourceService.listAll();
@@ -211,6 +250,7 @@ public class PermissionServiceImpl implements IPermissionService {
                     }).collect(Collectors.toList());
             roleResourceService.deleteAll();
             roleResourceService.saveAll(roleResources);
+//            initCommentUser(resourceMap);
         }
     }
 }

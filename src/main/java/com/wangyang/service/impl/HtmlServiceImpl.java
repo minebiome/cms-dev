@@ -154,12 +154,12 @@ public class HtmlServiceImpl implements IHtmlService {
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
         String json = JSON.toJSON(categoryArticle).toString();
         TemplateUtil.saveFile(CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
-        String html = TemplateUtil.convertHtmlAndSave(categoryArticle, template);
+        String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),categoryArticle.getViewName(),categoryArticle, template);
 
         //生成文章列表组件,用于首页嵌入
         String content = DocumentUtil.getDivContent(html, "#components");
         if(StringUtils.isNotEmpty(content)){
-            TemplateUtil.saveFile(CMSUtils.getComponentsPath(),category.getViewName(),content);
+            TemplateUtil.saveFile(CMSUtils.getFirstArticleList(),category.getViewName(),content);
         }
 
         return categoryArticle;
@@ -184,24 +184,24 @@ public class HtmlServiceImpl implements IHtmlService {
             return "Page is not exist!!";
         }
         log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
-        String path = category.getPath()+"/"+category.getViewName()+"/"+String.valueOf(page);
+        String viewName =   category.getViewName()+"-"+String.valueOf(page)+"-page";
 //            String viewName = String.valueOf(page);
-        return TemplateUtil.convertHtmlAndSave(path,"page",categoryArticle,template);
+        return TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),viewName,categoryArticle,template);
 
 
     }
 
-    public String renderMindJs(int categoryId){
-        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
-        Category category = articleAndCategoryMindDto.getCategory();
-        String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
-        Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
-        Map<String,Object> map = new HashMap<>();
-        map.put("mind",mindFormat);
-        map.put("category",category);
-        String viewName = "";
-        return  TemplateUtil.convertHtmlAndSave(category.getPath(),viewName,map,template);
-    }
+//    public String renderMindJs(int categoryId){
+//        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(categoryId);
+//        Category category = articleAndCategoryMindDto.getCategory();
+//        String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
+//        Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("mind",mindFormat);
+//        map.put("category",category);
+//        String viewName = "";
+//        return  TemplateUtil.convertHtmlAndSave(category.getPath(),viewName,map,template);
+//    }
 
 
 
@@ -253,7 +253,12 @@ public class HtmlServiceImpl implements IHtmlService {
      */
     private String covertHtml(ArticleDetailVO articleDetailVO) {
         Template template = templateService.findByEnName(articleDetailVO.getTemplateName());
-        String html = TemplateUtil.convertHtmlAndSave(articleDetailVO, template);
+
+        Map<String,Object> map = new HashMap<>();
+        map = new HashMap<>();
+        map.put("view",articleDetailVO);
+        map.put("template",template);
+        String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getArticlePath(),articleDetailVO.getViewName(),map, template);
         return html;
     }
 
@@ -348,10 +353,15 @@ public class HtmlServiceImpl implements IHtmlService {
         Article article = articleService.findArticleById(articleId);
         //只有在文章打开评论时才能生成评论
         if(article.getOpenComment()){
-            Page<CommentVo> commentVos = commentService.listVoBy(articleId);
+            List<CommentVo> commentVos = commentService.listVoBy(articleId);
             //获取文章评论的模板
             Template template = templateService.findByEnName(article.getCommentTemplateName());
-            TemplateUtil.convertHtmlAndSave(CMSUtils.getComponentsPath()+"/comment",article.getViewName(),commentVos,template);
+            Map<String,Object> map = new HashMap<>();
+            map.put("comments",commentVos);
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getComment(),article.getViewName(),map,template);
+
+            String json = JSON.toJSON(commentVos).toString();
+            TemplateUtil.saveFile(CMSUtils.getCommentJSON(),article.getViewName(),json,"json");
         }
 
     }

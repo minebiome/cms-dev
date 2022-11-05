@@ -2,12 +2,18 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.CommentDto;
 import com.wangyang.pojo.entity.Comment;
+import com.wangyang.pojo.entity.Literature;
+import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 
-public interface ICommentService {
+
+public interface ICommentService extends ICrudService<Comment, BaseEntity, CommentVo,Integer> {
 
 
 
@@ -35,7 +41,7 @@ public interface ICommentService {
      */
     Comment update(int id, Comment updateComment);
 
-    Page<CommentVo> listVoBy(int articleId);
+    List<CommentVo> listVoBy(int articleId);
 
 
     Page<CommentVo> pageVoBy(int articleId, Pageable pageable);

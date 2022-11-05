@@ -1,6 +1,7 @@
 package com.wangyang.web.core.view;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.entity.Category;
@@ -43,8 +44,8 @@ public class GenerateHtml {
      */
     public String page(String[] args){
 //        File file = new File(CmsConst.WORK_DIR+"/html/"+page+".html");
-        Category category = categoryService.findByViewName(args[1]);
-        String resultHtml = htmlService.convertArticleListBy(category,Integer.parseInt(args[2]));
+        Category category = categoryService.findByViewName(args[0]);
+        String resultHtml = htmlService.convertArticleListBy(category,Integer.parseInt(args[1]));
         return resultHtml;
     }
 
@@ -54,15 +55,14 @@ public class GenerateHtml {
      * @return
      */
     public String mind(String[] args){
-        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(Integer.parseInt(args[2]));
+        ArticleAndCategoryMindDto articleAndCategoryMindDto = articleService.listArticleMindDto(args[0]);
         Category category = articleAndCategoryMindDto.getCategory();
         String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
         Template template = templateService.findByEnName(CmsConst.ARTICLE_JS_MIND);
         Map<String,Object> map = new HashMap<>();
         map.put("mind",mindFormat);
         map.put("category",category);
-        String path = category.getPath()+"/"+category.getViewName()+"/"+args[2];
-        String htmlAndSave = TemplateUtil.convertHtmlAndSave(path, "mind", map, template);
+        String htmlAndSave = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(), category.getViewName()+"-mind", map, template);
         return htmlAndSave;
     }
 

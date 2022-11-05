@@ -22,11 +22,23 @@ public class CMSUtils {
         return CmsConst.ARTICLE_DETAIL_PATH;
     }
 
+//    public static String getCategoryPath(){
+//        return CmsConst.CATEGORY_LIST_PATH;
+//    }
+    public static String getFirstArticleList(){
+        return CmsConst.FIRST_ARTICLE_LIST;
+    }
+    public static String getComment(){
+        return CmsConst.COMMENT_PATH;
+    }
+    public static String getCommentJSON(){
+        return CmsConst.COMMENT_PATH_JSON;
+    }
     public static String getCategoryPath(){
-        return CmsConst.CATEGORY_LIST_PATH;
+        return CmsConst.CATEGORY_PATH;
     }
     public static String getComponentsPath(){
-        return CmsConst.COMPONENTS_PATH;
+        return CmsConst.COMPONENT_PATH;
     }
     public static String getArticleListJs(){
         return CmsConst.ARTICLE_LIST_JS_PATH;

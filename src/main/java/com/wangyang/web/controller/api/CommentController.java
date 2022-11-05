@@ -1,11 +1,18 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.exception.ObjectException;
+import com.wangyang.pojo.annotation.CommentRole;
+import com.wangyang.pojo.authorize.User;
+import com.wangyang.pojo.entity.Article;
+import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICommentService;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.pojo.entity.Comment;
 import com.wangyang.pojo.params.CommentLoginUserParam;
 import com.wangyang.pojo.params.CommentParam;
 import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.service.authorize.IUserService;
+import com.wangyang.util.AuthorizationUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -27,10 +35,21 @@ public class CommentController {
     @Autowired
     IHtmlService htmlService;
 
+    @Autowired
+    IUserService userService;
+
+
+    @Autowired
+    IArticleService articleService;
+
     @PostMapping
-    public Comment add(@RequestBody @Valid CommentParam commentParam){
+    @CommentRole
+    public Comment add(@RequestBody @Valid CommentParam commentParam, HttpServletRequest request){
         Comment comment = new Comment();
+        int userId = AuthorizationUtil.getUserId(request);
+        User user = userService.findById(userId);
         BeanUtils.copyProperties(commentParam,comment);
+        comment.setUserId(user.getId());
         Comment saveComment = commentService.add(comment);
         /**
          * 根据一个评论生成单个文章下的评论列表
@@ -60,8 +79,17 @@ public class CommentController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public Comment deleteById(@PathVariable("id") Integer id){
+    @CommentRole
+    public Comment deleteById(@PathVariable("id") Integer id, HttpServletRequest request){
         Comment comment = commentService.findById(id);
+        int userId = AuthorizationUtil.getUserId(request);
+        User user = userService.findById(userId);
+        if(comment.getUserId()!=user.getId()){
+            Article article = articleService.findById(comment.getArticleId());
+            if(article.getUserId()!=user.getId()){
+                throw new ObjectException("Can't delete!!");
+            }
+        }
         commentService.deleteById(comment.getId());
         htmlService.generateCommentHtmlByArticleId(comment.getArticleId());
         return comment;
