@@ -40,16 +40,27 @@ public class FootnoteLinkRefProcessor implements LinkRefProcessor {
     @Override
     public Node createNode(@NotNull BasedSequence nodeChars) {
         BasedSequence footnoteId = nodeChars.midSequence(2, -1).trim();
-        FootnoteBlock footnoteBlock = footnoteId.length() > 0 ? footnoteRepository.get(footnoteId.toString()) : null;
+//        FootnoteBlock footnoteBlock = getFootnoteBlock(footnoteId.toString());
+//        FootnoteBlock footnoteBlock = footnoteId.length() > 0 ? footnoteRepository.get(footnoteId.toString()) : null;
+//        FootnoteBlock footnoteBlock = new FootnoteBlock();
+//        footnoteBlock.setText(BasedSequence.of("bbbbb"));
+//        footnoteBlock.setFootnoteOrdinal("ssssssssssssss");
+//        footnoteBlock.setOpeningMarker(openingMarker);
+//        footnoteBlock.setText(text);
+//        footnoteBlock.setClosingMarker(closingMarker);
 
         Footnote footnote = new Footnote(nodeChars.subSequence(0, 2), footnoteId, nodeChars.endSequence(1));
-        footnote.setFootnoteBlock(footnoteBlock);
+        FootnoteBlock footnoteBlock = new FootnoteBlock();
 
-        if (footnoteBlock != null) {
-            footnoteRepository.addFootnoteReference(footnoteBlock, footnote);
-        }
+        footnote.setFootnoteBlock(footnoteBlock);
+        footnoteRepository.addFootnoteReference(footnoteBlock,footnote);
+
+//        if (footnoteBlock != null) {
+//            footnoteRepository.addFootnoteReference(footnote);
+//        }
         return footnote;
     }
+
 
     @NotNull
     @Override

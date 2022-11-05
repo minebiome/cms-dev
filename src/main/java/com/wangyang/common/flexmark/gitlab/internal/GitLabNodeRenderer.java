@@ -126,7 +126,8 @@ public class GitLabNodeRenderer implements NodeRenderer
         if (pos != -1) {
             bareUrl = url.substring(0, pos);
         }
-        if(bareUrl.replace(" ","" ).startsWith("http://player.bilibili.com/")){
+        bareUrl=bareUrl.replace(" ","" );
+        if(bareUrl.startsWith("http://player.bilibili.com") || bareUrl.startsWith("//player.bilibili.com")){
             html.withAttr().attr("class","meta-media").withAttr().tag("div");
 //            html.attr("class","lazy");
 //                    html.attr("data-original", url);

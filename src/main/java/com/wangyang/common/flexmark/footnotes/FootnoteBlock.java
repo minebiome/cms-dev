@@ -21,7 +21,8 @@ public class FootnoteBlock extends Block implements ReferenceNode<FootnoteReposi
     protected BasedSequence text = BasedSequence.NULL;
     protected BasedSequence closingMarker = BasedSequence.NULL;
     protected BasedSequence footnote = BasedSequence.NULL;
-    private int footnoteOrdinal = 0;
+    private String footnoteOrdinal;
+    private String url;
     private int firstReferenceOffset = Integer.MAX_VALUE;
     private int footnoteReferences = 0;
 
@@ -60,11 +61,11 @@ public class FootnoteBlock extends Block implements ReferenceNode<FootnoteReposi
         return this.firstReferenceOffset < Integer.MAX_VALUE;
     }
 
-    public int getFootnoteOrdinal() {
+    public String getFootnoteOrdinal() {
         return footnoteOrdinal;
     }
 
-    public void setFootnoteOrdinal(int footnoteOrdinal) {
+    public void setFootnoteOrdinal(String footnoteOrdinal) {
         this.footnoteOrdinal = footnoteOrdinal;
     }
 
@@ -130,6 +131,14 @@ public class FootnoteBlock extends Block implements ReferenceNode<FootnoteReposi
     @Override
     public boolean isParagraphWrappingDisabled(Paragraph node, ListOptions listOptions, DataHolder options) {
         return false;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

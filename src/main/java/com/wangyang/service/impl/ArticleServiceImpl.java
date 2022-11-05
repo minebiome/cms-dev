@@ -1182,11 +1182,11 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
      * @param ids
      * @return
      */
-    @Override
-    public List<Article> listByIds(Set<Integer> ids){
-        List<Article> articles = articleRepository.findAllById(ids);
-        return articles;
-    }
+//    @Override
+//    public List<Article> listByIds(Set<Integer> ids){
+//        List<Article> articles = articleRepository.findAllById(ids);
+//        return articles;
+//    }
 
     @Override
     public List<ArticleDto> listByComponentsId(int componentsId){

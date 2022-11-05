@@ -80,11 +80,17 @@ public class FootnoteNodeRenderer implements PhasedNodeRenderer {
                     html.tagVoidLine("hr");
                     html.tagIndent("ol", () -> {
                         for (FootnoteBlock footnoteBlock : footnoteRepository.getReferencedFootnoteBlocks()) {
-                            int footnoteOrdinal = footnoteBlock.getFootnoteOrdinal();
+                            String footnoteOrdinal = footnoteBlock.getFootnoteOrdinal();
                             html.attr("id", "fn-" + footnoteOrdinal);
                             html.withAttr().tagIndent("li", () -> {
-                                context.renderChildren(footnoteBlock);
-
+//                                context.renderChildren(footnoteBlock);
+                                html.tag("p")
+                                        .attr("href", footnoteBlock.getUrl())
+                                        .withAttr()
+                                        .tag("a")
+                                        .raw(footnoteBlock.getFootnote())
+                                        .tag("/a")
+                                        .tag("/p");
                                 int iMax = footnoteBlock.getFootnoteReferences();
                                 for (int i = 0; i < iMax; i++) {
                                     html.attr("href", "#fnref-" + footnoteOrdinal + (i == 0 ? "" : String.format(Locale.US, "-%d", i)));
@@ -113,15 +119,27 @@ public class FootnoteNodeRenderer implements PhasedNodeRenderer {
             context.renderChildren(node);
             html.raw("]");
         } else {
-            int footnoteOrdinal = footnoteBlock.getFootnoteOrdinal();
+            String footnoteOrdinal = footnoteBlock.getFootnoteOrdinal();
             int i = node.getReferenceOrdinal();
             html.attr("id", "fnref-" + footnoteOrdinal + (i == 0 ? "" : String.format(Locale.US, "-%d", i)));
             html.srcPos(node.getChars()).withAttr().tag("sup", false, false, () -> {
                 if (!options.footnoteLinkRefClass.isEmpty()) html.attr("class", options.footnoteLinkRefClass);
-                html.attr("href", "#fn-" + footnoteOrdinal);
-                html.withAttr().tag("a");
-                html.raw(options.footnoteRefPrefix + footnoteOrdinal + options.footnoteRefSuffix);
-                html.tag("/a");
+
+
+                if (footnoteOrdinal==null){
+                    html.attr("href", "#");
+                    html.withAttr().tag("a");
+
+                    html.raw(node.getText());
+                    html.tag("/a");
+                }else {
+                    html.attr("href", "#fn-" + footnoteOrdinal);
+                    html.withAttr().tag("a");
+
+                    html.raw(options.footnoteRefPrefix + footnoteOrdinal + options.footnoteRefSuffix);
+                    html.tag("/a");
+                }
+
             });
         }
     }

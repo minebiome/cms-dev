@@ -1,5 +1,6 @@
 package com.wangyang.service.base;
 
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.enums.CrudType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author wangyang
@@ -51,6 +53,6 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     void updateOrder(List<DOMAIN> domains, List<DOMAINVO> domainvos);
 
     void updateOrder(List<DOMAINVO> domainvos);
-
+    List<DOMAIN> listByIds(Set<ID> ids);
     //    @Override
 }

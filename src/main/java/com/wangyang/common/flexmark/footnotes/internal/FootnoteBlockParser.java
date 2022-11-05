@@ -122,7 +122,7 @@ public class FootnoteBlockParser extends AbstractBlockParser {
             if (state.getIndent() >= 4) {
                 return BlockStart.none();
             }
-
+//            int contentIndent = options.contentIndent;
             BasedSequence line = state.getLine();
             int nextNonSpace = state.getNextNonSpaceIndex();
 

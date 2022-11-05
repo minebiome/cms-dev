@@ -378,4 +378,8 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
     }
 
 
+    @Override
+    public List<DOMAIN> listByIds(Set<ID> ids) {
+        return repository.findAllById(ids);
+    }
 }

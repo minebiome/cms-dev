@@ -9,7 +9,7 @@ public class FootnoteOptions {
     final String footnoteBackRefString;
     final String footnoteLinkRefClass;
     final String footnoteBackLinkRefClass;
-    final int contentIndent;
+    final public int contentIndent;
 
     public FootnoteOptions(DataHolder options) {
         this.footnoteRefPrefix = FootnoteExtension.FOOTNOTE_REF_PREFIX.get(options);

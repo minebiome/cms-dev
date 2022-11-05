@@ -89,7 +89,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
      * @return
      */
     List<ArticleDto> listByTitle(String title);
-    List<Article> listByIds(Set<Integer> ids);
+
 
     /**
      * 查找自定义组件里的article
