@@ -171,17 +171,17 @@ public class PermissionServiceImpl implements IPermissionService {
             commentRole.setEnName("COMMENT");
             commentRole = roleService.save(commentRole);
         }
-        User commentUser = userService.findUserByUsername("test");
-        if (commentUser == null) {
-            commentUser = new User();
-            commentUser.setUsername("test");
-            commentUser.setGender(0);
-            commentUser.setPassword("123456");
-            commentUser=userService.addUser(commentUser);
-
-            UserRole userRole = new UserRole(commentUser.getId(), commentRole.getId());
-            userRoleService.save(userRole);
-        }
+//        User commentUser = userService.findUserByUsername("test");
+//        if (commentUser == null) {
+//            commentUser = new User();
+//            commentUser.setUsername("test");
+//            commentUser.setGender(0);
+//            commentUser.setPassword("123456");
+//            commentUser=userService.addUser(commentUser);
+//
+//            UserRole userRole = new UserRole(commentUser.getId(), commentRole.getId());
+//            userRoleService.save(userRole);
+//        }
 //        Map<String, Object> controllers = applicationContext.getBeansWithAnnotation(RequestMapping.class);
         RequestMappingHandlerMapping mapping = applicationContext.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> methodMap = mapping.getHandlerMethods();
