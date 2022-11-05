@@ -5,7 +5,7 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 
-@Entity
+@Entity(name = "t_literature")
 @Data
 public class Literature extends BaseEntity {
     private String title;
