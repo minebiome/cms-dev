@@ -59,7 +59,7 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     }
     @Override
     public User addUser(User user) {
-        return userRepository.save(user);
+        return userRepository.saveAndFlush(user);
     }
     @Override
     public User addUser(UserParam userParam) {
