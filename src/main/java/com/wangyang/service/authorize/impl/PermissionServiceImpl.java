@@ -158,7 +158,7 @@ public class PermissionServiceImpl implements IPermissionService {
             user.setUsername("admin");
             user.setGender(0);
             user.setPassword("123456");
-            userService.addUser(user);
+            user=userService.addUser(user);
             UserRole userRole = new UserRole(user.getId(), role.getId());
             userRoleService.save(userRole);
         }
@@ -177,7 +177,8 @@ public class PermissionServiceImpl implements IPermissionService {
             commentUser.setUsername("test");
             commentUser.setGender(0);
             commentUser.setPassword("123456");
-            userService.addUser(commentUser);
+            commentUser=userService.addUser(commentUser);
+
             UserRole userRole = new UserRole(commentUser.getId(), commentRole.getId());
             userRoleService.save(userRole);
         }
