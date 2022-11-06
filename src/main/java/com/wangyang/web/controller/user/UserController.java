@@ -1,12 +1,15 @@
 package com.wangyang.web.controller.user;
 
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.pojo.support.Token;
 import com.wangyang.service.authorize.IRoleService;
+import com.wangyang.service.authorize.IUserRoleService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.util.TokenProvider;
+import lombok.extern.java.Log;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -38,6 +42,9 @@ public class UserController {
     @Autowired
     IRoleService roleService;
 
+    @Autowired
+    IUserRoleService userRoleService;
+
     @GetMapping
     public Page<User> page(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         return userService.pageUser(pageable);
@@ -48,8 +55,6 @@ public class UserController {
         return userService.listAllUserDto();
     }
 
-
-
     @PostMapping("/login")
     @Anonymous
     public LoginUser login(@RequestBody UserLoginParam inputUser){
@@ -59,6 +64,30 @@ public class UserController {
         Token token = tokenProvider.generateToken(user);
         loginUser.setToken(token.getToken());
         return loginUser;
+    }
+
+
+    @PostMapping("/registry")
+    @Anonymous
+    public LoginUser registry( @Valid @RequestBody UserParam userParam){
+        User username = userService.findUserByUsername(userParam.getUsername());
+        if(username!=null){
+            throw new ObjectException("用户名"+username.getUsername()+"已经存在！！");
+        }
+        User email = userService.findUserByEmail(userParam.getEmail());
+        if(email!=null){
+            throw new ObjectException("用户名"+email.getEmail()+"已经存在！！");
+        }
+        User user = new User();
+        BeanUtils.copyProperties(userParam,user);
+
+        Role commentRole = roleService.findByEnName("COMMENT");
+        User saveUser = userService.save(user);
+        UserRole userRole = new UserRole(saveUser.getId(),commentRole.getId());
+        userRoleService.save(userRole);
+
+        UserLoginParam loginParam = new UserLoginParam(saveUser.getUsername(),saveUser.getPassword());
+        return this.login(loginParam);
     }
 
     @GetMapping("/getCurrent")

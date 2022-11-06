@@ -11,6 +11,7 @@ import com.wangyang.pojo.entity.Comment;
 import com.wangyang.pojo.params.CommentLoginUserParam;
 import com.wangyang.pojo.params.CommentParam;
 import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.service.MailService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.util.AuthorizationUtil;
 import org.springframework.beans.BeanUtils;
@@ -18,10 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -37,7 +42,8 @@ public class CommentController {
 
     @Autowired
     IUserService userService;
-
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     IArticleService articleService;
@@ -50,13 +56,28 @@ public class CommentController {
         User user = userService.findById(userId);
         BeanUtils.copyProperties(commentParam,comment);
         comment.setUserId(user.getId());
+        if(comment.getParentId()==null){
+            comment.setParentId(0);
+        }
         Comment saveComment = commentService.add(comment);
+
+
+        Article article = articleService.findArticleById(saveComment.getArticleId());
+
+        mailService.sendEmail(user,saveComment,article);
         /**
          * 根据一个评论生成单个文章下的评论列表
          */
-        htmlService.generateCommentHtmlByArticleId(comment.getArticleId());
+        htmlService.generateCommentHtmlByArticleId(article);
+
+
+
+
         return saveComment;
     }
+
+
+
     @PostMapping("/addByLoginUser")
     public Comment addByLoginUser(@RequestBody @Valid CommentLoginUserParam commentLoginUserParam){
         Comment comment = new Comment();
@@ -87,8 +108,12 @@ public class CommentController {
         if(comment.getUserId()!=user.getId()){
             Article article = articleService.findById(comment.getArticleId());
             if(article.getUserId()!=user.getId()){
-                throw new ObjectException("Can't delete!!");
+                throw new ObjectException("Can't delete, not your!!");
             }
+        }
+        List<Comment> childComment = commentService.findByParentId(comment.getId());
+        if(childComment.size()>0){
+            throw new ObjectException("Can't delete, comment has child!!");
         }
         commentService.deleteById(comment.getId());
         htmlService.generateCommentHtmlByArticleId(comment.getArticleId());

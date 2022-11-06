@@ -59,6 +59,7 @@ public class CmsConst {
     public final static String DEFAULT_CATEGORY_TEMPLATE = "DEFAULT_CATEGORY";
     public final static String DEFAULT_CATEGORY_TREE_TEMPLATE = "DEFAULT_CATEGORY_TREE_TEMPLATE";
     public final static String DEFAULT_REVEAL_TEMPLATE = "DEFAULT_REVEAL";
+    public final static String DEFAULT_EMAIL = "DEFAULT_EMAIL";
 
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
     public final static String CUSTOM_SHEET_TEMPLATE = "CUSTOM_SHEET";

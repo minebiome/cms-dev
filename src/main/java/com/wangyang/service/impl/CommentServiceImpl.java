@@ -118,10 +118,19 @@ public class CommentServiceImpl
         List<User> users = userService.findAllById(userIds);
         Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
 
+        Map<Integer, Comment> commentMap = ServiceUtil.convertToMap(list, Comment::getId);
+
         List<CommentVo> commentVos = list.stream().map(comment -> {
             CommentVo commentVo = new CommentVo();
             BeanUtils.copyProperties(comment, commentVo);
             commentVo.setUser(userMap.get(comment.getUserId()));
+            if(comment.getParentId()!=0){
+                Comment parentComment= commentMap.get(comment.getParentId());
+                if(parentComment==null){
+                    throw new ObjectException(comment.getId()+"的父类不能找到！！");
+                }
+                commentVo.setReplyUser(userMap.get(parentComment.getUserId()));
+            }
             return commentVo;
         }).collect(Collectors.toList());
         return commentVos;

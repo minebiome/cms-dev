@@ -140,6 +140,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("默认的图片分类模板",CmsConst.DEFAULT_PICTURE_TEMPLATE, "templates/@picture", TemplateType.CATEGORY,6),
                 new Template("默认的幻灯片列表模板",CmsConst.DEFAULT_REVEAL_TEMPLATE, "templates/@reveal", TemplateType.CATEGORY,7),
 
+                new Template("Email模板",CmsConst.DEFAULT_EMAIL, "templates/@email", TemplateType.EMAIL,7),
+
 
                 new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "templates/@categoryList", TemplateType.CATEGORY_LIST,7),
 

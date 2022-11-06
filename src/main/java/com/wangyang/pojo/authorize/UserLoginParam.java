@@ -10,4 +10,11 @@ import lombok.Data;
 public class UserLoginParam {
     private String username;
     private String password;
+
+    public UserLoginParam(){}
+
+    public UserLoginParam(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

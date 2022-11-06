@@ -102,7 +102,14 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
 
     @Override
     public List<User> findAllById(Collection<Integer> ids) {
-        return userRepository.findAllById(ids);
+        List<User> users = userRepository.findAllById(ids).stream().map(user -> {
+            User user1 = new User();
+
+            BeanUtils.copyProperties(user,user1);
+            user1.setPassword(null);
+            return user1;
+        }).collect(Collectors.toList());
+        return users;
     }
 
 
@@ -181,6 +188,17 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
             @Override
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 return criteriaQuery.where(criteriaBuilder.equal(root.get("username"), username)).getRestriction();
+            }
+        });
+        return CollectionUtils.isEmpty(users)?null:users.get(0);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        List<User> users = userRepository.findAll(new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("email"), email)).getRestriction();
             }
         });
         return CollectionUtils.isEmpty(users)?null:users.get(0);

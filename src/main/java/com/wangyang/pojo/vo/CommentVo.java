@@ -18,6 +18,7 @@ public class CommentVo extends BaseVo<Comment> {
 //    private String email;
     private String content;
     private User user;
+    private User replyUser;
 
     public CommentVo() {
     }

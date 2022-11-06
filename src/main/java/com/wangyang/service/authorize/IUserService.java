@@ -31,6 +31,8 @@ public interface IUserService  extends IAuthorizeService<User> {
     UserDetailDTO login(String username, String password);
     User findUserByUsername(String username);
 
+    User findUserByEmail(String email);
+
     UserDto findUserDaoById(int userId);
 
     User addUser(UserParam inputUser, MultipartFile file);

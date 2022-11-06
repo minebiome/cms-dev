@@ -45,7 +45,15 @@ public class WebController {
     @Autowired
     ICategoryService categoryService;
 
-
+    @GetMapping("/registry")
+    @Anonymous
+    public String registry(HttpServletRequest request){
+        Object user = request.getAttribute("user");
+        if(user!=null&& ((User)user).getId()!=-1){
+            return "redirect:/";
+        }
+        return "templates/user/registry";
+    }
     @GetMapping("/login")
     @Anonymous
     public String login(HttpServletRequest request){

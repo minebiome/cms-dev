@@ -3,6 +3,7 @@ cms:
   uploadPrefix: http://47.93.201.74:8080
   isDebug: false
   authorizeInit: true
+  url: http://localhost:8080
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
@@ -26,7 +27,16 @@ spring:
           use_query_cache: true
           region:
             factory_class: jcache
-#  cache:
+  mail: #邮箱配置
+    host: smtp.qq.com              #使用163邮箱服务器
+    username: xxxx@qq.com   #你的163邮箱
+    password: xxxx      #SMTP授权密码 (不是密码)
+    port: 587
+    protocol: smtp
+    default-encoding: UTF-8
+    jndi-name: email
+
+  #  cache:
 #    jcache:
 #      config: classpath:ehcache.xml
 
@@ -89,7 +99,6 @@ jwt:
   token-validity-in-seconds-for-remember-me: 3600
   token-refresh-validity-in-seconds: 7800
   token-refresh-validity-in-seconds-for-remember-me: 7800
-
 
 
 

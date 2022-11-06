@@ -2,6 +2,7 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Sheet;
@@ -85,7 +86,7 @@ public interface IHtmlService {
     void generateCommentHtmlByArticleId(int articleId);
 
 
-
+    void generateCommentHtmlByArticleId(Article article);
 
     void articleTopListByCategoryId(int id);
 }

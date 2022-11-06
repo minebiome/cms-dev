@@ -351,9 +351,13 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public void generateCommentHtmlByArticleId(int articleId){
         Article article = articleService.findArticleById(articleId);
+        generateCommentHtmlByArticleId(article);
+    }
+    @Override
+    public void generateCommentHtmlByArticleId(Article article){
         //只有在文章打开评论时才能生成评论
         if(article.getOpenComment()){
-            List<CommentVo> commentVos = commentService.listVoBy(articleId);
+            List<CommentVo> commentVos = commentService.listVoBy(article.getId());
             //获取文章评论的模板
             Template template = templateService.findByEnName(article.getCommentTemplateName());
             Map<String,Object> map = new HashMap<>();
