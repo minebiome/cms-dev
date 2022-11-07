@@ -71,13 +71,13 @@ public class ArticleController {
      * @return
      */
     @PostMapping("/save")
-    public Article saveArticle(@Valid @RequestBody ArticleParams articleParams, HttpServletRequest request){
+    public Article saveArticle(@Valid @RequestBody ArticleParams articleParams,@RequestParam(value = "more", defaultValue = "false") Boolean more, HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
         Article article = new Article();
         BeanUtils.copyProperties(articleParams,article);
         article.setUserId(userId);
 //        article.setStatus(ArticleStatus.DRAFT);
-        return  articleService.saveArticleDraft(article);
+        return  articleService.saveArticleDraft(article,more);
     }
 
     @GetMapping("/simpleCreate/{categoryId}")
@@ -105,7 +105,7 @@ public class ArticleController {
      * @return
      */
     @PostMapping("/save/{id}")
-    public Article updateArticle(@PathVariable("id") Integer id,@Valid @RequestBody ArticleParams articleParams,HttpServletRequest request){
+    public Article updateArticle(@PathVariable("id") Integer id,@RequestParam(value = "more", defaultValue = "false") Boolean more,@Valid @RequestBody ArticleParams articleParams,HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
         Article article = articleService.findArticleById(id);
         checkUser(userId,article);
@@ -123,7 +123,7 @@ public class ArticleController {
         }else {
             article.setStatus(ArticleStatus.DRAFT);
         }
-        return  articleService.updateArticleDraft(article);
+        return  articleService.updateArticleDraft(article,more);
     }
 
 

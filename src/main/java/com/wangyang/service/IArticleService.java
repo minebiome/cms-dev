@@ -59,8 +59,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
      * @param article
      * @return
      */
-    Article updateArticleDraft(Article article);
-    Article saveArticleDraft(Article article);
+    Article updateArticleDraft(Article article,boolean more);
+    Article saveArticleDraft(Article article,boolean more);
 
     Article recycle(int id);
 

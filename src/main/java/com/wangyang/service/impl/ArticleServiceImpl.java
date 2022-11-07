@@ -381,7 +381,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
      * @return
      */
     @Override
-    public Article updateArticleDraft(Article article){
+    public Article updateArticleDraft(Article article,boolean more){
 
         if(article.getUserId()==null){
             throw new ArticleException("文章用户不能为空!!");
@@ -394,11 +394,14 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             article.setViewName(viewName);
         }
 //        article.setStatus(ArticleStatus.DRAFT);
+        if(more){
+            article=super.createOrUpdate(article);
+        }
         return  articleRepository.save(article);
     }
 
     @Override
-    public Article saveArticleDraft(Article article){
+    public Article saveArticleDraft(Article article,boolean more){
         article.setPath(CMSUtils.getArticlePath());
         if(article.getCategoryId()==null){
             throw new ArticleException("文章类别不能为空!!");
@@ -425,6 +428,9 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             article.setViewName(viewName);
         }
         article.setStatus(ArticleStatus.DRAFT);
+        if(more){
+            article=super.createOrUpdate(article);
+        }
         return  articleRepository.save(article);
     }
 

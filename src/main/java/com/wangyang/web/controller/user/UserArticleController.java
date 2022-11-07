@@ -109,7 +109,7 @@ public class UserArticleController {
         article.setTitle(title);
         article.setOriginalContent("# 开始你的创作:"+title);
         article.setUserId(userId);
-        Article saveArticle = articleService.saveArticleDraft(article);
+        Article saveArticle = articleService.saveArticleDraft(article,false);
 
 
         return saveArticle;
