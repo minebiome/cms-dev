@@ -4,6 +4,7 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.TemplateException;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Components;
@@ -11,6 +12,7 @@ import com.wangyang.pojo.entity.Tags;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.config.ApplicationBean;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.repository.ComponentsRepository;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.IComponentsService;
@@ -34,6 +36,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -196,12 +199,9 @@ public class ComponentsServiceImpl implements IComponentsService {
                     sort = Sort.by(Sort.Order.desc("id"));
                 }
                 Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, 5, sort));
-
-
-                Page<ArticleDto> articleDtos = articleService.convertArticle2ArticleDto(articles);
-
+                Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
                 Map<String,Object> map = new HashMap<>();
-                map.put("view",articleDtos);
+                map.put("view",articleVOS);
                 map.put("showUrl","/articleList?sort="+args); //likes,DESC
                 map.put("name",components.getName());
                 return map;
@@ -231,6 +231,38 @@ public class ComponentsServiceImpl implements IComponentsService {
                     map.put("name",components.getName());
                     return map;
                 }
+            }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT_SIZE)){
+                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT_SIZE.length());
+                if(args==null||"".equals(args)){
+                    throw new ObjectException("数据参数不能为空！！");
+                }
+                String[] argsArray = args.split(",");
+                List<String> argLists = Arrays.asList(argsArray);
+                int size=5;
+                Set<String> sortStr = new HashSet<>();
+                Sort.Direction direction = Sort.Direction.DESC;
+                for (String arg : argLists){
+                    if(arg.startsWith("size_")){
+                        size = Integer.parseInt(arg.replace("size_", ""));
+                    }else  if(arg.startsWith("order_")){
+                        String order = arg.replace("order_", "");
+                        direction = Sort.Direction.valueOf(order);
+                    }else if(arg.startsWith("sort_")){
+                        String sort_ = arg.replace("sort_", "");
+                        sortStr.add(sort_);
+                    }
+                }
+                Sort sort= Sort.by(direction,sortStr.toArray(new String[]{}));
+                String orderSort = sortStr.stream()
+                        .collect(Collectors.joining(","))+","+direction.name();
+
+                Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, size, sort));
+                Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",articleVOS);
+                map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
+                map.put("name",components.getName());
+                return map;
             }else {
 
             }

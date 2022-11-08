@@ -110,7 +110,7 @@ public class ArticleController {
         Article article = articleService.findArticleById(id);
         checkUser(userId,article);
 
-        if(article.getTitle().equals(articleParams.getTitle())&&article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
+        if(!more&&article.getTitle().equals(articleParams.getTitle())&&article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
             return article;
         }
 
