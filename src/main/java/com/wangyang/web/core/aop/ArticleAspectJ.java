@@ -36,7 +36,7 @@ public class ArticleAspectJ {
      */
     @Around("execution(* com.wangyang.web.controller.api.ArticleController.updateArticleDetailVO(..)) or " +
             "execution(* com.wangyang.web.controller.api.ArticleController.createArticleDetailVO(..)) or " +
-            "execution(* com.wangyang.web.controller.api.ArticleController.delete(..)) or" +
+            "execution(* com.wangyang.web.controller.api.ArticleController.delete(..)) or " +
             "execution(* com.wangyang.web.controller.api.ArticleController.updateCategory(..))")
     public ArticleDetailVO test(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
