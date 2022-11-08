@@ -269,6 +269,7 @@ public class HtmlServiceImpl implements IHtmlService {
         TemplateUtil.convertHtmlAndSave(sheet,template);
     }
     @Override
+    @Async //异步执行
     public void newArticleListHtml(){
         Components components = componentsService.findByViewName("newArticleIndex");
         Object data = componentsService.getModel(components);
