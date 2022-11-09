@@ -105,13 +105,13 @@ public class ArticleController {
      * @return
      */
     @PostMapping("/save/{id}")
-    public Article updateArticle(@PathVariable("id") Integer id,@RequestParam(value = "more", defaultValue = "false") Boolean more,@Valid @RequestBody ArticleParams articleParams,HttpServletRequest request){
+    public BaseResponse updateArticle(@PathVariable("id") Integer id,@RequestParam(value = "more", defaultValue = "false") Boolean more,@Valid @RequestBody ArticleParams articleParams,HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
         Article article = articleService.findArticleById(id);
         checkUser(userId,article);
 
-        if(!more&&article.getTitle().equals(articleParams.getTitle())&&article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
-            return article;
+        if(article.getTitle().equals(articleParams.getTitle())&&article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
+            return BaseResponse.ok("没有更新的字段!!",article);
         }
 
         BeanUtils.copyProperties(articleParams,article,"picPath");
@@ -123,7 +123,8 @@ public class ArticleController {
         }else {
             article.setStatus(ArticleStatus.DRAFT);
         }
-        return  articleService.updateArticleDraft(article,more);
+        Article updateArticleDraft = articleService.updateArticleDraft(article, more);
+        return BaseResponse.ok("没有更新的字段!!",updateArticleDraft);
     }
 
 

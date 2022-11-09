@@ -915,14 +915,16 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 //        if(article.getSummary()==null||"".equals(article.getSummary())){
 //
 //        }
-        String text = MarkdownUtils.getText(article.getFormatContent());
-        String summary ;
-        if(text.length()>100){
-            summary = text.substring(0,100);
-        }else {
-            summary = text;
+        if(article.getSummary()==""){
+            String text = MarkdownUtils.getText(article.getFormatContent());
+            String summary ;
+            if(text.length()>100){
+                summary = text.substring(0,100);
+            }else {
+                summary = text;
+            }
+            article.setSummary(summary+"....");
         }
-        article.setSummary(summary+"....");
     }
 
     /**
