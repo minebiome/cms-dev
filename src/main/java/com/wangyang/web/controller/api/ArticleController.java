@@ -124,7 +124,7 @@ public class ArticleController {
             article.setStatus(ArticleStatus.DRAFT);
         }
         Article updateArticleDraft = articleService.updateArticleDraft(article, more);
-        return BaseResponse.ok("没有更新的字段!!",updateArticleDraft);
+        return BaseResponse.ok("更新成功!!",updateArticleDraft);
     }
 
 
