@@ -173,6 +173,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.jbibtex</groupId>
+            <artifactId>jbibtex</artifactId>
+            <version>1.0.20</version>
+        </dependency>
+
 
 <!--        authorize-->
         <!--spring boot security-->

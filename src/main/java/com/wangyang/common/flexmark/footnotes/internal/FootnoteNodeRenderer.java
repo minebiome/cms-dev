@@ -84,13 +84,20 @@ public class FootnoteNodeRenderer implements PhasedNodeRenderer {
                             html.attr("id", "fn-" + footnoteOrdinal);
                             html.withAttr().tagIndent("li", () -> {
 //                                context.renderChildren(footnoteBlock);
-                                html.tag("p")
-                                        .attr("href", footnoteBlock.getUrl())
-                                        .withAttr()
-                                        .tag("a")
-                                        .raw(footnoteBlock.getFootnote())
-                                        .tag("/a")
-                                        .tag("/p");
+                                if(footnoteBlock.getUrl()==null || "".equals(footnoteBlock.getUrl())){
+                                    html.tag("p")
+                                            .raw(footnoteBlock.getFootnote())
+                                            .tag("/p");
+                                }else {
+                                    html.tag("p")
+                                            .attr("href", footnoteBlock.getUrl())
+                                            .withAttr()
+                                            .tag("a")
+                                            .raw(footnoteBlock.getFootnote())
+                                            .tag("/a")
+                                            .tag("/p");
+                                }
+
                                 int iMax = footnoteBlock.getFootnoteReferences();
                                 for (int i = 0; i < iMax; i++) {
                                     html.attr("href", "#fnref-" + footnoteOrdinal + (i == 0 ? "" : String.format(Locale.US, "-%d", i)));
