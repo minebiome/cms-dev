@@ -88,8 +88,9 @@ public class FootnoteExtension implements Parser.ParserExtension, HtmlRenderer.H
 
     @Override
     public void extend(Parser.Builder parserBuilder) {
+        parserBuilder.customBlockParserFactory(new FootnoteBlockParser.Factory());
+
         parserBuilder.linkRefProcessorFactory(new FootnoteLinkRefProcessor.Factory());
-//        parserBuilder.customBlockParserFactory(new FootnoteBlockParser.Factory());
 //        parserBuilder.customBlockParserFactory(new CustomBlockParserFactory() {
 //            @Override
 //            public @NotNull BlockParserFactory apply(@NotNull DataHolder optionsParam) {

@@ -14,4 +14,7 @@ public class Literature extends BaseEntity {
     private String key;
     private String author;
     private String url;
+
+
+
 }

@@ -40,8 +40,10 @@ public class FootnoteLinkRefProcessor implements LinkRefProcessor {
     @Override
     public Node createNode(@NotNull BasedSequence nodeChars) {
         BasedSequence footnoteId = nodeChars.midSequence(2, -1).trim();
-//        FootnoteBlock footnoteBlock = getFootnoteBlock(footnoteId.toString());
-//        FootnoteBlock footnoteBlock = footnoteId.length() > 0 ? footnoteRepository.get(footnoteId.toString()) : null;
+        String key = footnoteId.toString();
+//        String key = footnoteRepository.getKey(footnoteId.toString());
+        //        FootnoteBlock footnoteBlock = getFootnoteBlock(footnoteId.toString());
+        FootnoteBlock footnoteBlock = footnoteId.length() > 0 ? footnoteRepository.get(key) : null;
 //        FootnoteBlock footnoteBlock = new FootnoteBlock();
 //        footnoteBlock.setText(BasedSequence.of("bbbbb"));
 //        footnoteBlock.setFootnoteOrdinal("ssssssssssssss");
@@ -50,8 +52,9 @@ public class FootnoteLinkRefProcessor implements LinkRefProcessor {
 //        footnoteBlock.setClosingMarker(closingMarker);
 
         Footnote footnote = new Footnote(nodeChars.subSequence(0, 2), footnoteId, nodeChars.endSequence(1));
-        FootnoteBlock footnoteBlock = new FootnoteBlock();
-
+        if(footnoteBlock==null) {
+            footnoteBlock = new FootnoteBlock();
+        }
         footnote.setFootnoteBlock(footnoteBlock);
         footnoteRepository.addFootnoteReference(footnoteBlock,footnote);
 

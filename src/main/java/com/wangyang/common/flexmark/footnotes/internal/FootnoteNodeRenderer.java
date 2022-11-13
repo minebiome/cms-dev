@@ -79,7 +79,7 @@ public class FootnoteNodeRenderer implements PhasedNodeRenderer {
                 html.attr("class", "footnotes").withAttr().tagIndent("div", () -> {
                     html.tagVoidLine("hr");
                     html.tagIndent("ol", () -> {
-                        for (FootnoteBlock footnoteBlock : footnoteRepository.getReferencedFootnoteBlocks()) {
+                        for (FootnoteBlock footnoteBlock : footnoteRepository.getReferencedFootnoteBlocks().values()) {
                             String footnoteOrdinal = footnoteBlock.getFootnoteOrdinal();
                             html.attr("id", "fn-" + footnoteOrdinal);
                             html.withAttr().tagIndent("li", () -> {

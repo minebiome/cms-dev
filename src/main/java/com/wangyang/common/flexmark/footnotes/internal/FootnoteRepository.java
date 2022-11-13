@@ -26,7 +26,9 @@ import java.util.*;
 
 
 public class FootnoteRepository extends NodeRepository<FootnoteBlock> {
-    private ArrayList<FootnoteBlock> referencedFootnoteBlocks = new ArrayList<>();
+//    private ArrayList<FootnoteBlock> referencedFootnoteBlocks = new ArrayList<>();
+    private Map<String,FootnoteBlock> referencedFootnoteBlocks = new LinkedHashMap<>();
+//    private Map<String,FootnoteBlock> sortMap = new HashMap<>();
 
 
     public FootnoteRepository(DataHolder options) {
@@ -69,9 +71,9 @@ public class FootnoteRepository extends NodeRepository<FootnoteBlock> {
 //        footnote.setReferenceOrdinal(referenceOrdinal);
 //    }
     public void addFootnoteReference(FootnoteBlock footnoteBlock, Footnote footnote) {
+        referencedFootnoteBlocks.put(footnote.getText().toString(),footnoteBlock);
 
-        referencedFootnoteBlocks.add(footnoteBlock);
-        footnoteBlock.setFootnote(BasedSequence.of(footnote.getText()));
+//        footnoteBlock.setFootnote(BasedSequence.of(footnote.getText()));
 
         footnoteBlock.setFirstReferenceOffset(footnote.getStartOffset());
 
@@ -80,116 +82,86 @@ public class FootnoteRepository extends NodeRepository<FootnoteBlock> {
         footnote.setReferenceOrdinal(referenceOrdinal);
     }
 
+
+
     public void resolveFootnoteOrdinals() {
         // need to sort by first referenced offset then set each to its ordinal position in the array+1
-        Collections.sort(referencedFootnoteBlocks, (f1, f2) -> f1.getFirstReferenceOffset() - f2.getFirstReferenceOffset());
-
-        Set<BasedSequence> sequences = ServiceUtil.fetchProperty(referencedFootnoteBlocks, FootnoteBlock::getFootnote);
-        IArticleService articleService = ApplicationBean.getBean(ArticleServiceImpl.class);
+//        Collections.sort(referencedFootnoteBlocks, (f1, f2) -> f1.getFirstReferenceOffset() - f2.getFirstReferenceOffset());
+        Set<String> keys = referencedFootnoteBlocks.keySet();
+//        Set<BasedSequence> sequences = ServiceUtil.fetchProperty(referencedFootnoteBlocks, FootnoteBlock::getFootnote);
+//        IArticleService articleService = ApplicationBean.getBean(ArticleServiceImpl.class);
         ILiteratureService literatureService = ApplicationBean.getBean(LiteratureServiceImpl.class);
 
-        Set<Integer> articleIds = new HashSet<>();
-        Set<Integer> literatureIds = new HashSet<>();
-        Set<String> literatureStrIds = new HashSet<>();
-        for(BasedSequence sequence : sequences){
-            String idStr = sequence.toString();
-            if(idStr.startsWith("A")){
-                try {
-                    int id = Integer.parseInt(idStr.replace("A", ""));
-                    articleIds.add(id);
-                } catch (NumberFormatException e) {
-                    continue;
-                }
-
-            }else if(idStr.startsWith("L")){
-                try {
-                    int id = Integer.parseInt(idStr.replace("L", ""));
-                    literatureIds.add(id);
-                } catch (NumberFormatException e) {
-                    continue;
-                }
-            }else if(idStr.startsWith("SL:")){
-                literatureStrIds.add(idStr.replace("SL:", ""));
-            }else {
-                continue;
-            }
-        }
-        Map<Integer, Article> articleMap=new HashMap<>();
-        if(articleIds.size()>0){
-            List<Article> articles = articleService.listByIds(articleIds);
-            articleMap= ServiceUtil.convertToMap(articles, Article::getId);
-
-        }
-        Map<Integer, Literature> literatureMap = new HashMap<>();
-        if(literatureIds.size()>0){
-            List<Literature> literatures = literatureService.listByIds(literatureIds);
-            literatureMap = ServiceUtil.convertToMap(literatures, Literature::getId);
-        }
-
-        Map<String, Literature> literatureStrMap = new HashMap<>();
-        if(literatureStrIds.size()>0){
-            List<Literature> literatures = literatureService.listByKeys(literatureStrIds);
-            literatureStrMap = ServiceUtil.convertToMap(literatures, Literature::getKey);
-        }
+//        Set<Integer> articleIds = new HashSet<>();
+//        Set<Integer> literatureIds = new HashSet<>();
+//        Set<String> literatureStrIds = new HashSet<>();
+//        for(BasedSequence sequence : sequences){
+//            String idStr = sequence.toString();
+//            if(idStr.startsWith("A")){
+//                try {
+//                    int id = Integer.parseInt(idStr.replace("A", ""));
+//                    articleIds.add(id);
+//                } catch (NumberFormatException e) {
+//                    continue;
+//                }
+//
+//            }else if(idStr.startsWith("L")){
+//                try {
+//                    int id = Integer.parseInt(idStr.replace("L", ""));
+//                    literatureIds.add(id);
+//                } catch (NumberFormatException e) {
+//                    continue;
+//                }
+//            }else if(idStr.startsWith("SL:")){
+//                literatureStrIds.add(idStr.replace("SL:", ""));
+//            }else {
+//                continue;
+//            }
+//        }
+//        Map<Integer, Article> articleMap=new HashMap<>();
+//        if(articleIds.size()>0){
+//            List<Article> articles = articleService.listByIds(articleIds);
+//            articleMap= ServiceUtil.convertToMap(articles, Article::getId);
+//
+//        }
+//        Map<Integer, Literature> literatureMap = new HashMap<>();
+//        if(literatureIds.size()>0){
+//            List<Literature> literatures = literatureService.listByIds(literatureIds);
+//            literatureMap = ServiceUtil.convertToMap(literatures, Literature::getId);
+//        }
+//
+//        Map<String, Literature> literatureStrMap = new HashMap<>();
+//        if(literatureStrIds.size()>0){
+//            List<Literature> literatures = literatureService.listByKeys(literatureStrIds);
+//            literatureStrMap = ServiceUtil.convertToMap(literatures, Literature::getKey);
+//        }
+        List<Literature> literatures = literatureService.listByKeys(keys);
+        Map<String, Literature> literatureMap = ServiceUtil.convertToMap(literatures, Literature::getKey);
 
         int ordinal = 0;
-        List<FootnoteBlock> removeFootnoteBlock = new ArrayList<>();
-        for (int i = 0;i<referencedFootnoteBlocks.size();i++) {
-            FootnoteBlock footnoteBlock=referencedFootnoteBlocks.get(i);
-            String idStr = footnoteBlock.getFootnote().toString();
-            if(idStr.startsWith("A")){
-                int id = 0;
-                try {
-                    id = Integer.parseInt(idStr.replace("A", ""));
-                } catch (NumberFormatException e) {
-                    referencedFootnoteBlocks.remove(footnoteBlock);
-                    continue;
-                }
-                Article article = articleMap.get(id);
-                if(article==null){
-                    removeFootnoteBlock.add(footnoteBlock);
-                    continue;
-                }
-                footnoteBlock.setFootnote(BasedSequence.of(article.getTitle()));
-                footnoteBlock.setUrl(article.getViewName());
-
-
-            }else if(idStr.startsWith("L")){
-                int id = 0;
-                try {
-                    id = Integer.parseInt(idStr.replace("L", ""));
-                } catch (NumberFormatException e) {
-                    referencedFootnoteBlocks.remove(footnoteBlock);
-                    continue;
-                }
-                Literature literature = literatureMap.get(id);
-                if(literature==null){
-                    removeFootnoteBlock.add(footnoteBlock);
-                    continue;
-                }
-                footnoteBlock.setFootnote(BasedSequence.of(literature.getTitle()));
-                footnoteBlock.setUrl(literature.getUrl());
-
-            }else if(idStr.startsWith("SL:")){
-                String id = idStr.replace("SL:", "");
-                Literature literature = literatureStrMap.get(id);
-                if(literature==null){
-                    removeFootnoteBlock.add(footnoteBlock);
-                    continue;
-                }
-                footnoteBlock.setFootnote(BasedSequence.of(literature.getTitle()));
-                footnoteBlock.setUrl(literature.getUrl());
-            }else {
-                removeFootnoteBlock.add(footnoteBlock);
+//        List<FootnoteBlock> removeFootnoteBlock = new ArrayList<>();
+        for (Iterator<String> iterator = referencedFootnoteBlocks.keySet().iterator();iterator.hasNext();) {
+            String key = iterator.next();
+            FootnoteBlock footnoteBlock=referencedFootnoteBlocks.get(key);
+//            String id = footnoteBlock.getFootnote().toString();
+            Literature literature = literatureMap.get(key);
+            if(literature==null && footnoteBlock.getFootnote().toString().equals("")){
+//                removeFootnoteBlock.add(footnoteBlock);
+                iterator.remove();
                 continue;
             }
+            if(literature!=null ){
+                footnoteBlock.setFootnote(BasedSequence.of(literature.getTitle()));
+                footnoteBlock.setUrl(literature.getUrl());
+            }
+
             footnoteBlock.setFootnoteOrdinal(++ordinal +"");
         }
-        referencedFootnoteBlocks.removeAll(removeFootnoteBlock);
+//        referencedFootnoteBlocks.r
 
     }
 
-    public List<FootnoteBlock> getReferencedFootnoteBlocks() {
+    public Map<String,FootnoteBlock> getReferencedFootnoteBlocks() {
         return referencedFootnoteBlocks;
     }
 
@@ -224,15 +196,19 @@ public class FootnoteRepository extends NodeRepository<FootnoteBlock> {
 
     @Override
     public @Nullable FootnoteBlock get(@NotNull Object o) {
-//        return super.get(o);
-        String name = (String)o;
-        IArticleService articleService = ApplicationBean.getBean(ArticleServiceImpl.class);
-        Article article = articleService.findByViewName(name);
-
-        FootnoteBlock footnoteBlock = new FootnoteBlock();
-//        footnoteBlock.setText(BasedSequence.of("bbbbb"));
-        footnoteBlock.setFootnote(BasedSequence.of(article.getTitle()));
+        FootnoteBlock footnoteBlock = super.get(o);
+        if(footnoteBlock==null){
+            footnoteBlock = referencedFootnoteBlocks.get(o);
+        }
         return footnoteBlock;
+//        String name = (String)o;
+//        IArticleService articleService = ApplicationBean.getBean(ArticleServiceImpl.class);
+//        Article article = articleService.findByViewName(name);
+//
+//        FootnoteBlock footnoteBlock = new FootnoteBlock();
+////        footnoteBlock.setText(BasedSequence.of("bbbbb"));
+//        footnoteBlock.setFootnote(BasedSequence.of(article.getTitle()));
+//        return footnoteBlock;
 
     }
 }

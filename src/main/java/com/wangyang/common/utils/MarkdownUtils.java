@@ -20,6 +20,8 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.DataHolder;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 //import com.wangyang.common.flexmark.gitlab.GitLabExtension;
+//import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
+
 import com.wangyang.common.flexmark.footnotes.FootnoteExtension;
 import com.wangyang.common.flexmark.gitlab.GitLabExtension;
 import com.wangyang.pojo.entity.base.Content;
