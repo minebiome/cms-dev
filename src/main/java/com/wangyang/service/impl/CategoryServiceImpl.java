@@ -272,8 +272,8 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
      */
     @Override
     public List<CategoryDto> listAllDto() {
-
-        return convertTo(listAll());
+        List<Category> categories = listAll();
+        return convertTo(categories);
     }
 
     @Override

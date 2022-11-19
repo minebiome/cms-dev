@@ -56,6 +56,9 @@ public class LiteratureController {
     @Autowired
     IComponentsService componentsService;
 
+    @Autowired
+    IZoteroService zoteroService;
+
     @PostMapping
     public Literature add(@RequestBody Literature literature){
         Literature saveLiterature = literatureService.add(literature);
@@ -88,122 +91,10 @@ public class LiteratureController {
     }
 
     @GetMapping("/import")
-    @Async
-    public BaseResponse importData(HttpServletRequest request) throws IOException {
+    public BaseResponse importData(HttpServletRequest request)  {
         int userId = AuthorizationUtil.getUserId(request);
-//        ZoteroAuth zoteroAuth =  new ZoteroAPIKey("anXNFXA8ng0ri04DIAz99Vdd");
-//        Library library = Library.createLibrary("8927145", zoteroAuth);
-//
-//        CollectionIterator collectionIterator = library.fetchCollectionsAll();
-//        List<Collection> collections = new ArrayList<>();
-//        while (collectionIterator.hasNext()){
-//            zotero.api.Collection zoteroCollection = collectionIterator.next();
-//            String key = zoteroCollection.getKey();
-//            String name = zoteroCollection.getName();
-//            Collection collection = new Collection();
-//            collection.setName(name);
-//            collection.setKey(key);
-//            collections.add(collection);
-//        }
-//        collectionService.saveAll(collections);
-
-//        RequestInterceptor interceptor = new RequestInterceptor() {
-//            @Override
-//            public void intercept(RequestFacade requestFacade) {
-//                requestFacade.addHeader(HttpHeaders.AUTHORIZATION,HttpHeaders.AUTHORIZATION_BEARER_X + "anXNFXA8ng0ri04DIAz99Vdd");
-//                requestFacade.addHeader(HttpHeaders.ZOTERO_API_VERSION,"3");
-//            }
-//        };
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request original = chain.request();
-
-                        Request request = original.newBuilder()
-                                .header(HttpHeaders.AUTHORIZATION,HttpHeaders.AUTHORIZATION_BEARER_X + "anXNFXA8ng0ri04DIAz99Vdd")
-                                .header(HttpHeaders.ZOTERO_API_VERSION,"3")
-                                .method(original.method(), original.body())
-                                .build();
-                        return chain.proceed(request);
-                    }
-                })
-
-                .build();
-        Retrofit retrofit  = new Retrofit.Builder()
-                .baseUrl("https://api.zotero.org")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
-
-        ZoteroService zoteroService = retrofit.create(ZoteroService.class);
-//        Map map = new HashMap<>();
-//        retrofit2.Call<Map<String, String>> collectionsVersion = zoteroService.getCollectionsVersion(LibraryType.USER, Long.valueOf("8927145"), null);
-//        Map<String, String> stringMap = collectionsVersion.execute().body();
-
-        SearchQuery searchQueryVersion = new SearchQuery();
-        searchQueryVersion.put("itemType","journalArticle");
-        Call<ObjectVersions> itemVersions = zoteroService.getItemVersions(LibraryType.USER, Long.valueOf("8927145"), searchQueryVersion,null);
-        ObjectVersions objectVersions = itemVersions.execute().body();
-        int size = objectVersions.size();
-        int num;
-        if(size%100==0){
-            num = size/100;
-        }else {
-            num =Integer.valueOf(size/100)+1;
-        }
-        List<Item> allItem = new ArrayList<>();
-        for (int i=0;i<num;i++){
-            SearchQuery searchQuery = new SearchQuery();
-            searchQuery.put("limit",100);
-            searchQuery.put("start",i*100);
-
-            searchQuery.put("itemType","journalArticle");
-            Call<List<Item>> items = zoteroService.getItems(LibraryType.USER, Long.valueOf("8927145"), searchQuery,null);
-            List<Item> itemList = items.execute().body();
-            allItem.addAll(itemList);
-        }
-
-        List<Collection> collections = collectionService.listAll();
-        Map<String, Collection> collectionMap = ServiceUtil.convertToMap(collections, Collection::getKey);
-
-        List<Literature> literatureList = new ArrayList<>();
-        for (int i=0;i<allItem.size();i++){
-            int id = i+1;
-            Item item = allItem.get(i);
-            Literature literature = new Literature();
-            List<String> collectionNames = item.getData().getCollections();
-            if(collectionNames.size()>0){
-                String name = collectionNames.get(0);
-                if(collectionMap.containsKey(name)){
-                    Collection collection = collectionMap.get(name);
-                    literature.setCategoryId(collection.getId());
-                }else {
-                    literature.setCategoryId(-1);
-                }
-            }else {
-                literature.setCategoryId(-1);
-            }
-            literature.setTitle(item.getData().getTitle());
-            literature.setKey(item.getKey());
-            literature.setUserId(userId);
-            literature.setOriginalContent(item.getData().getAbstractNote());
-            literatureList.add(literature);
-
-        }
-
-//        Map<String, Literature> collectionMap = ServiceUtil.convertToMap(collections, Collection::getKey);
-//        for (Collection collection : collections){
-//            if(collectionMap.containsKey(collection.getParentKey())){
-//                Integer id = collectionMap.get(collection.getParentKey()).getId();
-//                collection.setParentId(id);
-//            }
-//        }
-
-        literatureService.deleteAll();
-        literatureService.saveAll(literatureList);
-//
-        return BaseResponse.ok("");
+        zoteroService.importLiterature(userId);
+        return BaseResponse.ok("success!!");
     }
 
     @GetMapping("/generateHtml")
