@@ -36,6 +36,12 @@ public class PreviewController {
     @Autowired
     ITemplateService templateService;
 
+    @Autowired
+    ILiteratureService literatureService;
+
+    @Autowired
+    ICollectionService collectionService;
+
 
 
     @PostMapping("/templates/update/{id}")
@@ -48,13 +54,20 @@ public class PreviewController {
         return inputTemplate.getTemplateValue();
     }
 
+    @GetMapping("/literatureList/{collectionId}")
+    public String previewLiterature(@PathVariable("collectionId")Integer collectionId, Model model){
+        List<Literature> literatures = literatureService.listByCollectionId(collectionId);
+        Template template = templateService.findByEnName(CmsConst.DEFAULT_LITERATURE_TEMPLATE);
+        model.addAttribute("view",literatures);
+        return template.getTemplateValue();
+    }
 
 
-    @GetMapping("/article/{articleId}")
 //    @ResponseBody
     /**
      * 使用自定义的公共头部引用语句
      */
+    @GetMapping("/article/{articleId}")
     public String previewArticle(@PathVariable("articleId")Integer articleId, Model model){
         Article article = articleService.findArticleById(articleId);
         if(article.getStatus()!= ArticleStatus.PUBLISHED){

@@ -132,6 +132,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("默认的pdf导出Sheet预览模板",CmsConst.DEFAULT_SHEET_PDF_TEMPLATE, "templates/@sheetPDF", TemplateType.SHEET,3),
 
                 //new Template("文章预览模板",CmsConst.DEFAULT_ARTICLE_PREVIEW_TEMPLATE, "templates/@articlePreview", TemplateType.ARTICLE,3),
+                new Template("默认的文献模板",CmsConst.DEFAULT_LITERATURE_TEMPLATE,"templates/@literature", TemplateType.Literature,1),
 
 
                 new Template("默认的分类模板",CmsConst.DEFAULT_CATEGORY_TEMPLATE,"templates/@category", TemplateType.CATEGORY,4),

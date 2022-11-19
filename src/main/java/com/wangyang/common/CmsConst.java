@@ -41,6 +41,7 @@ public class CmsConst {
 
 //    public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";
     public final static String ARTICLE_DETAIL_PATH = "html"+File.separator+"article";
+    public final static String LITERATURE_DETAIL_PATH = "html"+File.separator+"literature";
     public final static String SHEET_PATH = "html"+File.separator+"sheet";
 
 
@@ -50,6 +51,7 @@ public class CmsConst {
 
 
     public final static String DEFAULT_ARTICLE_TEMPLATE = "DEFAULT_ARTICLE";
+    public final static String DEFAULT_LITERATURE_TEMPLATE = "DEFAULT_LITERATURE_TEMPLATE";
     public final static String DEFAULT_TREE_ARTICLE_TEMPLATE = "DEFAULT_TREE_ARTICLE_TEMPLATE";
     public final static String DEFAULT_ARTICLE_CHANNEL_TEMPLATE = "DEFAULT_ARTICLE_CHANNEL";
     public final static String DEFAULT_ARTICLE_PICTURE_TEMPLATE = "DEFAULT_ARTICLE_PICTURE";

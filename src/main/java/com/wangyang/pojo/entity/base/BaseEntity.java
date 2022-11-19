@@ -1,6 +1,7 @@
 package com.wangyang.pojo.entity.base;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,7 +10,9 @@ import java.util.Date;
 @Data
 public class BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "myid")
+    @GenericGenerator(name = "myid", strategy = "com.wangyang.pojo.support.ManualInsertGenerator")
     private Integer id;
     @Column(columnDefinition = "int default 0")
     private Integer parentId=0;

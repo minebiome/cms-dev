@@ -43,6 +43,9 @@ public class ArticleJob {
     IComponentsService componentsService;
 
     @Autowired
+    ICollectionService collectionService;
+
+    @Autowired
     ITemplateService templateService;
     //每天凌晨执行
     @ArticleJobAnnotation(jobName = "hotArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
@@ -148,6 +151,13 @@ public class ArticleJob {
     public Map<String,Object> listCategory() {
         Map<String,Object> map = new HashMap<>();
         map.put("view",categoryService.listUserCategoryVo());
+        return map;
+    }
+
+    @TemplateOptionMethod(name = "文献分类", templateValue = "templates/components/@collectionTree", viewName = "collectionTree")
+    public Map<String,Object> listCollection() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("view",collectionService.listTree());
         return map;
     }
 

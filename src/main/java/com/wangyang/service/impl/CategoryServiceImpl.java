@@ -15,6 +15,7 @@ import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.CategoryRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.*;
+import com.wangyang.service.base.AbstractBaseCategoryServiceImpl;
 import com.wangyang.service.base.AbstractCrudService;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 //@TemplateOption
 @Transactional
 @Slf4j
-public class CategoryServiceImpl extends AbstractCrudService<Category,Category,CategoryVO,Integer> implements ICategoryService
+public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Category,Category,CategoryVO> implements ICategoryService
         {
 
 
@@ -59,8 +60,7 @@ public class CategoryServiceImpl extends AbstractCrudService<Category,Category,C
         this.categoryRepository =categoryRepository;
     }
 
-
-            @Override
+    @Override
     public Category save(Category category){
         return categoryRepository.save(category);
     }

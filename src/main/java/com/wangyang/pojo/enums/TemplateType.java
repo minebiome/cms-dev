@@ -15,7 +15,8 @@ public enum  TemplateType implements ValueEnum<Integer>  {
     CATEGORY_LIST(4,"分类名称列表"),
     ARTICLE_LIST(5,"文章组件列表"),
     ARTICLE_MIND(6,"文章思维导图"),
-    EMAIL(7,"EMAIL");
+    EMAIL(7,"EMAIL"),
+    Literature(8,"文献模板");
 
     private final int value;
     private final String name;

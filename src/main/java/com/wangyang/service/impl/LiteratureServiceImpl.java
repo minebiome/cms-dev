@@ -10,6 +10,7 @@ import com.wangyang.repository.LiteratureRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.ICategoryService;
 import com.wangyang.service.ILiteratureService;
+import com.wangyang.service.base.AbstractContentServiceImpl;
 import com.wangyang.service.base.AbstractCrudService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Service
-public class LiteratureServiceImpl
-        extends AbstractCrudService<Literature, BaseEntity, BaseVo,Integer> implements ILiteratureService {
+public class LiteratureServiceImpl  extends AbstractContentServiceImpl<Literature, Literature, BaseVo> implements ILiteratureService {
 
     private LiteratureRepository literatureRepository;
     public LiteratureServiceImpl(LiteratureRepository literatureRepository) {
@@ -45,6 +46,16 @@ public class LiteratureServiceImpl
 
 
         return literatures;
+    }
+
+    @Override
+    public List<Literature> listByCollectionId(Integer collectionId) {
+        return literatureRepository.findAll(new Specification<Literature>() {
+            @Override
+            public Predicate toPredicate(Root<Literature> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"),collectionId)).getRestriction();
+            }
+        });
     }
 
     @Override

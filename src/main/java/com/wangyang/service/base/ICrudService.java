@@ -1,8 +1,10 @@
 package com.wangyang.service.base;
 
 import com.wangyang.pojo.entity.Article;
+import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.Comment;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.CollectionVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
@@ -57,5 +59,7 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     List<DOMAIN> listByIds(Set<ID> ids);
 
     List<DOMAIN>  findByParentId(Integer parentId);
+
+    List<DOMAINVO> convertToListVo(List<DOMAIN> domains);
     //    @Override
 }

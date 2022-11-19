@@ -26,6 +26,9 @@ public class MenuController {
 
     @PostMapping
     public Menu add(@RequestBody  Menu menu){
+        if(menu.getParentId()==null){
+            menu.setParentId(0);
+        }
         Menu saveMenu = menuService.add(menu);
        htmlService.generateMenuListHtml();
         return saveMenu;

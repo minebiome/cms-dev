@@ -21,6 +21,9 @@ public class CMSUtils {
     public static String getArticlePath(){
         return CmsConst.ARTICLE_DETAIL_PATH;
     }
+    public static String getLiteraturePath(){
+        return CmsConst.LITERATURE_DETAIL_PATH;
+    }
 
 //    public static String getCategoryPath(){
 //        return CmsConst.CATEGORY_LIST_PATH;

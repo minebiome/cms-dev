@@ -1,13 +1,15 @@
 package com.wangyang.pojo.entity;
 
+import com.wangyang.pojo.entity.base.BaseCategory;
 import com.wangyang.pojo.entity.base.BaseEntity;
 import lombok.Data;
 
 import java.io.Serializable;
 import javax.persistence.*;
-@Entity(name = "Category")
+@Entity
+@DiscriminatorValue(value = "0")
 @Data
-public class Category extends BaseEntity implements Serializable {
+public class Category extends BaseCategory {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)

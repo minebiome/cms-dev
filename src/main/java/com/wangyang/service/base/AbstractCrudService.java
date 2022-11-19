@@ -10,11 +10,13 @@ import com.wangyang.pojo.annotation.QueryField;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.pojo.vo.CollectionVO;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.util.File2Tsv;
 import com.wangyang.util.ObjectToCollection;
@@ -149,6 +151,20 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
     {
         ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
         Class<DOMAIN> type = (Class<DOMAIN>) superClass.getActualTypeArguments()[0];
+        try
+        {
+            return type.newInstance();
+        }
+        catch (Exception e)
+        {
+            // Oops, no default constructor
+            throw new RuntimeException(e);
+        }
+    }
+    protected DOMAINVO getVOInstance()
+    {
+        ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
+        Class<DOMAINVO> type = (Class<DOMAINVO>) superClass.getActualTypeArguments()[2];
         try
         {
             return type.newInstance();
@@ -385,6 +401,17 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
                 return criteriaQuery.where(criteriaBuilder.equal(root.get("parentId"),parentId)).getRestriction();
             }
         });
+    }
+
+
+
+    @Override
+    public List<DOMAINVO> convertToListVo(List<DOMAIN> domains) {
+        return domains.stream().map(domain -> {
+            DOMAINVO domainvo = getVOInstance();
+            BeanUtils.copyProperties(domain,domainvo);
+            return domainvo;
+        }).collect(Collectors.toList());
     }
 
     @Override
