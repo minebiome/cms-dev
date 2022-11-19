@@ -12,6 +12,7 @@ import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.Collection;
 import com.wangyang.service.*;
+import com.wangyang.util.AuthorizationUtil;
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -33,6 +34,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,7 +89,8 @@ public class LiteratureController {
 
     @GetMapping("/import")
     @Async
-    public BaseResponse importData() throws IOException {
+    public BaseResponse importData(HttpServletRequest request) throws IOException {
+        int userId = AuthorizationUtil.getUserId(request);
 //        ZoteroAuth zoteroAuth =  new ZoteroAPIKey("anXNFXA8ng0ri04DIAz99Vdd");
 //        Library library = Library.createLibrary("8927145", zoteroAuth);
 //
@@ -183,6 +186,7 @@ public class LiteratureController {
             }
             literature.setTitle(item.getData().getTitle());
             literature.setKey(item.getKey());
+            literature.setUserId(userId);
             literature.setOriginalContent(item.getData().getAbstractNote());
             literatureList.add(literature);
 
@@ -203,7 +207,8 @@ public class LiteratureController {
     }
 
     @GetMapping("/generateHtml")
-    public BaseResponse generateHtml(){
+    public BaseResponse generateHtml(HttpServletRequest request){
+        int userId = AuthorizationUtil.getUserId(request);
         List<Literature> literatureList = literatureService.listAll();
         List<Collection> collections = collectionService.listAll();
         Template template = templateService.findByEnName(CmsConst.DEFAULT_LITERATURE_TEMPLATE);
