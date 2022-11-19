@@ -30,6 +30,9 @@
         <flexmark.version>0.62.2</flexmark.version>
         <selenium.version>3.141.59</selenium.version>
         <jjwt.version>0.10.6</jjwt.version>
+        <version.gson>2.10</version.gson>
+        <version.apache.httpcomponents>4.5.13</version.apache.httpcomponents>
+
     </properties>
 
     <dependencies>
@@ -372,6 +375,56 @@
             <artifactId>jsoup</artifactId>
             <version>1.14.3</version>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${version.apache.httpcomponents}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>${version.apache.httpcomponents}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+    <!--        <dependency>-->
+<!--            <groupId>com.google.code.gson</groupId>-->
+<!--            <artifactId>gson</artifactId>-->
+<!--            <version>${version.gson}</version>-->
+<!--        </dependency>-->
+<!--        https://square.github.io/retrofit/-->
+<!--        A type-safe HTTP client for Android and Java-->
+
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>com.squareup.retrofit</groupId>-->
+<!--            <artifactId>retrofit</artifactId>-->
+<!--            <version>1.6.1</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.netflix.rxjava</groupId>-->
+<!--            <artifactId>rxjava-core</artifactId>-->
+<!--            <version>0.20.0</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
