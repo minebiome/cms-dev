@@ -164,7 +164,7 @@ public class ArticleJob {
     @TemplateOptionMethod(name = "导航菜单",templateValue = "templates/components/@header",viewName="header")
     public Map<String,Object> listMenu(){
         Map<String,Object> map = new HashMap<>();
-        map.put("view", menuService.list());
+        map.put("view", menuService.listVo());
         return  map;
     }
 }

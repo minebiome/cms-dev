@@ -123,7 +123,12 @@ public class CommentServiceImpl
         List<CommentVo> commentVos = list.stream().map(comment -> {
             CommentVo commentVo = new CommentVo();
             BeanUtils.copyProperties(comment, commentVo);
-            commentVo.setUser(userMap.get(comment.getUserId()));
+            User user = userMap.get(comment.getUserId());
+            if(user==null){
+                user = new User();
+                user.setUsername("删除用户");
+            }
+            commentVo.setUser(user);
             if(comment.getParentId()!=0){
                 Comment parentComment= commentMap.get(comment.getParentId());
                 if(parentComment==null){

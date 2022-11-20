@@ -4,14 +4,19 @@ package com.wangyang.service.impl;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Menu;
+import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.MenuVo;
 import com.wangyang.repository.MenuRepository;
+import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.service.IMenuService;
+import com.wangyang.service.base.AbstractCrudService;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,19 +24,25 @@ import java.util.Optional;
 @Service
 @Slf4j
 //@TemplateOption
-public class MenuServiceImpl implements IMenuService {
+public class MenuServiceImpl  extends AbstractCrudService<Menu,Menu, MenuVo,Integer> implements  IMenuService {
 
     @Autowired
     MenuRepository menuRepository;
-
-    @Autowired
-    IComponentsService templatePageService;
+    public MenuServiceImpl(MenuRepository menuRepository) {
+        super(menuRepository);
+        this.menuRepository =menuRepository;
+    }
 
 
     @Override
     public Menu add(Menu menu){
         Menu saveMenu = menuRepository.save(menu);
         return saveMenu;
+    }
+
+    @Override
+    public boolean supportType(CrudType type) {
+        return false;
     }
 
     @Override
@@ -68,7 +79,13 @@ public class MenuServiceImpl implements IMenuService {
         }
         return menu;
     }
-
+    @Override
+    public List<MenuVo> listVo(){
+        List<Menu> menus = list();
+        List<MenuVo> menuVos = convertToListVo(menus);
+        List<MenuVo> menuVoList =listWithTree(menuVos);
+        return menuVoList;
+    }
     @Override
     public Menu addCategoryToMenu(Category category){
         Menu menu = menuRepository.findByCategoryId(category.getId());

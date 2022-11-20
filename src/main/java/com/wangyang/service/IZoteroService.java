@@ -10,6 +10,7 @@ import com.wangyang.common.BaseResponse;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.Literature;
+import com.wangyang.pojo.entity.Task;
 import com.wangyang.util.AuthorizationUtil;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -30,9 +31,13 @@ import java.util.Map;
 public interface IZoteroService {
 
 
-    @Async
-    void importLiterature(Integer userId);
+    Task importLiterature(int userId);
+
+    Task importCollection(int userId);
 
     @Async
-    void importCollection();
+    void importLiterature(Integer userId, Task task);
+
+    @Async
+    void importCollection(Integer userId, Task task);
 }

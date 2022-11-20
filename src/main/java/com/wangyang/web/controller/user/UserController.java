@@ -5,6 +5,7 @@ import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.pojo.support.Token;
+import com.wangyang.service.ILiteratureService;
 import com.wangyang.service.authorize.IRoleService;
 import com.wangyang.service.authorize.IUserRoleService;
 import com.wangyang.service.authorize.IUserService;
@@ -45,10 +46,15 @@ public class UserController {
     @Autowired
     IUserRoleService userRoleService;
 
+
+
     @GetMapping
     public Page<User> page(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         return userService.pageUser(pageable);
     }
+
+
+
 
     @GetMapping("/listAll")
     public List<UserDto> listAll(){
@@ -65,6 +71,8 @@ public class UserController {
         loginUser.setToken(token.getToken());
         return loginUser;
     }
+
+
 
 
     @PostMapping("/registry")

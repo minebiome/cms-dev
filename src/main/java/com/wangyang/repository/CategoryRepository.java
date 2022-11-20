@@ -18,7 +18,7 @@ public interface CategoryRepository extends BaseCategoryRepository<Category> {
 //    @Query("select o from Category o where o.id in (select a.categoryId from ArticleCategory a where a.articleId=?1)")
 //    List<Category> findCategoryByArticleId(int aid);
 
-    @Query(value = "select o.id from Category o where status=true")
+    @Query(value = "select o.id from Category o")
     List<Integer> findAllId();
 
     Category findByViewName(String viewName);

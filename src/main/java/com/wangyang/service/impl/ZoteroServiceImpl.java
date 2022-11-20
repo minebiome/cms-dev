@@ -7,11 +7,17 @@ import com.gimranov.libzotero.ZoteroService;
 import com.gimranov.libzotero.model.Item;
 import com.gimranov.libzotero.model.ObjectVersions;
 import com.wangyang.common.BaseResponse;
+import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.Literature;
+import com.wangyang.pojo.entity.Task;
+import com.wangyang.pojo.enums.TaskStatus;
+import com.wangyang.pojo.enums.TaskType;
 import com.wangyang.service.ICollectionService;
 import com.wangyang.service.ILiteratureService;
+import com.wangyang.service.ITaskService;
 import com.wangyang.service.IZoteroService;
 import com.wangyang.util.AuthorizationUtil;
 import okhttp3.Interceptor;
@@ -20,6 +26,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import retrofit2.Call;
@@ -31,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.FutureTask;
 
 @Service
 public class ZoteroServiceImpl implements IZoteroService {
@@ -41,10 +49,96 @@ public class ZoteroServiceImpl implements IZoteroService {
     @Autowired
     ICollectionService collectionService;
 
+    @Autowired
+    ITaskService taskService;
+    @Autowired
+    private  ThreadPoolTaskExecutor executorService;
+
+
+
+    @Override
+    public Task importLiterature(int userId) {
+        int activeCount = executorService.getActiveCount();
+        Task task = taskService.findByENName(TaskType.LITERATURE, CmsConst.ZOTERO_LITERATURE);
+        if(task==null){
+            task = new Task();
+            task.setTaskType(TaskType.LITERATURE);
+            task.setEnName( CmsConst.ZOTERO_LITERATURE);
+            task  = taskService.save(task);
+        }else {
+            if(task.status== TaskStatus.RUNNING && activeCount>0){
+                throw new ObjectException("任务已经运行！！！");
+            }else {
+                task.setStatus(TaskStatus.RUNNING);
+                task = taskService.save(task);
+            }
+        }
+//        FutureTask<Boolean> futureTask=null;
+//        try {
+//            Task finalTask = task;
+//            futureTask=new FutureTask<>(() -> {
+//                importLiterature(userId, finalTask);
+//                return true;
+//            });
+//            executorService.execute(futureTask);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }finally {
+//            if(futureTask!=null){
+//                System.out.println(futureTask.isDone());
+//            }
+//        }
+
+//
+//        Task finalTask = task;
+        Task finalTask = task;
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                importLiterature(userId, finalTask);
+                literatureService.generateHtml(userId);
+            }
+        });
+
+        return task;
+    }
+    @Override
+    public Task importCollection(int userId) {
+        int activeCount = executorService.getActiveCount();
+
+        Task task = taskService.findByENName(TaskType.LITERATURE, CmsConst.ZOTERO_COLLECTION);
+        if(task==null){
+            task = new Task();
+            task.setTaskType(TaskType.LITERATURE);
+            task.setEnName( CmsConst.ZOTERO_COLLECTION);
+            task  = taskService.save(task);
+        }else {
+            if(task.status== TaskStatus.RUNNING&& activeCount>0){
+                throw new ObjectException("任务已经运行！！！");
+            }else {
+                task.setStatus(TaskStatus.RUNNING);
+                task = taskService.save(task);
+            }
+        }
+
+
+        Task finalTask = task;
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                importCollection(userId, finalTask);
+            }
+        });
+        return task;
+    }
+
     @Async
     @Override
-    public void importLiterature(Integer userId)  {
-
+    public void importLiterature(Integer userId, Task task)  {
+        List<Collection> collections = collectionService.listAll();
+        if(collections.size()==0){
+            throw new ObjectException("请先导入分类！！！");
+        }
         try {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(new Interceptor() {
@@ -96,31 +190,45 @@ public class ZoteroServiceImpl implements IZoteroService {
                 allItem.addAll(itemList);
             }
 
-            List<Collection> collections = collectionService.listAll();
             Map<String, Collection> collectionMap = ServiceUtil.convertToMap(collections, Collection::getKey);
 
             List<Literature> literatureList = new ArrayList<>();
             for (int i=0;i<allItem.size();i++){
                 int id = i+1;
                 Item item = allItem.get(i);
-                Literature literature = new Literature();
+
                 List<String> collectionNames = item.getData().getCollections();
                 if(collectionNames.size()>0){
-                    String name = collectionNames.get(0);
-                    if(collectionMap.containsKey(name)){
-                        Collection collection = collectionMap.get(name);
-                        literature.setCategoryId(collection.getId());
-                    }else {
-                        literature.setCategoryId(-1);
+//                    String name = collectionNames.get(0);
+                    for (String name :collectionNames){
+                        Literature literature= new Literature();
+                        literature.setTitle(item.getData().getTitle());
+                        literature.setKey(item.getKey());
+                        literature.setZoteroKey(item.getKey());
+                        literature.setUserId(userId);
+                        literature.setOriginalContent(item.getData().getAbstractNote());
+                        if(collectionMap.containsKey(name)){
+                            Collection collection = collectionMap.get(name);
+                            literature.setCategoryId(collection.getId());
+
+                        }else {
+                            literature.setCategoryId(-1);
+                        }
+                        literatureList.add(literature);
                     }
                 }else {
+                    Literature literature= new Literature();
+                    literature.setTitle(item.getData().getTitle());
+                    literature.setKey(item.getKey());
+                    literature.setZoteroKey(item.getKey());
+
+                    literature.setUserId(userId);
+                    literature.setOriginalContent(item.getData().getAbstractNote());
                     literature.setCategoryId(-1);
+                    literatureList.add(literature);
                 }
-                literature.setTitle(item.getData().getTitle());
-                literature.setKey(item.getKey());
-                literature.setUserId(userId);
-                literature.setOriginalContent(item.getData().getAbstractNote());
-                literatureList.add(literature);
+
+
 
             }
 
@@ -135,15 +243,19 @@ public class ZoteroServiceImpl implements IZoteroService {
             literatureService.deleteAll();
             literatureService.saveAll(literatureList);
 //
+
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            task.setStatus(TaskStatus.FINISH);
+            taskService.save(task);
         }
     }
 
 
     @Async
     @Override
-    public void importCollection()  {
+    public void importCollection(Integer userId, Task task)  {
 
         try {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -200,6 +312,9 @@ public class ZoteroServiceImpl implements IZoteroService {
 
             collectionService.deleteAll();
             collectionService.saveAll(collections);
+
+            task.setStatus(TaskStatus.FINISH);
+            taskService.save(task);
         } catch (IOException e) {
             e.printStackTrace();
         }

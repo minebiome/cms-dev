@@ -3,11 +3,12 @@ package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.CommentRole;
+import com.wangyang.pojo.entity.Literature;
+import com.wangyang.pojo.entity.Template;
+import com.wangyang.service.*;
 import com.wangyang.service.authorize.IUserService;
-import com.wangyang.service.IArticleService;
-import com.wangyang.service.ICategoryService;
-import com.wangyang.service.IHtmlService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.UserDto;
@@ -44,9 +45,13 @@ public class UserArticleController {
 
     @Autowired
     ICategoryService categoryService;
-
+    @Autowired
+    ILiteratureService literatureService;
     @Autowired
     IHtmlService htmlService;
+
+    @Autowired
+    ITemplateService templateService;
 
 
     @GetMapping("/write")
@@ -57,6 +62,16 @@ public class UserArticleController {
 //        model.addAttribute("view",articlePage);
 //        System.out.println(userId);
         return "templates/user/write";
+    }
+
+    @GetMapping("/literature")
+    @Anonymous
+    public String searchLiterature(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,String keywords,Model model){
+        Template template = templateService.findByEnName(CmsConst.DEFAULT_LITERATURE_TEMPLATE);
+
+        Page<Literature> literature = literatureService.pageBy(pageable, keywords);
+        model.addAttribute("view",literature);
+        return template.getTemplateValue();
     }
 
     /**

@@ -6,10 +6,11 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
-@DiscriminatorValue(value = "1")
 @Data
+@Table(name = "t_collection")
 public class Collection extends BaseCategory {
     private String name;
     @Column(name = "collection_key")

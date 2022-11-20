@@ -6,6 +6,7 @@ import com.gimranov.libzotero.model.ObjectVersions;
 import com.google.gson.Gson;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
@@ -91,32 +92,22 @@ public class LiteratureController {
     }
 
     @GetMapping("/import")
-    public BaseResponse importData(HttpServletRequest request)  {
+    public Task importData(HttpServletRequest request)  {
         int userId = AuthorizationUtil.getUserId(request);
-        zoteroService.importLiterature(userId);
-        return BaseResponse.ok("success!!");
+        Task task = zoteroService.importLiterature(userId);
+        return task;
     }
+    @GetMapping("/sync")
+    public Task syncLiterature(HttpServletRequest request){
+        int userId = AuthorizationUtil.getUserId(request);
+        Task task = zoteroService.importLiterature(userId);
+        return task;
 
+    }
     @GetMapping("/generateHtml")
     public BaseResponse generateHtml(HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
-        List<Literature> literatureList = literatureService.listAll();
-        List<Collection> collections = collectionService.listAll();
-        Template template = templateService.findByEnName(CmsConst.DEFAULT_LITERATURE_TEMPLATE);
-
-        Components components = componentsService.findByViewName("collectionTree");
-        Object o = componentsService.getModel(components);
-        TemplateUtil.convertHtmlAndSave(o, components);
-        for (Collection collection:collections){
-            List<Literature> subLiterature = literatureList.stream().filter(literature ->
-                    literature.getCategoryId().equals(collection.getId())
-            ).collect(Collectors.toList());
-            Map<String,Object> map = new HashMap<>();
-            map = new HashMap<>();
-            map.put("view",subLiterature);
-            map.put("template",template);
-            String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getLiteraturePath(),collection.getKey(),map, template);
-        }
+        literatureService.generateHtml(userId);
         return BaseResponse.ok("success!!");
 
     }

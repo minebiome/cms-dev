@@ -91,6 +91,8 @@ public class CmsConst {
     public final static String ARTICLE_DATA_KEYWORD = "@KeywordArticle:";//文章的Components标识
     public final static String ARTICLE_DATA_TAGS = "@TagsArticle:";//文章的Components标识
     public final static String ARTICLE_DATA_SORT_SIZE = "@SizeSortArticle:";//文章的Components标识
+    public final static String ZOTERO_LITERATURE = "ZOTERO_LITERATURE";
+    public final static String ZOTERO_COLLECTION = "ZOTERO_COLLECTION";
 
 
     public static final String MARKDOWN_REVEAL_START = "<p>@=";

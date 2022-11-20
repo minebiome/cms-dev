@@ -41,4 +41,13 @@ public class CrudHandlers {
         }
         throw new ObjectException("不能找到Crud！！");
     }
+
+    public ICrudService getCrudService(CrudType crudEnum){
+        for (ICrudService crudService : fileTermMappingHandlers) {
+            if (crudService.supportType(crudEnum)) {
+                return crudService;
+            }
+        }
+        throw new ObjectException("不能找到Crud！！");
+    }
 }

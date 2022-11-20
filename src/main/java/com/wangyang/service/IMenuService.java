@@ -2,10 +2,12 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Menu;
+import com.wangyang.pojo.vo.MenuVo;
+import com.wangyang.service.base.ICrudService;
 
 import java.util.List;
 
-public interface IMenuService {
+public interface IMenuService extends ICrudService<Menu,Menu, MenuVo,Integer> {
     Menu add(Menu menu);
 
     Menu findById(int id);
@@ -15,6 +17,8 @@ public interface IMenuService {
     void delete(int id);
 
     Menu removeCategoryToMenu(int id);
+
+    List<MenuVo> listVo();
 
     Menu addCategoryToMenu(Category category);
 

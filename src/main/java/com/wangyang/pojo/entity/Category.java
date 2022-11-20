@@ -7,9 +7,10 @@ import lombok.Data;
 import java.io.Serializable;
 import javax.persistence.*;
 @Entity
-@DiscriminatorValue(value = "0")
+//@DiscriminatorValue(value = "0")
 @Data
-public class Category extends BaseCategory {
+@Table(name = "t_category")
+public class Category extends BaseCategory implements Serializable{
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)

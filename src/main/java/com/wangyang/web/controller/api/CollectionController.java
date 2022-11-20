@@ -9,11 +9,13 @@ import com.wangyang.common.BaseResponse;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Collection;
+import com.wangyang.pojo.entity.Task;
 import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.vo.CollectionVO;
 import com.wangyang.service.ICollectionService;
 import com.wangyang.service.ILiteratureService;
 import com.wangyang.service.IZoteroService;
+import com.wangyang.util.AuthorizationUtil;
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,12 +49,12 @@ public class CollectionController {
       return collectionService.listTree();
     }
 
-    @GetMapping("/import")
-    @Async
-    public BaseResponse importData()  {
-        zoteroService.importCollection();
-        return BaseResponse.ok("");
-    }
 
+    @GetMapping("/import")
+    public Task importData(HttpServletRequest request)  {
+        int userId = AuthorizationUtil.getUserId(request);
+        Task task = zoteroService.importCollection(userId);
+        return task;
+    }
 
 }

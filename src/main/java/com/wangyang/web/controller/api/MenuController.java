@@ -1,5 +1,7 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.pojo.vo.MenuVo;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.IMenuService;
@@ -33,10 +35,20 @@ public class MenuController {
        htmlService.generateMenuListHtml();
         return saveMenu;
     }
-
     @GetMapping
     public List<Menu> list(){
-        return menuService.list();
+        List<Menu> menus = menuService.list();
+        return menus;
+    }
+    @GetMapping("/listVoTree")
+    public List<MenuVo> listVo(){
+        return menuService.listVo();
+    }
+
+    @PostMapping("/updatePos")
+    public BaseResponse addPos(@RequestBody List<MenuVo> menuVos){
+        menuService.updateOrder(menuVos);
+        return BaseResponse.ok("success");
     }
 
     @PostMapping("/update/{id}")
