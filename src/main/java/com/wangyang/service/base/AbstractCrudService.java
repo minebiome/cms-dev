@@ -73,7 +73,6 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         Query resetQuery = em.createNativeQuery("ALTER TABLE "+name+" ALTER COLUMN ID RESTART WITH 1");
         resetQuery.executeUpdate();
     }
-
     protected Specification<DOMAIN> buildSpecByQuery(DOMAIN baseFileQuery, String keywords, Set<String> sets) {
         return (Specification<DOMAIN>) (root, query, criteriaBuilder) ->{
             List<Predicate> predicates = toPredicate(baseFileQuery,root, query, criteriaBuilder);
@@ -84,6 +83,24 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
                 for (String filed : sets){
                     Predicate predicate = criteriaBuilder
                             .equal(root.get(filed), keywords);
+                    orPredicates.add(predicate);
+                }
+                predicates.add(criteriaBuilder.or(orPredicates.toArray(new Predicate[0])));
+            }
+            return query.where(predicates.toArray(new Predicate[0])).getRestriction();
+        };
+    }
+    protected Specification<DOMAIN> buildSpecByQuery(String keywords, Set<String> sets) {
+        return (Specification<DOMAIN>) (root, query, criteriaBuilder) ->{
+//            List<Predicate> predicates = toPredicate(baseFileQuery,root, query, criteriaBuilder);
+            List<Predicate> predicates = new LinkedList<>();
+            if(sets!=null && sets.size()!=0 && keywords!=null ){
+                String likeCondition = String
+                        .format("%%%s%%", StringUtils.strip(keywords));
+                List<Predicate> orPredicates = new ArrayList<>();
+                for (String filed : sets){
+                    Predicate predicate = criteriaBuilder
+                            .like(root.get(filed), likeCondition);
                     orPredicates.add(predicate);
                 }
                 predicates.add(criteriaBuilder.or(orPredicates.toArray(new Predicate[0])));
@@ -192,8 +209,8 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         return repository.findAll(pageable);
     }
     @Override
-    public Page<DOMAIN> pageBy(Pageable pageable, String keywords) {
-        return repository.findAll(pageable);
+    public Page<DOMAIN> pageBy(Pageable pageable, String keywords,Set<String> sets) {
+        return repository.findAll(buildSpecByQuery(keywords,sets),pageable);
     }
     @Override
     public void deleteAll(Iterable<DOMAIN> domains){

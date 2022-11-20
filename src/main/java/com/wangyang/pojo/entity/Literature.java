@@ -4,21 +4,22 @@ import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.entity.base.Content;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @DiscriminatorValue(value = "2")
 @Data
 public class Literature extends Content {
-    private String title;
     @Column(name = "literature_key")
     private String key;
     private String zoteroKey;
     private String author;
     private String url;
     private Integer categoryId;
+    @Column(name = "publish_data")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date publishDate;
 
 
 }

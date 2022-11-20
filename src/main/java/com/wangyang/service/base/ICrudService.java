@@ -36,7 +36,7 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     void delete(DOMAIN t);
 
     Page<DOMAIN> pageBy(Pageable pageable);
-    Page<DOMAIN> pageBy(Pageable pageable,String keywords);
+    Page<DOMAIN> pageBy(Pageable pageable,String keywords,Set<String> sets);
 
     void deleteAll(Iterable<DOMAIN> domains);
 

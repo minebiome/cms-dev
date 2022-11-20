@@ -36,7 +36,7 @@ public class CrudHandlers {
 
         for (ICrudService crudService : fileTermMappingHandlers) {
             if (crudService.supportType(crudType)) {
-                return crudService.pageBy(pageable,keywords);
+                return crudService.pageBy(pageable);
             }
         }
         throw new ObjectException("不能找到Crud！！");

@@ -24,4 +24,8 @@ public class Tags extends BaseEntity  implements Serializable {
         this.name = name;
         this.slugName = slugName;
     }
+
+    public Tags(String name){
+        this.name = name;
+    }
 }

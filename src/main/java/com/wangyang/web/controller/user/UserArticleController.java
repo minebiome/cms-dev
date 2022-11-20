@@ -30,7 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -66,10 +68,11 @@ public class UserArticleController {
 
     @GetMapping("/literature")
     @Anonymous
-    public String searchLiterature(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,String keywords,Model model){
+    public String searchLiterature(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable, String keywords, Model model){
         Template template = templateService.findByEnName(CmsConst.DEFAULT_LITERATURE_TEMPLATE);
-
-        Page<Literature> literature = literatureService.pageBy(pageable, keywords);
+        Set<String> filed = new HashSet<>();
+        filed.add("title");
+        Page<Literature> literature = literatureService.pageBy(pageable, keywords,filed);
         model.addAttribute("view",literature);
         return template.getTemplateValue();
     }

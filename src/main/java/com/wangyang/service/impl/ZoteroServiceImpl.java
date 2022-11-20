@@ -4,14 +4,18 @@ import com.gimranov.libzotero.HttpHeaders;
 import com.gimranov.libzotero.LibraryType;
 import com.gimranov.libzotero.SearchQuery;
 import com.gimranov.libzotero.ZoteroService;
+import com.gimranov.libzotero.model.Creator;
 import com.gimranov.libzotero.model.Item;
 import com.gimranov.libzotero.model.ObjectVersions;
+import com.gimranov.libzotero.model.Tag;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.pojo.dto.ArticleTagsDto;
 import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.Literature;
+import com.wangyang.pojo.entity.Tags;
 import com.wangyang.pojo.entity.Task;
 import com.wangyang.pojo.enums.TaskStatus;
 import com.wangyang.pojo.enums.TaskType;
@@ -35,9 +39,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.FutureTask;
 
 @Service
@@ -183,6 +187,7 @@ public class ZoteroServiceImpl implements IZoteroService {
                 SearchQuery searchQuery = new SearchQuery();
                 searchQuery.put("limit",100);
                 searchQuery.put("start",i*100);
+                searchQuery.put("sort","title");
 
                 searchQuery.put("itemType","journalArticle");
                 Call<List<Item>> items = zoteroService.getItems(LibraryType.USER, Long.valueOf("8927145"), searchQuery,null);
@@ -192,9 +197,10 @@ public class ZoteroServiceImpl implements IZoteroService {
 
             Map<String, Collection> collectionMap = ServiceUtil.convertToMap(collections, Collection::getKey);
 
+            Set<String> findTags = new HashSet<>();
+            List<ArticleTagsDto> articleTagsDtos = new ArrayList<>();
             List<Literature> literatureList = new ArrayList<>();
             for (int i=0;i<allItem.size();i++){
-                int id = i+1;
                 Item item = allItem.get(i);
 
                 List<String> collectionNames = item.getData().getCollections();
@@ -206,7 +212,30 @@ public class ZoteroServiceImpl implements IZoteroService {
                         literature.setKey(item.getKey());
                         literature.setZoteroKey(item.getKey());
                         literature.setUserId(userId);
+                        if(item.getData().getUrl().startsWith("http")){
+                            literature.setUrl(item.getData().getUrl());
+                        }else {
+                            literature.setUrl(null);
+                        }
+
                         literature.setOriginalContent(item.getData().getAbstractNote());
+                        String dateStr = item.getData().getDate();
+                        Date date = null;
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            date = sdf.parse(dateStr);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        literature.setPublishDate(date);
+                        List<Creator> creators = item.getData().getCreators();
+
+                        List<Tag> zoteroTags = item.getData().getTags();
+                        for(Tag tag :zoteroTags){
+                            findTags.add(tag.getTag());
+                            articleTagsDtos.add(new ArticleTagsDto(tag.getTag(),literature.getKey()));
+                        }
+
                         if(collectionMap.containsKey(name)){
                             Collection collection = collectionMap.get(name);
                             literature.setCategoryId(collection.getId());
@@ -221,7 +250,7 @@ public class ZoteroServiceImpl implements IZoteroService {
                     literature.setTitle(item.getData().getTitle());
                     literature.setKey(item.getKey());
                     literature.setZoteroKey(item.getKey());
-
+                    literature.setUrl(item.getData().getUrl());
                     literature.setUserId(userId);
                     literature.setOriginalContent(item.getData().getAbstractNote());
                     literature.setCategoryId(-1);
@@ -232,16 +261,11 @@ public class ZoteroServiceImpl implements IZoteroService {
 
             }
 
-//        Map<String, Literature> collectionMap = ServiceUtil.convertToMap(collections, Collection::getKey);
-//        for (Collection collection : collections){
-//            if(collectionMap.containsKey(collection.getParentKey())){
-//                Integer id = collectionMap.get(collection.getParentKey()).getId();
-//                collection.setParentId(id);
-//            }
-//        }
+
 
             literatureService.deleteAll();
-            literatureService.saveAll(literatureList);
+
+            List<Literature> literatures = literatureService.saveAll(literatureList);
 //
 
         } catch (IOException e) {
@@ -284,9 +308,13 @@ public class ZoteroServiceImpl implements IZoteroService {
 //        Map map = new HashMap<>();
 //        retrofit2.Call<Map<String, String>> collectionsVersion = zoteroService.getCollectionsVersion(LibraryType.USER, Long.valueOf("8927145"), null);
 //        Map<String, String> stringMap = collectionsVersion.execute().body();
+            SearchQuery searchQuery = new SearchQuery();
 
+            searchQuery.put("sort","title");
 
-            Call<List<com.gimranov.libzotero.model.Collection>> zoteroCollections = zoteroService.getCollections(LibraryType.USER, Long.valueOf("8927145"), null);
+            searchQuery.put("itemType","journalArticle");
+
+            Call<List<com.gimranov.libzotero.model.Collection>> zoteroCollections = zoteroService.getCollections(LibraryType.USER, Long.valueOf("8927145"),searchQuery, null);
             List<com.gimranov.libzotero.model.Collection> zoteroCollection = zoteroCollections.execute().body();
             List<Collection> collections = new ArrayList<>();
             for (int i=0;i<zoteroCollection.size();i++){

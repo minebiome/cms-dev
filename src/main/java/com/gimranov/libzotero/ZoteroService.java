@@ -129,6 +129,7 @@ public interface ZoteroService {
     @GET("/{type}/{id}/collections?limit=100")
     Call<List<Collection>> getCollections(@Path(TYPE) LibraryType type,
                                                 @Path(ID) long id,
+                                                @Nullable @QueryMap SearchQuery searchQuery,
                                                 @Nullable @Header(IF_MODIFIED_SINCE_VERSION) String libraryVersion);
     @GET("/{type}/{id}/collections?format=versions")
     Call<Map<String,String>> getCollectionsVersion(@Path(TYPE) LibraryType type,
