@@ -14,5 +14,5 @@ public class CategoryDto {
     private String linkPath;
     private Integer order;
     private String resource;
-
+    private String icon;
 }

@@ -38,7 +38,7 @@ public class Category extends BaseCategory implements Serializable{
     @Column(columnDefinition = "bit(1) default false")
     private Boolean existNav=false;
     private String articleTemplateName;
-
+    private String icon;
     // 每页显示文章的数量
     private Integer articleListSize=10;
 //    private Integer articleListPage=0;

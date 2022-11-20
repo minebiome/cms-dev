@@ -12,7 +12,7 @@ public class CategoryVO extends BaseVo<CategoryVO> {
 //    private Integer parentId;
 //
     private String name;
-
+    private String icon;
     private String viewName;
     private String path;
     private String linkPath;
