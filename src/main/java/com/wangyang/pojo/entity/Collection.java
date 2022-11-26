@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Data
 @Table(name = "t_collection")
 public class Collection extends BaseCategory {
-    private String name;
     @Column(name = "collection_key")
     private String key;
     private String parentKey;

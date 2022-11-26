@@ -12,5 +12,5 @@ import javax.persistence.MappedSuperclass;
 @Data
 @MappedSuperclass
 public class BaseCategory extends BaseEntity{
-
+    private String name;
 }

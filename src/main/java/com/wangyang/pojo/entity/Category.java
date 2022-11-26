@@ -15,7 +15,7 @@ public class Category extends BaseCategory{
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Integer id;
-    private String name;
+
 //    @Column(columnDefinition = "int default 0")
 //    private Integer parentId;
     private String description;
