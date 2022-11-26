@@ -10,7 +10,7 @@ import javax.persistence.*;
 //@DiscriminatorValue(value = "0")
 @Data
 @Table(name = "t_category")
-public class Category extends BaseCategory implements Serializable{
+public class Category extends BaseCategory{
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
