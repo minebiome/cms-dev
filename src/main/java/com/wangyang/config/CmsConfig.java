@@ -1,7 +1,9 @@
 package com.wangyang.config;
 
+import com.wangyang.schedule.util.ArticleJob;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -30,7 +32,12 @@ public class CmsConfig implements ApplicationContextAware {
 //    }
     @Value("${cms.workDir}")
     private String workDir;
-
+    @Autowired
+    ArticleJob articleJob;
+    @Bean(name = "urlService")
+    public ArticleJob urlService() {
+        return articleJob;
+    }
     private static ApplicationContext applicationContext;
     @Override
     public  void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

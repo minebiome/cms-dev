@@ -191,7 +191,8 @@ public class TemplateUtil {
      * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
      * @return
      */
-    public static ITemplateEngine getWebEngine() {
+    public static ITemplateEngine
+    getWebEngine() {
         TemplateEngine templateEngine = HtmlTemplateEngine.getWebInstance(workDir, ".html");
         return templateEngine;
     }

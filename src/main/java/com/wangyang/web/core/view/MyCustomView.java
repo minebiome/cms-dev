@@ -8,13 +8,20 @@ import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserDetailDTO;
 import com.wangyang.util.AuthorizationUtil;
+import org.apache.el.lang.EvaluationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.View;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring5.expression.ThymeleafEvaluationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.beans.Beans;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,9 +33,15 @@ import java.util.Set;
 
 public class MyCustomView implements View {
 
+    private ApplicationContext applicationContext;
+
+    private ConversionService mvcConversionService;
+
     private String viewName;
-    public  MyCustomView(String viewName){
+    public  MyCustomView(String viewName,ApplicationContext applicationContext,ConversionService mvcConversionService){
         this.viewName = viewName;
+        this.applicationContext =applicationContext;
+        this.mvcConversionService =mvcConversionService;
     }
     @Override
     public void render(Map<String, ?> mapInput, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -56,8 +69,12 @@ public class MyCustomView implements View {
                 map.put("roles",new HashSet<>());
             }
         }
-
+//        https://stackoverflow.com/questions/38518377/thymeleaf-email-template-and-conversionservice
         WebContext ctx = new WebContext(request, response, request.getServletContext(), request.getLocale(),map);
+        final ThymeleafEvaluationContext evaluationContext = new ThymeleafEvaluationContext(applicationContext, mvcConversionService);
+        ctx.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME, evaluationContext);
+//        ctx.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME,
+//                applicationContext);
 
         ITemplateEngine templateEngine = TemplateUtil.getWebEngine();
         String[] pathArgs = viewName.split("_");

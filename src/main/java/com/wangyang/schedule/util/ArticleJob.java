@@ -17,15 +17,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 @Slf4j
 @TemplateOption
 @ScheduleOption
+@Component("articleJob")
+
 public class ArticleJob {
 
     @Autowired
@@ -47,6 +50,11 @@ public class ArticleJob {
 
     @Autowired
     ITemplateService templateService;
+
+    public Object test1(String test){
+        return "aaaa"+test;
+    }
+
     //每天凌晨执行
     @ArticleJobAnnotation(jobName = "hotArticle",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void hotArticle(){
@@ -138,6 +146,18 @@ public class ArticleJob {
     public Map<String, Object> footer() {
         return new HashMap<>();
     }
+
+
+
+    @TemplateOptionMethod(name = "首页组件2",templateValue = "templates/components/$index",viewName="index",event = "ACAU" ,path="html")
+    public Map<String,Object> index2() {
+        Map<String,Object> map = new HashMap<>();
+        List<CategoryDto> categoryDtos = categoryService.listRecommend();
+        map.put("category",categoryDtos);
+        return map;
+    }
+
+
 
     @TemplateOptionMethod(name = "首页组件",templateValue = "templates/components/@index",viewName="index",event = "ACAU" ,path="html")
     public Map<String,Object> index() {

@@ -1365,6 +1365,24 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         articleRepository.updateCommentNum(id,num);
     }
 
+
+    public Page<ArticleVO> listByCategoryViewName(String viewName,Integer size){
+        Category category = categoryService.findByViewName(viewName);
+        Page<Article> articles = articleRepository.findAll(new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("categoryId"), category.getId())).getRestriction();
+            }
+        }, PageRequest.of(0, size, Sort.by(Sort.Direction.DESC,"createDate")));
+//        , PageRequest.of(0, size, Sort.by(Sort.Direction.DESC))
+
+        return articles.map(article -> {
+            ArticleVO articleVO=new ArticleVO();
+            BeanUtils.copyProperties(article,articleVO);
+            return articleVO;
+        });
+    }
+
     @Override
     public boolean supportType(CrudType type) {
         return type.equals(CrudType.ARTICLE);
