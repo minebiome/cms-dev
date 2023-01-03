@@ -21,39 +21,20 @@ import java.util.Set;
 
 @SpringBootTest
 public abstract class AbstractServiceTest {
-    @Autowired
-    ArticleRepository articleRepository;
+
     @Autowired
     IOptionService optionService;
 
-    @Autowired
-    OptionRepository optionRepository;
-
-    @Autowired
-    ITemplateService templateService;
-    @Autowired
-    IArticleService articleService;
 
     @Autowired
     ICategoryService categoryService;
 
-    @Autowired
-    BaseCategoryRepository baseCategoryRepository;
 
-    @Autowired
-    CategoryRepository categoryRepository;
-
-    @Autowired
-    IHtmlService htmlService;
 
     @Autowired
     IUserService userService;
 
-    @Autowired
-    ArticleController articleController;
 
-    @Autowired
-    ICommentService commentService;
 
 
     public Comment add(){
