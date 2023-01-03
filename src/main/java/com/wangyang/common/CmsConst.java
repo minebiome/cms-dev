@@ -64,6 +64,7 @@ public class CmsConst {
     public final static String DEFAULT_EMAIL = "DEFAULT_EMAIL";
 
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
+    public final static String COMPANY_INTRODUCTION  = "COMPANY_INTRODUCTION";
     public final static String CUSTOM_SHEET_TEMPLATE = "CUSTOM_SHEET";
     public final static String EMPTY_SHEET = "EMPTY_SHEET";
 

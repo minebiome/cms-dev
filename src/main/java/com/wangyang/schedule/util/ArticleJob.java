@@ -147,7 +147,10 @@ public class ArticleJob {
         return new HashMap<>();
     }
 
-
+    @TemplateOptionMethod(name = "底部导航2",templateValue = "templates/components/$footer",viewName="footer")
+    public Map<String, Object> footer2() {
+        return new HashMap<>();
+    }
 
     @TemplateOptionMethod(name = "首页组件2",templateValue = "templates/components/$index",viewName="index",event = "ACAU" ,path="html")
     public Map<String,Object> index2() {
@@ -183,6 +186,13 @@ public class ArticleJob {
 
     @TemplateOptionMethod(name = "导航菜单",templateValue = "templates/components/@header",viewName="header")
     public Map<String,Object> listMenu(){
+        Map<String,Object> map = new HashMap<>();
+        map.put("view", menuService.listVo());
+        return  map;
+    }
+
+    @TemplateOptionMethod(name = "导航菜单2",templateValue = "templates/components/$header",viewName="header")
+    public Map<String,Object> listMenu2(){
         Map<String,Object> map = new HashMap<>();
         map.put("view", menuService.listVo());
         return  map;

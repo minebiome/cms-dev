@@ -25,7 +25,7 @@ public class HtmlTemplateEngine {
      */
     public static TemplateEngine getFileInstance(String prefix, String suffix){
         if(templateEngineFile==null){
-            templateEngineFile = new TemplateEngine();
+            templateEngineFile = new SpringTemplateEngine();
             templateEngineFile.addDialect(new CmsFileDialect());
             StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();

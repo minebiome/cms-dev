@@ -29,6 +29,7 @@ public class CmsFileDialect extends AbstractProcessorDialect {
         //   let viewName = String([[${view.category.viewName}]]) 解析出来会有引号
         processors.add(new StandardInliningCDATASectionProcessor(TemplateMode.HTML));
         processors.add(new CmsFileStandardInlineHTMLTagProcessor(dialectPrefix));
+        processors.add(new CmsClassappendTagProcessor(dialectPrefix));
 
 
 //        processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));

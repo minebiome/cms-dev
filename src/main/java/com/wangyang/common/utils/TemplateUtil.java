@@ -8,7 +8,11 @@ import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.entity.base.BaseTemplate;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -18,6 +22,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.spring5.expression.ThymeleafEvaluationContext;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,6 +38,18 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TemplateUtil {
+
+    private static ApplicationContext applicationContext;
+
+    private static ConversionService mvcConversionService;
+    @Autowired
+    public  void setApplicationContext(ApplicationContext applicationContext) {
+        TemplateUtil.applicationContext = applicationContext;
+    }
+    @Autowired
+    public  void setMvcConversionService(ConversionService mvcConversionService) {
+        TemplateUtil.mvcConversionService = mvcConversionService;
+    }
 
     private static String workDir="";
 
@@ -181,6 +198,8 @@ public class TemplateUtil {
         if(templateValue==null||"".equals(templateValue)){
             throw new TemplateException("Template value can't empty!!");
         }
+        final ThymeleafEvaluationContext evaluationContext = new ThymeleafEvaluationContext(applicationContext, mvcConversionService);
+        context.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME, evaluationContext);
 
         String html = getFileEngine().process(templateValue, context);
         return html;

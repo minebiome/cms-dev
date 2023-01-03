@@ -29,10 +29,7 @@ import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -1368,6 +1365,9 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
     public Page<ArticleVO> listByCategoryViewName(String viewName,Integer size){
         Category category = categoryService.findByViewName(viewName);
+        if(category==null){
+            return null;
+        }
         Page<Article> articles = articleRepository.findAll(new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
