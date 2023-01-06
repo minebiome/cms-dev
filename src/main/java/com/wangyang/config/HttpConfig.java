@@ -16,40 +16,40 @@ public class HttpConfig {
      * 路径特殊字符允许
      * @return
      */
-    @Bean
-    public ConfigurableServletWebServerFactory webServerFactory() {
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-//        {
-//            @Override
-//            protected void postProcessContext(Context context) {
-//                SecurityConstraint constraint = new SecurityConstraint();
-//                constraint.setUserConstraint("CONFIDENTIAL");
-//                SecurityCollection collection = new SecurityCollection();
-//                collection.addPattern("/*");
-//                constraint.addCollection(collection);
-//                context.addConstraint(constraint);
-//            }
-//        };
-        tomcat.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "^+|{}[]\\"));
-        tomcat.addAdditionalTomcatConnectors(createStandardConnector());
-
-        return tomcat;
-    }
-
 //    @Bean
-//    public ServletWebServerFactory servletContainer() {
+//    public ConfigurableServletWebServerFactory webServerFactory() {
 //        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+////        {
+////            @Override
+////            protected void postProcessContext(Context context) {
+////                SecurityConstraint constraint = new SecurityConstraint();
+////                constraint.setUserConstraint("CONFIDENTIAL");
+////                SecurityCollection collection = new SecurityCollection();
+////                collection.addPattern("/*");
+////                constraint.addCollection(collection);
+////                context.addConstraint(constraint);
+////            }
+////        };
+//        tomcat.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "^+|{}[]\\"));
 //        tomcat.addAdditionalTomcatConnectors(createStandardConnector());
+//
 //        return tomcat;
 //    }
-
-    private Connector createStandardConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setPort(8080);
-//        connector.setSecure(false);
-//        connector.setRedirectPort(8989);
-        return connector;
-    }
+//
+////    @Bean
+////    public ServletWebServerFactory servletContainer() {
+////        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+////        tomcat.addAdditionalTomcatConnectors(createStandardConnector());
+////        return tomcat;
+////    }
+//
+//    private Connector createStandardConnector() {
+//        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+//        connector.setScheme("http");
+//        connector.setPort(8080);
+////        connector.setSecure(false);
+////        connector.setRedirectPort(8989);
+//        return connector;
+//    }
 
 }
