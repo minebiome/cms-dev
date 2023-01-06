@@ -136,6 +136,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
 
                 new Template("默认的分类模板",CmsConst.DEFAULT_CATEGORY_TEMPLATE,"templates/@category", TemplateType.CATEGORY,4),
+                new Template("分类模板标题列表",CmsConst.CATEGORY_TITLE,"templates/@categoryTitle", TemplateType.CATEGORY,4),
                 new Template("Tree分类模板",CmsConst.DEFAULT_CATEGORY_TREE_TEMPLATE,"templates/@categoryTree", TemplateType.CATEGORY,4,true),
                 new Template("默认的栏目模板",CmsConst.DEFAULT_CHANNEL_TEMPLATE, "templates/@channel", TemplateType.CATEGORY,5),
                 new Template("默认的图片分类模板",CmsConst.DEFAULT_PICTURE_TEMPLATE, "templates/@picture", TemplateType.CATEGORY,6),

@@ -13,10 +13,8 @@ import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.CategoryRepository;
-import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.*;
 import com.wangyang.service.base.AbstractBaseCategoryServiceImpl;
-import com.wangyang.service.base.AbstractCrudService;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -472,6 +470,30 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         return categoryRepository.save(category);
     }
 
+    @Override
+    public List<CategoryVO> convertToListVo(List<Category> categories) {
+        return categories.stream().map(category -> {
+            CategoryVO categoryVO = new CategoryVO();
+            BeanUtils.copyProperties(category, categoryVO);
+            categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
+            return categoryVO;
+        }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public CategoryVO covertToVo(Category category){
+        CategoryVO categoryVO = new CategoryVO();
+        BeanUtils.copyProperties(category, categoryVO);
+        categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
+        return categoryVO;
+    }
+            @Override
+    public List<CategoryVO> listChildByViewName(String viewName){
+        Category category = findByViewName(viewName);
+        List<Category> categories = findByParentId(category.getId());
+        return convertToListVo(categories);
+    }
 
 
     @Override
@@ -506,6 +528,7 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 //
 //        }
 //    }
+
 
     @Override
     public boolean supportType(CrudType type) {

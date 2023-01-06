@@ -73,16 +73,6 @@ public class CmsConfig implements ApplicationContextAware {
 //    }
 
 
-    /**
-     * 路径特殊字符允许
-     * @return
-     */
-    @Bean
-    public ConfigurableServletWebServerFactory webServerFactory() {
-        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "^+|{}[]\\"));
-        return factory;
-    }
 
 //    @Bean
 //    public CorsFilter corsFilter() {

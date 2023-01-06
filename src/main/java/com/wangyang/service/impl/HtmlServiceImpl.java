@@ -155,12 +155,17 @@ public class HtmlServiceImpl implements IHtmlService {
         String json = JSON.toJSON(categoryArticle).toString();
         TemplateUtil.saveFile(CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
         String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),categoryArticle.getViewName(),categoryArticle, template);
+        Template templateTitleList = templateService.findOptionalByEnName(CmsConst.CATEGORY_TITLE);
+        List<ArticleVO> articleVOS = categoryArticle.getContents();
+        TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
 
         //生成文章列表组件,用于首页嵌入
         String content = DocumentUtil.getDivContent(html, "#components");
         if(StringUtils.isNotEmpty(content)){
             TemplateUtil.saveFile(CMSUtils.getFirstArticleList(),category.getViewName(),content);
         }
+
+
 
         return categoryArticle;
     }

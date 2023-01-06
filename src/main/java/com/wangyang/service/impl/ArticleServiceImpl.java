@@ -17,10 +17,8 @@ import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
-import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.*;
-import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
@@ -38,7 +36,6 @@ import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -1317,6 +1314,46 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         return articleVOTree;
     }
 
+    public List<CategoryArticleList> listCategoryChild(String viewName){
+        Category parentCategory = categoryService.findByViewName(viewName);
+        List<Category> categories = categoryService.findByParentId(parentCategory.getId());
+        List<CategoryArticleList> categoryArticleLists =  new ArrayList<>();
+        for (Category category:categories){
+            CategoryArticleList categoryArticleList = new CategoryArticleList();
+            CategoryVO categoryVO = categoryService.covertToVo(category);
+            categoryArticleList.setCategory(categoryVO);
+            ArticleQuery articleQuery = new ArticleQuery();
+            articleQuery.setCategoryId(category.getId());
+            articleQuery.setDesc(category.getDesc());
+            Specification<Article> specification = buildPublishByQuery(articleQuery);
+            List<Article> articles = articleRepository.findAll(specification);
+            List<ArticleVO> articleVOS = convertToListVo(articles);
+            List<ArticleVO> articleVOTree = super.listWithTree(articleVOS);
+            categoryArticleList.setArticleVOS(articleVOTree);
+            categoryArticleLists.add(categoryArticleList);
+        }
+        return categoryArticleLists;
+    }
+
+    @Override
+    public List<ArticleVO> listVoTreeByCategoryViewName(String viewName) {
+        Category category = categoryService.findByViewName(viewName);
+//        Category category = categoryService.findById(categoryId);
+        ArticleQuery articleQuery = new ArticleQuery();
+        articleQuery.setCategoryId(category.getId());
+        articleQuery.setDesc(category.getDesc());
+        Specification<Article> specification = buildPublishByQuery(articleQuery);
+        List<Article> articles = articleRepository.findAll(specification);
+//                .stream().map(article -> {
+//            ArticleVO articleVO = new ArticleVO();
+//            BeanUtils.copyProperties(article, articleVO);
+//            return articleVO;
+//        }).collect(Collectors.toList());
+        List<ArticleVO> articleVOS = convertToListVo(articles);
+        List<ArticleVO> articleVOTree = super.listWithTree(articleVOS);
+//        List<ArticleDto> listWithTree = listWithTree(articleDtos);
+        return articleVOTree;
+    }
 
 
 
@@ -1361,6 +1398,10 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     public void updateCommentNum(int id, int num){
         articleRepository.updateCommentNum(id,num);
     }
+
+
+
+
 
 
     public Page<ArticleVO> listByCategoryViewName(String viewName,Integer size){
