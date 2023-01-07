@@ -31,6 +31,9 @@ public class CMSUtils {
     public static String getFirstArticleList(){
         return CmsConst.FIRST_ARTICLE_LIST;
     }
+    public static String getCategoryChildren(){
+        return CmsConst.CATEGORY_CHILDREN;
+    }
     public static String getFirstArticleTitleList(){
         return CmsConst.FIRST_ARTICLE_TITLE_LIST;
     }

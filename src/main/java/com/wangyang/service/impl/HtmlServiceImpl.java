@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ArticleException;
-import com.wangyang.common.utils.CMSUtils;
-import com.wangyang.common.utils.DocumentUtil;
-import com.wangyang.common.utils.FileUtils;
-import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.common.utils.*;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
@@ -34,10 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -154,17 +148,45 @@ public class HtmlServiceImpl implements IHtmlService {
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
         String json = JSON.toJSON(categoryArticle).toString();
         TemplateUtil.saveFile(CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
-        String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),categoryArticle.getViewName(),categoryArticle, template);
-        Template templateTitleList = templateService.findOptionalByEnName(CmsConst.CATEGORY_TITLE);
-        List<ArticleVO> articleVOS = categoryArticle.getContents();
-        TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
 
+        String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),categoryArticle.getViewName(),categoryArticle, template);
         //生成文章列表组件,用于首页嵌入
         String content = DocumentUtil.getDivContent(html, "#components");
         if(StringUtils.isNotEmpty(content)){
             TemplateUtil.saveFile(CMSUtils.getFirstArticleList(),category.getViewName(),content);
         }
+        if(categoryArticle.getChildren()!=null && categoryArticle.getChildren().size()!=0){
+            String categoryChildren = DocumentUtil.getDivContent(html, "#categoryChildren");
+            if(StringUtils.isNotEmpty(categoryChildren)){
+                TemplateUtil.saveFile(CMSUtils.getCategoryChildren(),category.getViewName(),categoryChildren);
+            }
+        }
 
+
+
+        /*生成只有标题的第一页文章列表*/
+        Template templateTitleList = templateService.findOptionalByEnName(CmsConst.CATEGORY_TITLE);
+        List<ArticleVO> articleVOS = categoryArticle.getContents();
+        TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
+
+
+//       if( category.getParentId()==0){
+//            // 查找该分类下的文章以及，子类文章
+//           List<Category> categories = categoryService.findByParentId(category.getId());
+//           if(categories.size()!=0){
+//               Set<Integer> ids = ServiceUtil.fetchProperty(categories, Category::getId);
+//               ids.add(category.getId());
+//           }
+//       }
+
+       /**
+        * 生成父类的文章列表
+        * **/
+       if(category.getParentId()!=0){
+           Category parentCategory = categoryService.findById(category.getParentId());
+           convertArticleListBy(parentCategory);
+
+       }
 
 
         return categoryArticle;

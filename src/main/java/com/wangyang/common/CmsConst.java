@@ -33,6 +33,7 @@ public class CmsConst {
 
     public final static String CATEGORY_PATH = "html"+ File.separator+"articleList";
     public final static String FIRST_ARTICLE_LIST = CATEGORY_PATH+ File.separator+"firstArticleList";
+    public final static String CATEGORY_CHILDREN = CATEGORY_PATH+ File.separator+"categoryChildren";
     public final static String FIRST_ARTICLE_TITLE_LIST = CATEGORY_PATH+ File.separator+"firstTitleList";
     public final static String ARTICLE_LIST_JS_PATH = CATEGORY_PATH+ File.separator+"articleListJs";
 

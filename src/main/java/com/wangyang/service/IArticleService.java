@@ -195,6 +195,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
     ArticleAndCategoryMindDto listArticleMindDto(String viewName);
     String jsMindFormat(ArticleAndCategoryMindDto articleAndCategoryMindDto);
 
+    List<ArticleVO> listVoTree(Set<Integer> ids,Category category);
+
     List<ArticleVO> listVoTreeByCategoryViewName(String viewName);
 
     void updateOrder(Integer id, List<ArticleVO> articleVOS);

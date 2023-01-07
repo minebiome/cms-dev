@@ -159,16 +159,17 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         };
     }
     private Specification<Article> articleSpecification(int  categoryId,ArticleList articleList){
-        Category category =new Category();
-        category.setId(categoryId);
-        category.setDesc(true);
-        return articleSpecification(category,articleList);
+//        Category category =new Category();
+//        category.setId(categoryId);
+//        category.setDesc(true);
+        Set<Integer> ids = new HashSet<>();
+        ids.add(categoryId);
+        return articleSpecification(ids,true,articleList);
     }
-    private Specification<Article> articleSpecification(Category category,ArticleList articleList){
+    private Specification<Article> articleSpecification(Set<Integer> ids,Boolean isDesc,ArticleList articleList){
         Specification<Article> specification = (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new LinkedList<>();
-            predicates.add(criteriaBuilder.equal(root.get("categoryId"),category.getId()));
-
+            predicates.add(criteriaBuilder.in(root.get("categoryId")).value(ids));
             if(articleList.equals(ArticleList.INCLUDE_TOP)){
                 predicates.add( criteriaBuilder.isTrue(root.get("top")));
                 predicates.add(  criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
@@ -186,7 +187,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
             }
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
-            if(category.getDesc()){
+            if(isDesc){
 //                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
 //                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
                 criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
@@ -955,6 +956,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 //            article.setTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
 //        }
         article.setCategoryId(categoryId);
+        article.setParentId(0);
         Article saveArticle = articleRepository.save(article);
         ArticleDetailVO articleDetailVO = conventToAddTags(saveArticle);
         articleDetailVO.setCategory(category);
@@ -989,9 +991,31 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     @Override
     public CategoryArticleListDao findCategoryArticleBy(Category category, Template template,int page){
         CategoryArticleListDao articleListVo = new CategoryArticleListDao();
+
+        /**
+         * 根据一组id查找article
+         * **/
+        List<Category> categories = categoryService.findByParentId(category.getId());
+        Set<Integer> ids =new HashSet<>();
+        ids.add(category.getId());
+        if(categories.size()!=0){
+            ids.addAll(ServiceUtil.fetchProperty(categories, Category::getId));
+            List<CategoryVO> categoryVOS = categoryService.convertToListVo(categories);
+            articleListVo.setChildren(categoryVOS);
+        }else {
+            if(category.getParentId()!=0){
+                Category parentCategory = categoryService.findById(category.getParentId());
+                CategoryVO categoryVO = categoryService.covertToVo(parentCategory);
+                articleListVo.setParentCategory(categoryVO);
+            }
+        }
+
+
         List<ArticleVO> contents;
+
+
         if(!template.getTree()){
-            Page<Article> articles = articleRepository.findAll(articleSpecification(category, ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
+            Page<Article> articles = articleRepository.findAll(articleSpecification(ids,category.getIsDesc(), ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
             Page<ArticleVO> articleVOS = convertToPageVo(articles);
             int totalPages = articleVOS.getTotalPages();
             int size = articleVOS.getSize();
@@ -1001,11 +1025,11 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             articleListVo.setTotalElements(totalElements);
             contents = articleVOS.getContent();
         }else {
-            contents=listVoTree(category.getId());
+            contents=listVoTree(ids,category);
         }
 
         articleListVo.setContents(contents);
-        articleListVo.setCategory(category);
+        articleListVo.setCategory(categoryService.covertToVo(category));
         articleListVo.setViewName(category.getViewName());
         articleListVo.setPath(category.getPath());
         /**
@@ -1275,8 +1299,10 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
     @Override
     public List<ArticleDto> listTopByCategoryId(Category category) {
+        Set<Integer> ids = new HashSet<>();
+        ids.add(category.getId());
         List<Article> articles = articleRepository.findAll(articleSpecification(
-                category, ArticleList.INCLUDE_TOP));
+                ids,category.getDesc(), ArticleList.INCLUDE_TOP));
         return convertArticle2ArticleDto(articles);
     }
 
@@ -1298,10 +1324,35 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     @Override
     public List<ArticleVO> listVoTree(Integer categoryId) {
         Category category = categoryService.findById(categoryId);
-        ArticleQuery articleQuery = new ArticleQuery();
-        articleQuery.setCategoryId(category.getId());
-        articleQuery.setDesc(category.getDesc());
-        Specification<Article> specification = buildPublishByQuery(articleQuery);
+        Set<Integer> ids  = new HashSet<>();
+        ids.add(category.getId());
+        return listVoTree(ids,category);
+//        ArticleQuery articleQuery = new ArticleQuery();
+//        articleQuery.setCategoryId(category.getId());
+//        articleQuery.setDesc(category.getDesc());
+//        Specification<Article> specification = buildPublishByQuery(articleQuery);
+//        List<Article> articles = articleRepository.findAll(specification);
+////                .stream().map(article -> {
+////            ArticleVO articleVO = new ArticleVO();
+////            BeanUtils.copyProperties(article, articleVO);
+////            return articleVO;
+////        }).collect(Collectors.toList());
+//        List<ArticleVO> articleVOS = convertToListVo(articles);
+//        List<ArticleVO> articleVOTree = super.listWithTree(articleVOS);
+////        List<ArticleDto> listWithTree = listWithTree(articleDtos);
+//        return articleVOTree;
+    }
+
+    @Override
+    public List<ArticleVO> listVoTree(Set<Integer> ids,Category category) {
+
+//        ArticleQuery articleQuery = new ArticleQuery();
+//        articleQuery.setCategoryId(category.getId());
+//        articleQuery.setDesc(category.getDesc());
+
+
+
+        Specification<Article> specification =  articleSpecification(ids,category.getIsDesc(), ArticleList.NO_INCLUDE_TOP);
         List<Article> articles = articleRepository.findAll(specification);
 //                .stream().map(article -> {
 //            ArticleVO articleVO = new ArticleVO();

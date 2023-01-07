@@ -2,6 +2,7 @@ package com.wangyang.pojo.dto;
 
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.CategoryVO;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 
@@ -16,8 +17,9 @@ public class CategoryArticleListDao {
     private String viewName;
 //    private Page<ArticleVO> page;
     private List<ArticleVO> contents;
-    private Category category;
-    private List<Category> children;
+    private CategoryVO category;
+    private CategoryVO parentCategory;
+    private List<CategoryVO> children;
     private Category parent;
     /**
      * 第一个category文章列表的路径,
