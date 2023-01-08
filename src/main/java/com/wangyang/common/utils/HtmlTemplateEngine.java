@@ -27,16 +27,17 @@ public class HtmlTemplateEngine {
         if(templateEngineFile==null){
             templateEngineFile = new SpringTemplateEngine();
             templateEngineFile.addDialect(new CmsFileDialect());
-            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
 //            templateEngineFile.addDialect(new CmsDialect(null));
-            fileTemplateResolver.setOrder(Integer.valueOf(2));
+            fileTemplateResolver.setOrder(Integer.valueOf(1));
             fileTemplateResolver.setCacheable(false);
             fileTemplateResolver.setPrefix(prefix+ File.separator);
             fileTemplateResolver.setSuffix(suffix);
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
-            stringTemplateResolver.setOrder(Integer.valueOf(1));
+            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
+
+            stringTemplateResolver.setOrder(Integer.valueOf(2));
             stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
             // 添加字符串模板
             templateEngineFile.addTemplateResolver(stringTemplateResolver);
@@ -50,16 +51,17 @@ public class HtmlTemplateEngine {
             templateWebEngine = new SpringTemplateEngine();
 //            templateWebEngine.addDialect(new CmsDialect(prefix));
 //            templateWebEngine.setDialect(new CmsWebDialect());
-            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
             templateWebEngine.addDialect(new CmsWebDialect());
-            fileTemplateResolver.setOrder(Integer.valueOf(2));
+            fileTemplateResolver.setOrder(Integer.valueOf(1));
             fileTemplateResolver.setCacheable(false);
             fileTemplateResolver.setPrefix(prefix+ File.separator);
             fileTemplateResolver.setSuffix(suffix);
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
-            stringTemplateResolver.setOrder(Integer.valueOf(1));
+            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
+
+            stringTemplateResolver.setOrder(Integer.valueOf(2));
             stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
             // 添加字符串模板
             templateWebEngine.addTemplateResolver(stringTemplateResolver);

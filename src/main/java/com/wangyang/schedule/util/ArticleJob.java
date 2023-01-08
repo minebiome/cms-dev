@@ -146,19 +146,19 @@ public class ArticleJob {
     public Map<String, Object> footer() {
         return new HashMap<>();
     }
+//
+//    @TemplateOptionMethod(name = "底部导航2",templateValue = "templates/components/$footer",viewName="footer")
+//    public Map<String, Object> footer2() {
+//        return new HashMap<>();
+//    }
 
-    @TemplateOptionMethod(name = "底部导航2",templateValue = "templates/components/$footer",viewName="footer")
-    public Map<String, Object> footer2() {
-        return new HashMap<>();
-    }
-
-    @TemplateOptionMethod(name = "首页组件2",templateValue = "templates/components/$index",viewName="index",event = "ACAU" ,path="html")
-    public Map<String,Object> index2() {
-        Map<String,Object> map = new HashMap<>();
-        List<CategoryDto> categoryDtos = categoryService.listRecommend();
-        map.put("category",categoryDtos);
-        return map;
-    }
+//    @TemplateOptionMethod(name = "首页组件2",templateValue = "templates/components/$index",viewName="index",event = "ACAU" ,path="html")
+//    public Map<String,Object> index2() {
+//        Map<String,Object> map = new HashMap<>();
+//        List<CategoryDto> categoryDtos = categoryService.listRecommend();
+//        map.put("category",categoryDtos);
+//        return map;
+//    }
 
 
 
@@ -191,10 +191,10 @@ public class ArticleJob {
         return  map;
     }
 
-    @TemplateOptionMethod(name = "导航菜单2",templateValue = "templates/components/$header",viewName="header")
-    public Map<String,Object> listMenu2(){
-        Map<String,Object> map = new HashMap<>();
-        map.put("view", menuService.listVo());
-        return  map;
-    }
+//    @TemplateOptionMethod(name = "导航菜单2",templateValue = "templates/components/$header",viewName="header")
+//    public Map<String,Object> listMenu2(){
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("view", menuService.listVo());
+//        return  map;
+//    }
 }
