@@ -16,6 +16,7 @@ public class CategoryParam {
     private String viewName;
     private Boolean haveHtml;
     private String picPath;
+    private String picThumbPath;
     private String path;
     private Integer order;
     private Boolean recommend=false;

@@ -1,18 +1,16 @@
 package com.wangyang.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.*;
-import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.CommentVo;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.repository.ArticleRepository;
@@ -60,16 +58,30 @@ public class HtmlServiceImpl implements IHtmlService {
     @Autowired
     ICommentService commentService;
 
+
+    @Override
+    public void addParentCategory(ArticleDetailVO articleVO){
+        if(articleVO.getCategory().getParentId()!=0){
+            Category category = categoryService.findById(articleVO.getCategory().getParentId());
+            List<Category> categories =new ArrayList<>();
+            categories.add(category);
+            articleVO.setParentCategory(categoryService.convertToListVo(categories));
+        }
+    }
     @Override
     @Async //异步执行
     public void conventHtml(ArticleDetailVO articleVO){
         if(articleVO.getStatus().equals(ArticleStatus.PUBLISHED)||articleVO.getStatus().equals(ArticleStatus.MODIFY)){
-            Category category = articleVO.getCategory();
+            CategoryVO categoryVO = articleVO.getCategory();
+            addParentCategory(articleVO);
+
+
 //            EntityCreatedEvent<Category> createArticle = new EntityCreatedEvent<>(category);
 //            publisher.publishEvent(createArticle);
 //            deleteTempFileByCategory(category);
-            //生成文章列表，文章列表依赖分类列表
-            convertArticleListBy(category);
+            //生成文章列表，文章列表依赖分类列表'
+
+            convertArticleListBy(categoryVO);
             //判断评论文件是否存在
             if(!TemplateUtil.componentsExist(articleVO.getViewName())){
                 generateCommentHtmlByArticleId(articleVO.getId());
@@ -128,12 +140,17 @@ public class HtmlServiceImpl implements IHtmlService {
 //    }
 
 
+    @Override
+    public CategoryArticleListDao convertArticleListBy(Category category) {
+        return convertArticleListBy(categoryService.covertToVo(category));
+    }
+
     /**
      * 生成该栏目下文章列表, 只展示文章列表
      * @param category
      */
     @Override
-    public CategoryArticleListDao convertArticleListBy(Category category) {
+    public CategoryArticleListDao convertArticleListBy(CategoryVO category) {
 //        //生成分类列表,用于首页文章列表右侧展示
 //        if(!TemplateUtil.componentsExist(category.getTemplateName())){
 //                generateCategoryListHtml();
@@ -170,25 +187,14 @@ public class HtmlServiceImpl implements IHtmlService {
         TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
 
 
-//       if( category.getParentId()==0){
-//            // 查找该分类下的文章以及，子类文章
-//           List<Category> categories = categoryService.findByParentId(category.getId());
-//           if(categories.size()!=0){
-//               Set<Integer> ids = ServiceUtil.fetchProperty(categories, Category::getId);
-//               ids.add(category.getId());
-//           }
-//       }
-
        /**
         * 生成父类的文章列表
         * **/
        if(category.getParentId()!=0){
            Category parentCategory = categoryService.findById(category.getParentId());
-           convertArticleListBy(parentCategory);
+           convertArticleListBy(categoryService.covertToVo(parentCategory));
 
        }
-
-
         return categoryArticle;
     }
 

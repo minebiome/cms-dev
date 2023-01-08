@@ -33,6 +33,7 @@ public class ArticleVO extends BaseVo<ArticleVO> {
     private String viewName;
     private String  path;
     private String picPath;
+    private String picThumbPath;
     private String pdfPath;
     private String toc;
     private User user;

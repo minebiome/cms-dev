@@ -29,6 +29,7 @@ public class ArticleDto  implements Serializable {
     private String viewName;
     private String  path;
     private String picPath;
+    private String picThumbPath;
     private String pdfPath;
     private String toc;
     private User user;

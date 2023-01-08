@@ -25,7 +25,10 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private String templateName;
     private String articleTemplateName;
     private String picPath;
+    private String picThumbPath;
     private String description;
+    private Boolean isDesc;
+    private Integer articleListSize;
 
 
 

@@ -3,6 +3,7 @@ package com.wangyang.util;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Sheet;
+import com.wangyang.pojo.vo.CategoryVO;
 
 import java.io.File;
 
@@ -22,6 +23,10 @@ public class FormatUtil {
         return File.separator+category.getPath().replace(File.separator,"_")+"_"+category.getViewName()+".html";
     }
 
+    public static String categoryListFormat(CategoryVO category){
+
+        return File.separator+category.getPath().replace(File.separator,"_")+"_"+category.getViewName()+".html";
+    }
     /**
      * 第二页分类文章列表
      *  eg. html_articleList_bioinfo_2_page.html
@@ -29,6 +34,9 @@ public class FormatUtil {
      * @return
      */
     public static String categoryList2Format(Category category) {
+        return File.separator+category.getPath().replace(File.separator,"_")+"_"+category.getViewName();
+    }
+    public static String categoryList2Format(CategoryVO category) {
         return File.separator+category.getPath().replace(File.separator,"_")+"_"+category.getViewName();
     }
     public static String articleListFormat(Article article) {

@@ -30,6 +30,7 @@ public class Category extends BaseCategory{
 //    @Column(columnDefinition = "bit(1) default true")
 //    private Boolean status=true;
     private String picPath;
+    private String picThumbPath;
     private String path;
 //    @Column(name = "category_order",columnDefinition = "int default 1")
 //    private Integer order;

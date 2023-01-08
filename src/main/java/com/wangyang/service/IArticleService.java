@@ -10,6 +10,7 @@ import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.support.TemplateOption;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.base.IContentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -105,6 +106,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
      */
     List<Article>listByUserId(int userId);
 
+    CategoryArticleListDao findCategoryArticleBy(CategoryVO category, Template template, int page);
+
     Page<ArticleDto> convertArticle2ArticleDto(Page<Article> articles);
 
     /**
@@ -195,7 +198,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
     ArticleAndCategoryMindDto listArticleMindDto(String viewName);
     String jsMindFormat(ArticleAndCategoryMindDto articleAndCategoryMindDto);
 
-    List<ArticleVO> listVoTree(Set<Integer> ids,Category category);
+    List<ArticleVO> listVoTree(Set<Integer> ids,Boolean isDesc);
 
     List<ArticleVO> listVoTreeByCategoryViewName(String viewName);
 

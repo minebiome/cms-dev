@@ -7,12 +7,15 @@ import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Sheet;
 import com.wangyang.pojo.vo.ArticleDetailVO;
+import com.wangyang.pojo.vo.CategoryVO;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface IHtmlService {
+
+    void addParentCategory(ArticleDetailVO articleVO);
 
     /**
      * 生成文章的html
@@ -62,6 +65,8 @@ public interface IHtmlService {
 
 
     void commonTemplate(String option);
+
+    CategoryArticleListDao convertArticleListBy(CategoryVO category);
 
     String convertArticleListBy(Category category, int page);
 

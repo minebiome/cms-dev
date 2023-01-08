@@ -49,7 +49,7 @@ public class ArticleAspectJ {
         try {
             Object o = joinPoint.proceed();
             ArticleDetailVO articleDetailVO = (ArticleDetailVO)o;
-            deleteTemp(articleDetailVO.getCategory());
+            deleteTemp(articleDetailVO.getCategory().getName(),articleDetailVO.getCategory().getViewName(),articleDetailVO.getCategory().getParentId());
             if(articleDetailVO.getOldCategory()!=null){
                 deleteTemp(articleDetailVO.getOldCategory());
             }
@@ -92,26 +92,29 @@ public class ArticleAspectJ {
 
 
 
-
-
     @Async
     public void deleteTemp(Category category){
+        deleteTemp(category.getName(),category.getViewName(),category.getParentId());
+    }
+
+    @Async
+    public void deleteTemp(String title,String viewName,Integer parentId){
 
 
 
-        log.info(">>>>>>>>>>>>>>>>>####删除分类分页文件-"+category.getName());
+        log.info(">>>>>>>>>>>>>>>>>####删除分类分页文件-"+title);
         File dir = new File(CmsConst.WORK_DIR+File.separator+ CMSUtils.getCategoryPath());
         File[] files = dir.listFiles();
         for(File file : files){
             String name = file.getName();
-            Pattern pattern = Pattern.compile(category.getViewName()+"-(.*)-page.html");
+            Pattern pattern = Pattern.compile(viewName+"-(.*)-page.html");
             Matcher matcher = pattern.matcher(name);
             if(matcher.find()){
                 file.delete();
             }
         }
-        if(category.getParentId()!=0){
-            Category parentCategory = categoryService.findById(category.getParentId());
+        if(parentId!=0){
+            Category parentCategory = categoryService.findById(parentId);
             deleteTemp(parentCategory);
         }
 //        FileUtils.remove(CmsConst.WORK_DIR+File.separator+ CMSUtils.getCategoryPath()+category.getViewName()+"-");

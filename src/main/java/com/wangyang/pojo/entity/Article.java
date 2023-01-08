@@ -18,6 +18,7 @@ public class Article extends Content {
 //    private Boolean haveHtml=true;
     private String summary;
     private String picPath;
+    private String picThumbPath;
 
     private Integer categoryId;
     @Column(name = "article_order", columnDefinition = "int default 0")
@@ -27,4 +28,5 @@ public class Article extends Content {
   // 父亲id 0是只没有父亲 此时指向category
     private Boolean expanded; // 节点是否展开
     private String direction; //节点的方向
+
 }

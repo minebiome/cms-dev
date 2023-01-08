@@ -42,6 +42,9 @@ public class PreviewController {
     @Autowired
     ICollectionService collectionService;
 
+    @Autowired
+    IHtmlService htmlService;
+
 
 
     @PostMapping("/templates/update/{id}")
@@ -89,6 +92,11 @@ public class PreviewController {
         }
         Category category = categoryService.findById(article.getCategoryId());
         Template template = templateService.findByEnName(category.getArticleTemplateName());
+        htmlService.addParentCategory(articleDetailVo);
+
+
+
+
 //        ModelAndView modelAndView = new ModelAndView();
         model.addAttribute("view",articleDetailVo);
 //        modelAndView.setViewName(template.getTemplateValue());

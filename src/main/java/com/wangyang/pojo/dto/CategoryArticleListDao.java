@@ -19,6 +19,7 @@ public class CategoryArticleListDao {
     private List<ArticleVO> contents;
     private CategoryVO category;
     private CategoryVO parentCategory;
+    private List<CategoryVO> parentCategories;
     private List<CategoryVO> children;
     private Category parent;
     /**

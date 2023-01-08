@@ -13,9 +13,11 @@ import java.util.Set;
 public class ArticleDetailVO extends ArticleDto implements Serializable {
     private String originalContent;
     private String formatContent;
-    private Category category;
+    private CategoryVO category;
     private Set<Integer> tagIds;
     private List<Tags> tags;
+    private List<CategoryVO> parentCategory;
+
     //更新channel的文章视图名称,将html的更新从service转移controller
 //    private Boolean isUpdateChannelFirstName=false;
     private Category oldCategory;

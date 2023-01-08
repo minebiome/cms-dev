@@ -92,12 +92,13 @@ public class LocalFileHandler implements FileHandler{
             //Screenshot from 2020-02-28 15-43-32
             uploadResult.setFilename(originalBasename);
             ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
-            if(uploadPrefix!=null){
-                uploadResult.setFilePath(uploadPrefix+subFilePath); //
-            }else {
-                uploadResult.setFilePath(subFilePath); //
-
-            }
+//            if(uploadPrefix!=null){
+//                uploadResult.setFilePath(uploadPrefix+subFilePath); //
+//            }else {
+//                uploadResult.setFilePath(subFilePath); //
+//
+//            }
+            uploadResult.setFilePath(subFilePath);
             ///upload/2020/2/Screenshot from 2020-02-28 15-43-32-2015c76b-9442-435a-a1b7-ad030548d57f.png
             uploadResult.setKey(subFilePath);
             //png
