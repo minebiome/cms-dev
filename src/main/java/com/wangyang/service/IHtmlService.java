@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface IHtmlService {
 
-    void addParentCategory(ArticleDetailVO articleVO);
 
     /**
      * 生成文章的html

@@ -5,6 +5,7 @@ import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.params.TemplateParam;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.CommentVo;
 import com.wangyang.service.*;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
@@ -92,7 +93,10 @@ public class PreviewController {
         }
         Category category = categoryService.findById(article.getCategoryId());
         Template template = templateService.findByEnName(category.getArticleTemplateName());
-        htmlService.addParentCategory(articleDetailVo);
+//        htmlService.addParentCategory(articleDetailVo);
+        List<CategoryVO> categoryVOS =new ArrayList<>();
+        articleService.addParentCategory(categoryVOS,articleDetailVo.getCategory().getParentId());
+        articleDetailVo.setParentCategory(categoryVOS);
 
 
 

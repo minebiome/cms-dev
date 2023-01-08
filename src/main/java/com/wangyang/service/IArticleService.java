@@ -106,6 +106,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
      */
     List<Article>listByUserId(int userId);
 
+    void addParentCategory(List<CategoryVO> categoryVOS, Integer parentId);
+
     CategoryArticleListDao findCategoryArticleBy(CategoryVO category, Template template, int page);
 
     Page<ArticleDto> convertArticle2ArticleDto(Page<Article> articles);

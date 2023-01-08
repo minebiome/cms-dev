@@ -351,11 +351,16 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
 
     @Override
     public List<DOMAINVO> listWithTree(List<DOMAINVO> list) {
+        return listWithTree(list,0);
+    }
+
+    @Override
+    public List<DOMAINVO> listWithTree(List<DOMAINVO> list, Integer parentId) {
         // 1. 先查出所有数据
 //        List<ProjectLeader> list = projectLeaderService.list(Condition.getLikeQueryWrapper(projectLeader));
         List<DOMAINVO> collect = list.stream()
                 // 2. 找出所有顶级（规定 0 为顶级）
-                .filter(o -> o.getParentId().equals(0))
+                .filter(o -> o.getParentId().equals(parentId))
                 // 3.给当前父级的 childList 设置子
                 .peek(o -> o.setChildren(getChildList(o, list)))
                 .sorted(Comparator.comparing(DOMAINVO::getOrder))

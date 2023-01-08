@@ -59,21 +59,16 @@ public class HtmlServiceImpl implements IHtmlService {
     ICommentService commentService;
 
 
-    @Override
-    public void addParentCategory(ArticleDetailVO articleVO){
-        if(articleVO.getCategory().getParentId()!=0){
-            Category category = categoryService.findById(articleVO.getCategory().getParentId());
-            List<Category> categories =new ArrayList<>();
-            categories.add(category);
-            articleVO.setParentCategory(categoryService.convertToListVo(categories));
-        }
-    }
+
     @Override
     @Async //异步执行
     public void conventHtml(ArticleDetailVO articleVO){
         if(articleVO.getStatus().equals(ArticleStatus.PUBLISHED)||articleVO.getStatus().equals(ArticleStatus.MODIFY)){
             CategoryVO categoryVO = articleVO.getCategory();
-            addParentCategory(articleVO);
+
+            List<CategoryVO> categoryVOS =new ArrayList<>();
+            articleService.addParentCategory(categoryVOS,articleVO.getCategory().getParentId());
+            articleVO.setParentCategory(categoryVOS);
 
 
 //            EntityCreatedEvent<Category> createArticle = new EntityCreatedEvent<>(category);

@@ -993,6 +993,32 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     public CategoryArticleListDao findCategoryArticleBy(Category category, Template template,int page){
         return findCategoryArticleBy(categoryService.covertToVo(category),template,page);
     }
+
+    @Override
+    public void addParentCategory(List<CategoryVO> categoryVOS, Integer parentId){
+        if(parentId==0){
+            return;
+        }
+        Category category = categoryService.findById(parentId);
+        categoryVOS.add(0,categoryService.covertToVo(category));
+        if(category.getParentId()!=0){
+            addParentCategory(categoryVOS,category.getParentId());
+        }
+
+    }
+    public void addChildIds( List<CategoryVO> categoryVOS, Integer id){
+        List<Category> categories = categoryService.findByParentId(id);
+        if(categories.size()==0){
+            return;
+        }
+        categoryVOS.addAll(categoryService.convertToListVo(categories));
+        if(categories.size()!=0){
+            for (Category category:categories){
+                addChildIds(categoryVOS,category.getId());
+            }
+        }
+
+    }
     @Override
     public CategoryArticleListDao findCategoryArticleBy(CategoryVO category, Template template, int page){
         CategoryArticleListDao articleListVo = new CategoryArticleListDao();
@@ -1000,25 +1026,33 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         /**
          * 根据一组id查找article
          * **/
-        List<Category> categories = categoryService.findByParentId(category.getId());
         Set<Integer> ids =new HashSet<>();
+        List<CategoryVO> categoryVOS = new ArrayList<>();
         ids.add(category.getId());
-        if(categories.size()!=0){
-            ids.addAll(ServiceUtil.fetchProperty(categories, Category::getId));
-            List<CategoryVO> categoryVOS = categoryService.convertToListVo(categories);
-            articleListVo.setChildren(categoryVOS);
-        }else {
-            if(category.getParentId()!=0){
-                Category parentCategory = categoryService.findById(category.getParentId());
-                CategoryVO categoryVO = categoryService.covertToVo(parentCategory);
-                articleListVo.setParentCategory(categoryVO);
+        addChildIds(categoryVOS,category.getId());
+        if(categoryVOS.size()!=0){
+            ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
+            List<CategoryVO> categoryVOSTree = categoryService.listWithTree(categoryVOS,category.getId());
+            articleListVo.setChildren(categoryVOSTree);
+        }
+        if(category.getParentId()!=0){
+            // add forward parent
+//            Category parentCategory = categoryService.findById(category.getParentId());
+//            CategoryVO parentCategoryVO = categoryService.covertToVo(parentCategory);
+//            articleListVo.setParentCategory(parentCategoryVO);
+//
+//
+//            List<CategoryVO> categoryVOSParent = new ArrayList<>();
+//            categoryVOSParent.add(parentCategoryVO);
+//            addParentCategory(categoryVOSParent,parentCategoryVO.getParentId());
 
+            // add first parent
+            List<CategoryVO> categoryVOSParent = new ArrayList<>();
+            addParentCategory(categoryVOSParent,category.getParentId());
+            CategoryVO categoryVO = categoryVOSParent.get(0);
+            articleListVo.setParentCategory(categoryVO);
+            articleListVo.setParentCategories(categoryVOSParent);
 
-                List<CategoryVO> categoryVOS = new ArrayList<>();
-                categoryVOS.add(categoryVO);
-                articleListVo.setParentCategories(categoryVOS);
-
-            }
         }
 
 
@@ -1216,7 +1250,6 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
     /**
      * 根据id查找文章
-     * @param ids
      * @return
      */
 //    @Override

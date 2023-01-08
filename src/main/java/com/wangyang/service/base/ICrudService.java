@@ -53,6 +53,8 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
 
     List<DOMAINVO> listWithTree(List<DOMAINVO> list);
 
+    List<DOMAINVO> listWithTree(List<DOMAINVO> list, Integer parentId);
+
     void updateOrder(List<DOMAIN> domains, List<DOMAINVO> domainvos);
 
     void updateOrder(List<DOMAINVO> domainvos);
