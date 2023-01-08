@@ -1411,6 +1411,9 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
     public List<CategoryArticleList> listCategoryChild(String viewName){
         Category parentCategory = categoryService.findByViewName(viewName);
+        if(parentCategory==null){
+            return null;
+        }
         List<Category> categories = categoryService.findByParentId(parentCategory.getId());
         List<CategoryArticleList> categoryArticleLists =  new ArrayList<>();
         for (Category category:categories){

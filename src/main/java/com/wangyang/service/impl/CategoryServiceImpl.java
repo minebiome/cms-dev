@@ -31,6 +31,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.net.BindException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -491,6 +492,9 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
             @Override
     public List<CategoryVO> listChildByViewName(String viewName){
         Category category = findByViewName(viewName);
+        if (category==null){
+            return null;
+        }
         List<Category> categories = findByParentId(category.getId());
         return convertToListVo(categories);
     }

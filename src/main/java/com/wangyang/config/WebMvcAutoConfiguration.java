@@ -63,6 +63,7 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport  {
         registry.addResourceHandler("/**")
                 .addResourceLocations("file:"+workDir+"/")//file:/home/wy/.bioinfo/
                 .addResourceLocations("file:"+workDir+"/html/")
+                .addResourceLocations("file:"+workDir+"/templates/")
                 .addResourceLocations("classpath:/static/");
 
 

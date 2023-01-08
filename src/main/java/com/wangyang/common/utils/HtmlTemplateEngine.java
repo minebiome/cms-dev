@@ -40,7 +40,7 @@ public class HtmlTemplateEngine {
             stringTemplateResolver.setOrder(Integer.valueOf(2));
             stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
             // 添加字符串模板
-            templateEngineFile.addTemplateResolver(stringTemplateResolver);
+//            templateEngineFile.addTemplateResolver(stringTemplateResolver);
             templateEngineFile.addTemplateResolver(fileTemplateResolver);
         }
         return templateEngineFile;

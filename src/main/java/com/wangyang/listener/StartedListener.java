@@ -124,45 +124,45 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 //        userService.save(user);
         List<Option> options = new ArrayList<>();
         List<Template> templates = Arrays.asList(
-                new Template("默认的文章模板",CmsConst.DEFAULT_ARTICLE_TEMPLATE,"templates/@article", TemplateType.ARTICLE,1),
-                new Template("Tree的文章模板",CmsConst.DEFAULT_TREE_ARTICLE_TEMPLATE,"templates/@articleTree", TemplateType.ARTICLE,1),
-                new Template("默认的文章栏目模板",CmsConst.DEFAULT_ARTICLE_CHANNEL_TEMPLATE, "templates/@articleChannel", TemplateType.ARTICLE,2),
-                new Template("默认的图片文章模板",CmsConst.DEFAULT_ARTICLE_PICTURE_TEMPLATE, "templates/@articlePicture", TemplateType.ARTICLE,3),
-                new Template("默认的pdf导出文章预览模板",CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE, "templates/@articlePDF", TemplateType.ARTICLE,3),
-                new Template("默认的pdf导出Sheet预览模板",CmsConst.DEFAULT_SHEET_PDF_TEMPLATE, "templates/@sheetPDF", TemplateType.SHEET,3),
+                new Template("默认的文章模板",CmsConst.DEFAULT_ARTICLE_TEMPLATE,"@article", TemplateType.ARTICLE,1),
+                new Template("Tree的文章模板",CmsConst.DEFAULT_TREE_ARTICLE_TEMPLATE,"@articleTree", TemplateType.ARTICLE,1),
+                new Template("默认的文章栏目模板",CmsConst.DEFAULT_ARTICLE_CHANNEL_TEMPLATE, "@articleChannel", TemplateType.ARTICLE,2),
+                new Template("默认的图片文章模板",CmsConst.DEFAULT_ARTICLE_PICTURE_TEMPLATE, "@articlePicture", TemplateType.ARTICLE,3),
+                new Template("默认的pdf导出文章预览模板",CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE, "@articlePDF", TemplateType.ARTICLE,3),
+                new Template("默认的pdf导出Sheet预览模板",CmsConst.DEFAULT_SHEET_PDF_TEMPLATE, "@sheetPDF", TemplateType.SHEET,3),
 
-                //new Template("文章预览模板",CmsConst.DEFAULT_ARTICLE_PREVIEW_TEMPLATE, "templates/@articlePreview", TemplateType.ARTICLE,3),
-                new Template("默认的文献模板",CmsConst.DEFAULT_LITERATURE_TEMPLATE,"templates/@literature", TemplateType.Literature,1),
-
-
-                new Template("默认的分类模板",CmsConst.DEFAULT_CATEGORY_TEMPLATE,"templates/@category", TemplateType.CATEGORY,4),
-                new Template("分类模板标题列表",CmsConst.CATEGORY_TITLE,"templates/@categoryTitle", TemplateType.CATEGORY,4),
-                new Template("Tree分类模板",CmsConst.DEFAULT_CATEGORY_TREE_TEMPLATE,"templates/@categoryTree", TemplateType.CATEGORY,4,true),
-                new Template("默认的栏目模板",CmsConst.DEFAULT_CHANNEL_TEMPLATE, "templates/@channel", TemplateType.CATEGORY,5),
-                new Template("默认的图片分类模板",CmsConst.DEFAULT_PICTURE_TEMPLATE, "templates/@picture", TemplateType.CATEGORY,6),
-                new Template("默认的幻灯片列表模板",CmsConst.DEFAULT_REVEAL_TEMPLATE, "templates/@reveal", TemplateType.CATEGORY,7),
-
-                new Template("Email模板",CmsConst.DEFAULT_EMAIL, "templates/@email", TemplateType.EMAIL,7),
+                //new Template("文章预览模板",CmsConst.DEFAULT_ARTICLE_PREVIEW_TEMPLATE, "@articlePreview", TemplateType.ARTICLE,3),
+                new Template("默认的文献模板",CmsConst.DEFAULT_LITERATURE_TEMPLATE,"@literature", TemplateType.Literature,1),
 
 
-                new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "templates/@categoryList", TemplateType.CATEGORY_LIST,7),
+                new Template("默认的分类模板",CmsConst.DEFAULT_CATEGORY_TEMPLATE,"@category", TemplateType.CATEGORY,4),
+                new Template("分类模板标题列表",CmsConst.CATEGORY_TITLE,"@categoryTitle", TemplateType.CATEGORY,4),
+                new Template("Tree分类模板",CmsConst.DEFAULT_CATEGORY_TREE_TEMPLATE,"@categoryTree", TemplateType.CATEGORY,4,true),
+                new Template("默认的栏目模板",CmsConst.DEFAULT_CHANNEL_TEMPLATE, "@channel", TemplateType.CATEGORY,5),
+                new Template("默认的图片分类模板",CmsConst.DEFAULT_PICTURE_TEMPLATE, "@picture", TemplateType.CATEGORY,6),
+                new Template("默认的幻灯片列表模板",CmsConst.DEFAULT_REVEAL_TEMPLATE, "@reveal", TemplateType.CATEGORY,7),
 
-                new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "templates/sheet/@sheet", TemplateType.SHEET,8),
-                new Template("公司介绍",CmsConst.COMPANY_INTRODUCTION, "templates/sheet/@company", TemplateType.SHEET,8),
-                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "templates/sheet/@customSheet", TemplateType.SHEET,8),
-                new Template("空白页面模板",CmsConst.EMPTY_SHEET, "templates/sheet/@emptySheet", TemplateType.SHEET,8),
+                new Template("Email模板",CmsConst.DEFAULT_EMAIL, "@email", TemplateType.EMAIL,7),
 
 
-                new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "templates/@comment", TemplateType.COMMENT,9),
+                new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "@categoryList", TemplateType.CATEGORY_LIST,7),
 
-                new Template("基于AJAX分页的分类模板","CATEGORY_PAGE","templates/@categoryPage", TemplateType.CATEGORY,10),
-                new Template("文章幻灯片模板","REVEAL","templates/@articleReveal", TemplateType.ARTICLE,11),
+                new Template("默认的页面模板",CmsConst.DEFAULT_SHEET_TEMPLATE, "sheet/@sheet", TemplateType.SHEET,8),
+                new Template("公司介绍",CmsConst.COMPANY_INTRODUCTION, "sheet/@company", TemplateType.SHEET,8),
+                new Template("自定义页面模板",CmsConst.CUSTOM_SHEET_TEMPLATE, "sheet/@customSheet", TemplateType.SHEET,8),
+                new Template("空白页面模板",CmsConst.EMPTY_SHEET, "sheet/@emptySheet", TemplateType.SHEET,8),
 
-                new Template("文章列表(热门文章)",CmsConst.ARTICLE_LIST,"templates/@articleList", TemplateType.ARTICLE_LIST,12),
-                new Template("文章推荐列表",CmsConst.ARTICLE_RECOMMEND_LIST,"templates/@articleRecommendList", TemplateType.ARTICLE_LIST,12),
-                new Template("文章置顶列表",CmsConst.ARTICLE_TOP_LIST,"templates/@articleTopList", TemplateType.ARTICLE_LIST,12),
-                new Template("更多文章和文章搜索",CmsConst.ARTICLE_PAGE,"templates/@articleMore", TemplateType.ARTICLE_LIST,12),
-                new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"templates/@jsMind", TemplateType.ARTICLE_MIND,12)
+
+                new Template("默认的评论模板",CmsConst.DEFAULT_COMMENT_TEMPLATE, "@comment", TemplateType.COMMENT,9),
+
+                new Template("基于AJAX分页的分类模板","CATEGORY_PAGE","@categoryPage", TemplateType.CATEGORY,10),
+                new Template("文章幻灯片模板","REVEAL","@articleReveal", TemplateType.ARTICLE,11),
+
+                new Template("文章列表(热门文章)",CmsConst.ARTICLE_LIST,"@articleList", TemplateType.ARTICLE_LIST,12),
+                new Template("文章推荐列表",CmsConst.ARTICLE_RECOMMEND_LIST,"@articleRecommendList", TemplateType.ARTICLE_LIST,12),
+                new Template("文章置顶列表",CmsConst.ARTICLE_TOP_LIST,"@articleTopList", TemplateType.ARTICLE_LIST,12),
+                new Template("更多文章和文章搜索",CmsConst.ARTICLE_PAGE,"@articleMore", TemplateType.ARTICLE_LIST,12),
+                new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"@jsMind", TemplateType.ARTICLE_MIND,12)
 
         );
         List<Template> findTemplates = templateRepository.findAll();
@@ -187,13 +187,13 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
 
         List<Components> componentsList = new ArrayList<>();
-        componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "templates/components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "templates/components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "templates/components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
-        componentsList.add( new Components("热门文章", CMSUtils.getComponentsPath(), "templates/components/@newArticleIndex","hotArticle",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_visits,order_DESC","",true));
-        componentsList.add( new Components("当下流行", CMSUtils.getComponentsPath(), "templates/components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
-        componentsList.add( new Components("最新文章", CMSUtils.getComponentsPath(), "templates/components/@newArticleIndex","newArticleIndex",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_createDate,order_DESC","",true));
-//        componentsList.add( new Components("推荐标签", CMSUtils.getComponentsPath(),"templates/components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
+        componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
+        componentsList.add( new Components("热门文章", CMSUtils.getComponentsPath(), "components/@newArticleIndex","hotArticle",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_visits,order_DESC","",true));
+        componentsList.add( new Components("当下流行", CMSUtils.getComponentsPath(), "components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
+        componentsList.add( new Components("最新文章", CMSUtils.getComponentsPath(), "components/@newArticleIndex","newArticleIndex",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_createDate,order_DESC","",true));
+//        componentsList.add( new Components("推荐标签", CMSUtils.getComponentsPath(),"components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
 //        componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
 
         Map<String,Object> beans = applicationStartedEvent.getApplicationContext().getBeansWithAnnotation(TemplateOption.class);
@@ -272,7 +272,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     private void initCms(){
         log.info("### WorkDir:"+workDir);
 //        log.info("### Static Resource Locations"+staticResourceLocations);
-        log.info("### Template Resource Locations"+workDir+"/"+CmsConst.SYSTEM_TEMPLATE_PATH+"/");
+        log.info("### Template Resource Locations"+workDir+"/"+CMSUtils.getTemplates()+"/");
         try {
             // 拷贝配置文件
             Path cmsDir = Paths.get(workDir);
@@ -287,7 +287,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             }
 
             // 拷贝templates目录
-            Path templatePath = Paths.get(workDir + "/" + CmsConst.TEMPLATE_PATH);
+            Path templatePath = Paths.get(workDir + "/" + CMSUtils.getTemplates());
             if(Files.notExists(templatePath)){
                 Files.createDirectories(templatePath);
                 log.info(">>> Not exist template directory, Create template directory "+templatePath.toString());

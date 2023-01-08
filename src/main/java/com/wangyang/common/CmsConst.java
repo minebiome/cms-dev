@@ -15,6 +15,13 @@ public class CmsConst {
     }
     public static  String WORK_DIR;
 
+
+    @Value("${cms.templates}")
+    private void setTemplates(String templates) {
+        this.TEMPLATES = templates;
+    }
+    public static  String TEMPLATES;
+
     @Value("${cms.isDebug}")
     private  void setsDebug(Boolean isDebug) {
         this.IS_DEBUG = isDebug;

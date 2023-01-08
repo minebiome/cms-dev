@@ -53,13 +53,17 @@ public class TemplateUtil {
 
     private static String workDir="";
 
+
     @Value("${cms.workDir}")
     public TemplateUtil setWorkDir(String workDir) {
         this.workDir = workDir;
         return this;
     }
 
-    public static void deleteTemplateHtml(String oldName,String path){
+
+
+
+    public static void deleteTemplateHtml(String oldName, String path){
         if(StringUtils.isEmpty(oldName)){
             return;
         }
@@ -200,14 +204,16 @@ public class TemplateUtil {
         }
         final ThymeleafEvaluationContext evaluationContext = new ThymeleafEvaluationContext(applicationContext, mvcConversionService);
         context.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME, evaluationContext);
-
+        if(!templateValue.startsWith("html")){
+            templateValue = CMSUtils.getTemplates()+templateValue;
+        }
         String html = getFileEngine().process(templateValue, context);
         return html;
     }
 
     /**
      *
-     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
+//     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
      * @return
      */
     public static ITemplateEngine
@@ -217,8 +223,8 @@ public class TemplateUtil {
     }
     /**
      *
-     * @param needInclude 是否需要引入header
-     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
+//     * @param needInclude 是否需要引入header
+//     * @see com.wangyang.common.thymeleaf.IncludeElementTagProcessor#doProcess(ITemplateContext, IProcessableElementTag, IElementTagStructureHandler)
      * @return
      */
     public static ITemplateEngine getFileEngine() {

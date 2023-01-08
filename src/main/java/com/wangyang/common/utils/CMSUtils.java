@@ -2,6 +2,7 @@ package com.wangyang.common.utils;
 
 import com.wangyang.common.CmsConst;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class CMSUtils {
@@ -20,6 +21,9 @@ public class CMSUtils {
 
     public static String getArticlePath(){
         return CmsConst.ARTICLE_DETAIL_PATH;
+    }
+    public static String getTemplates(){
+        return CmsConst.TEMPLATES+ File.separator;
     }
     public static String getLiteraturePath(){
         return CmsConst.LITERATURE_DETAIL_PATH;
