@@ -59,7 +59,7 @@ public class MyCustomView implements View {
 
         String viewNamePath = viewName.replace("_", File.separator);
         if(viewName.equals("error")){
-            viewNamePath =CMSUtils.getTemplates()+"templates/error";
+            viewNamePath =CMSUtils.getTemplates()+"error";
         }
         String path = CmsConst.WORK_DIR+ File.separator+viewNamePath+".html";
         UserDetailDTO user = AuthorizationUtil.getUser(request);
@@ -85,7 +85,7 @@ public class MyCustomView implements View {
         ITemplateEngine templateEngine = TemplateUtil.getWebEngine();
         String[] pathArgs = viewName.split("_");
         if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs)){
-            viewNamePath = CMSUtils.getTemplates()+"templates/error";
+            viewNamePath = CMSUtils.getTemplates()+"error";
             if(!Paths.get(path).toFile().exists()){
                 ctx.setVariable("message","模板不存在："+path);
             }

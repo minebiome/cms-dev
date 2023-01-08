@@ -52,7 +52,7 @@ public class WebController {
         if(user!=null&& ((User)user).getId()!=-1){
             return "redirect:/";
         }
-        return "templates/user/registry";
+        return "user/registry";
     }
     @GetMapping("/login")
     @Anonymous
@@ -61,7 +61,7 @@ public class WebController {
         if(user!=null&& ((User)user).getId()!=-1){
             return "redirect:/";
         }
-        return "templates/user/login";
+        return "user/login";
     }
 
     @GetMapping("/")

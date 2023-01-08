@@ -63,7 +63,7 @@ public class UserArticleController {
 //        Page<Article> articlePage = articleService.pageByUserId(userId, pageable);
 //        model.addAttribute("view",articlePage);
 //        System.out.println(userId);
-        return "templates/user/write";
+        return "user/write";
     }
 
     @GetMapping("/literature")
@@ -85,7 +85,7 @@ public class UserArticleController {
     @GetMapping("/write/{categoryId}")
     public String fastWriteArticle(@RequestParam(required = true) String title,HttpServletRequest request,@PathVariable("categoryId") Integer categoryId,Model model){
         if(title==null||title.equals("")){
-            return "templates/error";
+            return "error";
         }
         int userId = AuthorizationUtil.getUserId(request);
         ArticleDetailVO articleDetailVO = fastWriteArticleHtml(categoryId, title, userId);
@@ -113,7 +113,7 @@ public class UserArticleController {
     @GetMapping("/writeDraft/{categoryId}")
     public String fastWriteDraftArticleHtml(@RequestParam(required = true) String title,HttpServletRequest request,@PathVariable("categoryId") Integer categoryId,Model model){
         if(title==null||title.equals("")){
-            return "templates/error";
+            return "error";
         }
         int userId =AuthorizationUtil.getUserId(request);
         Article article= fastWriteDraftArticleHtml(categoryId, title, userId);
@@ -143,7 +143,7 @@ public class UserArticleController {
         ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",articleDetailVO);
-        return "templates/user/write";
+        return "user/write";
     }
 
     @GetMapping("/info")
@@ -152,7 +152,7 @@ public class UserArticleController {
         int userId = AuthorizationUtil.getUserId(request);
         UserDto userDto = userService.findUserDaoById(userId);
         model.addAttribute("view",userDto);
-        return "templates/user/info";
+        return "user/info";
     }
 
 
@@ -163,7 +163,7 @@ public class UserArticleController {
         String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
         model.addAttribute("mind",mindFormat);
         model.addAttribute("category",category);
-        return "templates/user/mindJs";
+        return "user/mindJs";
     }
 
 
@@ -196,7 +196,7 @@ public class UserArticleController {
 
 
 //        System.out.println(userId);
-        return "templates/user/articleList";
+        return "user/articleList";
     }
 
 }
