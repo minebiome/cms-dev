@@ -13,6 +13,7 @@ import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.base.IContentService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -107,6 +108,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
     List<Article>listByUserId(int userId);
 
     void addParentCategory(List<CategoryVO> categoryVOS, Integer parentId);
+
+    Page<Article> pageArticleByCategoryIds(Set<Integer> ids, Boolean isDesc,  PageRequest pageRequest);
 
     CategoryArticleListDao findCategoryArticleBy(CategoryVO category, Template template, int page);
 

@@ -187,16 +187,19 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
             }
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
-            if(isDesc){
+            if(isDesc!=null){
+                if(isDesc){
 //                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
 //                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
-            }else {
-                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
+                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
+                }else {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
 //                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("order")),criteriaBuilder.desc(root.get("id")));
 
 //                criteriaQuery.orderBy(criteriaBuilder.desc(root.get("updateDate")));
+                }
             }
+
             return criteriaQuery.getRestriction();
         };
         return specification;
@@ -811,6 +814,8 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         }).collect(Collectors.toList());
         return articleVOS;
     }
+
+
 //    @Override
 //    public Page<ArticleDto> articleShow(Specification<Article> specification, Pageable pageable){
 //        Page<Article> articles = articleRepository.findAll(specification, pageable);
@@ -1019,6 +1024,12 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         }
 
     }
+
+    @Override
+    public Page<Article> pageArticleByCategoryIds(Set<Integer> ids, Boolean isDesc, PageRequest pageRequest){
+        Page<Article> articles = articleRepository.findAll(articleSpecification(ids,isDesc, ArticleList.NO_INCLUDE_TOP),pageRequest);
+        return articles;
+    }
     @Override
     public CategoryArticleListDao findCategoryArticleBy(CategoryVO category, Template template, int page){
         CategoryArticleListDao articleListVo = new CategoryArticleListDao();
@@ -1030,6 +1041,11 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         List<CategoryVO> categoryVOS = new ArrayList<>();
         ids.add(category.getId());
         addChildIds(categoryVOS,category.getId());
+
+
+        List<Category> categoryPartner = categoryService.findByParentId(category.getParentId());
+        articleListVo.setPartner(categoryService.convertToListVo(categoryPartner));
+
         if(categoryVOS.size()!=0){
             ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
             List<CategoryVO> categoryVOSTree = categoryService.listWithTree(categoryVOS,category.getId());

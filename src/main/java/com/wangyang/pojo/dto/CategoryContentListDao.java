@@ -1,23 +1,17 @@
 package com.wangyang.pojo.dto;
 
 import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.ContentVO;
 import lombok.Data;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
-
-/**
- * 分页的文章列表
- */
 @Data
-public class CategoryArticleListDao {
+public class CategoryContentListDao {
 
     private String viewName;
-//    private Page<ArticleVO> page;
-    private List<ArticleVO> contents;
+    //    private Page<ArticleVO> page;
+    private List<ContentVO> contents;
     private CategoryVO category;
     private CategoryVO parentCategory;
     private List<CategoryVO> parentCategories;

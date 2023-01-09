@@ -1,16 +1,20 @@
 package com.wangyang.schedule.util;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryDto;
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.support.ScheduleOption;
 import com.wangyang.pojo.support.TemplateOption;
 import com.wangyang.pojo.support.TemplateOptionMethod;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.service.*;
+import com.wangyang.service.impl.ArticleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,9 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //@Component
 @Slf4j
@@ -130,13 +132,18 @@ public class ArticleJob {
         List<Category> categories = categoryService.listAll();
         categories.forEach(category -> {
             PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits")));
-            Page<ArticleDto> articleDtos = articleService.pageDtoByCategory(category,pageRequest );
+//            Page<ArticleDto> articleDtos = articleService.pageDtoByCategory(category,pageRequest );
+//            Page<Article> articles = articleRepository.findAll(articleSpecification(ids,category.getIsDesc(), ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
+            Set<Integer> ids =  new HashSet<>();
+            ids.add(category.getId());
+            Page<Article> articles = articleService.pageArticleByCategoryIds(ids, null, pageRequest);
+            Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
             Map<String,Object> map = new HashMap<>();
-            map.put("view",articleDtos);
+            map.put("view",articleVOS);
             map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");
             map.put("name",category.getName()+"推荐");
             Template template = templateService.findByEnName(CmsConst.ARTICLE_RECOMMEND_LIST);
-            TemplateUtil.convertHtmlAndSave("html/components","recommend-"+category.getViewName(),map,template);
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecommendPath(),category.getViewName(),map,template);
         });
     }
 

@@ -20,13 +20,7 @@ public class Article extends Content {
     private String picPath;
     private String picThumbPath;
 
-    private Integer categoryId;
-    @Column(name = "article_order", columnDefinition = "int default 0")
-    private Integer order;
-    @Column(name = "article_top",columnDefinition = "bit(1) default false")
-    private Boolean top;
-  // 父亲id 0是只没有父亲 此时指向category
-    private Boolean expanded; // 节点是否展开
-    private String direction; //节点的方向
+
+
 
 }

@@ -31,6 +31,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.net.BindException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -360,10 +361,11 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 
     public List<CategoryVO> convertCategory2CategoryVO(List<Category> categories){
         List<CategoryVO> collect = categories.stream().map(category -> {
-            CategoryVO categoryVO = new CategoryVO();
-            BeanUtils.copyProperties(category, categoryVO);
-            categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
-            return categoryVO;
+//            CategoryVO categoryVO = new CategoryVO();
+//            BeanUtils.copyProperties(category, categoryVO);
+//            categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
+//            return categoryVO;
+            return covertToVo(category);
         }).collect(Collectors.toList());
         return super.listWithTree(collect);
     }
@@ -474,19 +476,16 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
     @Override
     public List<CategoryVO> convertToListVo(List<Category> categories) {
         return categories.stream().map(category -> {
-            CategoryVO categoryVO = new CategoryVO();
-            BeanUtils.copyProperties(category, categoryVO);
-            categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
-            return categoryVO;
+            return covertToVo(category);
         }).collect(Collectors.toList());
     }
-
 
     @Override
     public CategoryVO covertToVo(Category category){
         CategoryVO categoryVO = new CategoryVO();
         BeanUtils.copyProperties(category, categoryVO);
         categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
+        categoryVO.setRecommendPath(CMSUtils.getArticleRecommendPath()+ File.separator+category.getViewName());
         return categoryVO;
     }
             @Override
