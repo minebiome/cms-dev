@@ -51,7 +51,14 @@ public class MyCustomView implements View {
         response.setContentType("text/html");
         if(viewName.startsWith("redirect:")){
             String redirectPath = viewName.substring("redirect:".length());
-            response.sendRedirect(redirectPath);
+            String servername =request.getServerName();
+
+            if(request.getRequestURL().toString().toLowerCase().startsWith("https")){
+                response.sendRedirect("https://"+servername+"/"+redirectPath);
+            }else {
+                response.sendRedirect(redirectPath);
+            }
+
             return;
         }else if(!viewName.startsWith("html")){
             viewName = CMSUtils.getTemplates()+viewName;
