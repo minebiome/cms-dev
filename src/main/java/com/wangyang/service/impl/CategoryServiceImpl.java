@@ -32,7 +32,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.net.BindException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -237,10 +236,15 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 //    }
 
 
-
-
-
     @Override
+    public List<CategoryVO> listChildWithTree(String viewName) {
+        Category category = findByViewName(viewName);
+        List<Category> categories = findByParentId(category.getId());
+        List<CategoryVO> categoryVOS = convertToListVo(categories);
+        return super.listWithTree(categoryVOS, category.getId());
+    }
+
+            @Override
     public List<Category> list(CategoryQuery categoryQuery,Sort sort) {
         Specification<Category> specification = new Specification<Category>() {
             @Override

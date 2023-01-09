@@ -37,7 +37,7 @@ public class Content extends BaseEntity{
     @Column(name = "article_order", columnDefinition = "int default 0")
     private Integer order;
     @Column(name = "article_top",columnDefinition = "bit(1) default false")
-    private Boolean top;
+    private Boolean top=false;
     // 父亲id 0是只没有父亲 此时指向category
     private Boolean expanded; // 节点是否展开
     private String direction; //节点的方向

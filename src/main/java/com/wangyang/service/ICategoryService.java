@@ -2,11 +2,9 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.base.IBaseCategoryService;
-import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -61,6 +59,8 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
     List<CategoryDto> listRecommend();
 
     Optional<Category> findOptionalById(int id);
+
+    List<CategoryVO> listChildWithTree(String viewName);
 
     List<Category> list(CategoryQuery categoryQuery, Sort sort);
 

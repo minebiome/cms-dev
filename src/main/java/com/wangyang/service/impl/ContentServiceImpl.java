@@ -2,7 +2,6 @@ package com.wangyang.service.impl;
 
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.User;
-import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.dto.TagsDto;
 import com.wangyang.pojo.entity.*;
@@ -10,6 +9,7 @@ import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.pojo.vo.ContentDetailVO;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.repository.TagsRepository;
@@ -19,10 +19,12 @@ import com.wangyang.service.IContentServiceEntity;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.base.AbstractContentServiceImpl;
 import com.wangyang.util.FormatUtil;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -95,13 +97,13 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
     }
 
     @Override
-    public Page<Content> pageArticleByCategoryIds(Set<Integer> ids, Boolean isDesc, PageRequest pageRequest){
+    public Page<Content> pageContentByCategoryIds(Set<Integer> ids, Boolean isDesc, PageRequest pageRequest){
         Page<Content> contents = contentRepository.findAll(articleSpecification(ids,isDesc, ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP),pageRequest);
         return contents;
     }
 
     @Override
-    public List<Content> listArticleByCategoryIds(Set<Integer> ids, Boolean isDesc) {
+    public List<Content> listContentByCategoryIds(Set<Integer> ids, Boolean isDesc) {
         return contentRepository.findAll(articleSpecification(ids,isDesc, ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP));
     }
 
@@ -296,7 +298,7 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
 
         if(!template.getTree()){
 //            Page<Article> articles = pageArticleByCategoryIds(articleSpecification(ids,category.getIsDesc(), ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
-            Page<Content> contentsPage = pageArticleByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
+            Page<Content> contentsPage = pageContentByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
             Page<ContentVO> contentVOS = convertToPageVo(contentsPage);
             int totalPages = contentVOS.getTotalPages();
             int size = contentVOS.getSize();
@@ -320,7 +322,27 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         return articleListVo;
     }
 
-
+    @Override
+    public List<ContentVO> listVoTree(Integer categoryId) {
+        Category category = categoryService.findById(categoryId);
+        Set<Integer> ids  = new HashSet<>();
+        ids.add(category.getId());
+        return listVoTree(ids,category.getDesc());
+//        ArticleQuery articleQuery = new ArticleQuery();
+//        articleQuery.setCategoryId(category.getId());
+//        articleQuery.setDesc(category.getDesc());
+//        Specification<Article> specification = buildPublishByQuery(articleQuery);
+//        List<Article> articles = articleRepository.findAll(specification);
+////                .stream().map(article -> {
+////            ArticleVO articleVO = new ArticleVO();
+////            BeanUtils.copyProperties(article, articleVO);
+////            return articleVO;
+////        }).collect(Collectors.toList());
+//        List<ArticleVO> articleVOS = convertToListVo(articles);
+//        List<ArticleVO> articleVOTree = super.listWithTree(articleVOS);
+////        List<ArticleDto> listWithTree = listWithTree(articleDtos);
+//        return articleVOTree;
+    }
     @Override
     public List<ContentVO> listVoTree(Set<Integer> ids, Boolean isDesc) {
 
@@ -341,5 +363,45 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         List<ContentVO> contentVOTree = super.listWithTree(contentVOS);
 //        List<ArticleDto> listWithTree = listWithTree(articleDtos);
         return contentVOTree;
+    }
+
+    @Override
+    public void updateOrder(Integer id, List<ContentVO> contentVOS) {
+        Category category = categoryService.findById(id);
+        Set<Integer> ids= new HashSet<>();
+        ids.add(category.getId());
+        List<Content> contents = listContentByCategoryIds(ids, true);
+
+//        List<Article> articles = listArticleByCategoryIds(category.getId());
+        super.updateOrder(contents,contentVOS);
+    }
+
+
+    @Override
+    public List<ContentVO> listArticleVOBy(String viewName){
+        Category category = categoryService.findByViewName(viewName);
+        Set<Integer> ids = new HashSet<>();
+        ids.add(category.getId());
+        List<Content> contents = contentRepository.findAll(articleSpecification(ids, true, ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP), Sort.by("order"));
+        List<ContentVO> contentVOS = convertToListVo(contents);
+        return contentVOS;
+    }
+
+
+    @Override
+    public ContentDetailVO updateCategory(Content content, Integer baseCategoryId) {
+        Optional<Category> category = categoryService.findOptionalById(baseCategoryId);
+        ContentDetailVO contentDetailVO = new ContentDetailVO();
+        contentDetailVO.setContent(content);
+        if(category.isPresent()){
+            content.setCategoryId(category.get().getId());
+            contentDetailVO.setCategory(category.get());
+        }else {
+            content.setCategoryId(0);
+        }
+        contentRepository.save(content);
+        return contentDetailVO;
+
+
     }
 }

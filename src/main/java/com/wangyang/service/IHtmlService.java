@@ -2,6 +2,7 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
+import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Components;
@@ -32,7 +33,7 @@ public interface IHtmlService {
      * 生成该栏目下文章列表, 只展示文章列表
      * @param category
      */
-    CategoryArticleListDao convertArticleListBy(Category category);
+    CategoryContentListDao convertArticleListBy(Category category);
 
 //    void generateCategoryArticleListByCategory(Category category);
 
@@ -65,7 +66,7 @@ public interface IHtmlService {
 
     void commonTemplate(String option);
 
-    CategoryArticleListDao convertArticleListBy(CategoryVO category);
+    CategoryContentListDao convertArticleListBy(CategoryVO category);
 
     String convertArticleListBy(Category category, int page);
 
@@ -79,7 +80,7 @@ public interface IHtmlService {
 
     String previewArticlePageBy(HttpServletRequest request, Page<ArticleDto> articleDtoPage);
 
-    CategoryArticleListDao convertArticleListBy(int categoryId);
+    CategoryContentListDao convertArticleListBy(int categoryId);
 
     void convertArticleListBy(Sheet sheet);
 

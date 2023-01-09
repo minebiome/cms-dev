@@ -6,16 +6,15 @@ import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.*;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
+import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
-import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.pojo.vo.ArticleVO;
-import com.wangyang.pojo.vo.CategoryVO;
-import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.pojo.vo.*;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.repository.ArticleRepository;
 import com.wangyang.repository.ComponentsRepository;
 import com.wangyang.service.*;
+import com.wangyang.service.base.IContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +57,9 @@ public class HtmlServiceImpl implements IHtmlService {
     @Autowired
     ICommentService commentService;
 
+
+    @Autowired
+    IContentServiceEntity contentService;
 
 
     @Override
@@ -136,7 +138,7 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
     @Override
-    public CategoryArticleListDao convertArticleListBy(Category category) {
+    public CategoryContentListDao convertArticleListBy(Category category) {
         return convertArticleListBy(categoryService.covertToVo(category));
     }
 
@@ -145,13 +147,15 @@ public class HtmlServiceImpl implements IHtmlService {
      * @param category
      */
     @Override
-    public CategoryArticleListDao convertArticleListBy(CategoryVO category) {
+    public CategoryContentListDao convertArticleListBy(CategoryVO category) {
 //        //生成分类列表,用于首页文章列表右侧展示
 //        if(!TemplateUtil.componentsExist(category.getTemplateName())){
 //                generateCategoryListHtml();
 //        }
         Template template = templateService.findOptionalByEnName(category.getTemplateName());
-        CategoryArticleListDao categoryArticle = articleService.findCategoryArticleBy(category,template, 0);
+        CategoryContentListDao categoryArticle = contentService.findCategoryContentBy(category,template, 0);
+//        CategoryContentListDao categoryArticle = contentService.findCategoryContentBy(categoryService.covertToVo(category),template,0);
+
 //        if(template.getTree()){
 ////            categoryArticle = articleService.findCategoryArticleBy(category);
 //        }else {
@@ -178,7 +182,7 @@ public class HtmlServiceImpl implements IHtmlService {
 
         /*生成只有标题的第一页文章列表*/
         Template templateTitleList = templateService.findOptionalByEnName(CmsConst.CATEGORY_TITLE);
-        List<ArticleVO> articleVOS = categoryArticle.getContents();
+        List<ContentVO> articleVOS = categoryArticle.getContents();
         TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
 
 
@@ -269,7 +273,7 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
     @Override
-    public CategoryArticleListDao convertArticleListBy(int categoryId){
+    public CategoryContentListDao convertArticleListBy(int categoryId){
         Category category = categoryService.findById(categoryId);
         return convertArticleListBy(category);
     }

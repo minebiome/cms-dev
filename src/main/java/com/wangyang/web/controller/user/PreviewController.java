@@ -4,6 +4,7 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
+import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.params.TemplateParam;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.CommentVo;
@@ -46,6 +47,8 @@ public class PreviewController {
     @Autowired
     IHtmlService htmlService;
 
+    @Autowired
+    IContentServiceEntity contentService;
 
 
     @PostMapping("/templates/update/{id}")
@@ -157,7 +160,7 @@ public class PreviewController {
         Template template = templateService.findByEnName(category.getTemplateName());
 
         //预览
-        CategoryArticleListDao articleListVo = articleService.findCategoryArticleBy(category,template,0);
+        CategoryContentListDao articleListVo = contentService.findCategoryContentBy(categoryService.covertToVo(category),template,0);
 
 //        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
 //        String convertHtml = FileUtils.convertByString(html);
