@@ -28,6 +28,12 @@ public class CmsConst {
     }
     public static  Boolean IS_DEBUG ;
 
+    @Value("${cms.proxy_url}")
+    private  void setsProxyUrl(String PROXY_URL ) {
+        this.PROXY_URL = PROXY_URL;
+    }
+    public static  String PROXY_URL ;
+
     public static final String SYSTEM_TEMPLATE_PATH="templates";
     public static final String SYSTEM_HTML_PATH="html";
     public static final String TEMPLATE_PATH="templates";

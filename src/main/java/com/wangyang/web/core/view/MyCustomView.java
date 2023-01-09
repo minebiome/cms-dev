@@ -53,7 +53,7 @@ public class MyCustomView implements View {
             String redirectPath = viewName.substring("redirect:".length());
             String servername =request.getServerName();
 
-            if(request.getRequestURL().toString().toLowerCase().startsWith("https")){
+            if(request.getRequestURL().toString().toLowerCase().startsWith(CMSUtils.getProxyUrl())){
                 response.sendRedirect("https://"+servername+"/"+redirectPath);
             }else {
                 response.sendRedirect(redirectPath);

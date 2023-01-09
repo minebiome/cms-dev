@@ -25,6 +25,9 @@ public class CMSUtils {
     public static String getTemplates(){
         return CmsConst.TEMPLATES+ File.separator;
     }
+    public static String getProxyUrl(){
+        return CmsConst.PROXY_URL;
+    }
     public static String getLiteraturePath(){
         return CmsConst.LITERATURE_DETAIL_PATH;
     }
