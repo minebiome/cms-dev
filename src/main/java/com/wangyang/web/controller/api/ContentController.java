@@ -53,7 +53,7 @@ public class ContentController {
      * @return
      */
     @GetMapping("/updateCategory/{articleId}")
-    public ContentDetailVO updateCategory(@PathVariable("articleId") Integer articleId, Integer baseCategoryId, HttpServletRequest request){
+    public Category updateCategory(@PathVariable("articleId") Integer articleId, Integer baseCategoryId, HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
         Content content = contentService.findById(articleId);
 //        checkUser(userId,article);
@@ -68,7 +68,7 @@ public class ContentController {
         //删除旧文章
 //        TemplateUtil.deleteTemplateHtml(viewName,path);
         //更新旧的文章列表
-        if(categoryId!=null){
+        if(categoryId!=null&& categoryId!=0){
             Category oldCategory = categoryService.findById(categoryId);
 //            articleDetailVO.setOldCategory(oldCategory);
             htmlService.convertArticleListBy(oldCategory);
@@ -86,7 +86,7 @@ public class ContentController {
 //        FileUtils.removeCategoryPageTemp(articleDetailVO.getCategory());
 //        FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
 
-        return updateContent;
+        return updateContent.getCategory();
     }
 }
 

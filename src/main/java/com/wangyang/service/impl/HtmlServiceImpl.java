@@ -72,6 +72,8 @@ public class HtmlServiceImpl implements IHtmlService {
             articleService.addParentCategory(categoryVOS,articleVO.getCategory().getParentId());
             articleVO.setParentCategory(categoryVOS);
 
+            List<Category> partnerCategory = categoryService.findByParentId(categoryVO.getParentId());
+            articleVO.setPartnerCategory(categoryService.convertToListVo(partnerCategory));
 
 //            EntityCreatedEvent<Category> createArticle = new EntityCreatedEvent<>(category);
 //            publisher.publishEvent(createArticle);
@@ -308,6 +310,7 @@ public class HtmlServiceImpl implements IHtmlService {
         TemplateUtil.convertHtmlAndSave(data,components);
     }
 
+
     @Override
     public Components generateHome(){
         Components components = componentsService.findByViewName("index");
@@ -335,6 +338,7 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
     @Override
+    @Async
     public void generateMenuListHtml() {
         Components components = componentsService.findByDataName("articleJob.listMenu");
         Object data = componentsService.getModel(components);
@@ -395,6 +399,8 @@ public class HtmlServiceImpl implements IHtmlService {
             Template template = templateService.findByEnName(article.getCommentTemplateName());
             Map<String,Object> map = new HashMap<>();
             map.put("comments",commentVos);
+            map.put("viewName",article.getViewName());
+            map.put("articleId",article.getId());
             TemplateUtil.convertHtmlAndSave(CMSUtils.getComment(),article.getViewName(),map,template);
 
             String json = JSON.toJSON(commentVos).toString();

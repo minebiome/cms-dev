@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +50,16 @@ public class ArticleAspectJ {
         try {
             Object o = joinPoint.proceed();
             ArticleDetailVO articleDetailVO = (ArticleDetailVO)o;
+
+            Category category = categoryService.findByViewName("technologyServices");
+            List<Category> categories = categoryService.findByParentId(category.getId());
+            categories.add(category);
+            for (Category c : categories){
+                if(c.getViewName().equals(articleDetailVO.getCategory().getViewName())){
+                    htmlService.generateMenuListHtml();
+                }
+            }
+
             deleteTemp(articleDetailVO.getCategory().getName(),articleDetailVO.getCategory().getViewName(),articleDetailVO.getCategory().getParentId());
             if(articleDetailVO.getOldCategory()!=null){
                 deleteTemp(articleDetailVO.getOldCategory());
@@ -72,14 +83,18 @@ public class ArticleAspectJ {
      */
     @Around("execution(* com.wangyang.web.controller.api.CategoryController.update(..)) or " +
             "execution(* com.wangyang.web.controller.api.CategoryController.deleteById(..)) or " +
+            "execution(* com.wangyang.web.controller.api.ContentController.updateCategory(..)) or " +
             "execution(* com.wangyang.web.controller.api.CategoryController.haveHtml(..)) or "+
             "execution(* com.wangyang.web.controller.api.CategoryController.generateHtml(..))")
     public Category categoryAop(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object o = joinPoint.proceed();
             Category category = (Category)o;
-            deleteTemp(category);
+            if(category!=null){
+                deleteTemp(category);
+            }
 
+            htmlService.generateMenuListHtml();
             return category;
         } catch (InstantiationException e) {
             e.printStackTrace();

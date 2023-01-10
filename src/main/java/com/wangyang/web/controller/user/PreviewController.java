@@ -99,8 +99,10 @@ public class PreviewController {
 //        htmlService.addParentCategory(articleDetailVo);
         List<CategoryVO> categoryVOS =new ArrayList<>();
         articleService.addParentCategory(categoryVOS,articleDetailVo.getCategory().getParentId());
-        articleDetailVo.setParentCategory(categoryVOS);
 
+        articleDetailVo.setParentCategory(categoryVOS);
+        List<Category> partnerCategory = categoryService.findByParentId(articleDetailVo.getCategory().getParentId());
+        articleDetailVo.setPartnerCategory(categoryService.convertToListVo(partnerCategory));
 
 
 
@@ -202,6 +204,8 @@ public class PreviewController {
         commentVo.setUser(user);
         commentVos.add(commentVo);
         model.addAttribute("comments",commentVos);
+        model.addAttribute("viewName","1111111111111111111");
+        model.addAttribute("articleId",0);
 //        Map<String,Object> o = componentsService.getModel(components);
 ////        String html = TemplateUtil.convertHtmlAndPreview(o, components);
 //////        String convertHtml = FileUtils.convertByString(html);

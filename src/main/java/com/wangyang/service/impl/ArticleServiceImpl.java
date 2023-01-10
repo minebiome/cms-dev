@@ -1011,6 +1011,8 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         }
 
     }
+
+
     public void addChildIds( List<CategoryVO> categoryVOS, Integer id){
         List<Category> categories = categoryService.findByParentId(id);
         if(categories.size()==0){
