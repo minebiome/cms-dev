@@ -37,6 +37,23 @@ public class ArticleAspectJ {
     @Autowired
     ICategoryService categoryService;
 
+
+
+    public boolean findArticleInCategory(String categoryViewName,String articleCategoryViewName){
+        Category category = categoryService.findByViewName(categoryViewName);
+        List<Category> categories = categoryService.findByParentId(category.getId());
+        categories.add(category);
+        for (Category c : categories){
+            if(c.getViewName().equals(articleCategoryViewName)){
+                return true;
+
+            }
+        }
+        return false;
+
+    }
+
+
     /**
      * 需要执行删除
      */
@@ -50,15 +67,13 @@ public class ArticleAspectJ {
         try {
             Object o = joinPoint.proceed();
             ArticleDetailVO articleDetailVO = (ArticleDetailVO)o;
-
-            Category category = categoryService.findByViewName("technologyServices");
-            List<Category> categories = categoryService.findByParentId(category.getId());
-            categories.add(category);
-            for (Category c : categories){
-                if(c.getViewName().equals(articleDetailVO.getCategory().getViewName())){
-                    htmlService.generateMenuListHtml();
-                }
+            if(findArticleInCategory("technologyServices",articleDetailVO.getCategory().getViewName())){
+                htmlService.generateMenuListHtml();
             }
+            if(findArticleInCategory("news",articleDetailVO.getCategory().getViewName())){
+                htmlService.generateHome();
+            }
+
 
             deleteTemp(articleDetailVO.getCategory().getName(),articleDetailVO.getCategory().getViewName(),articleDetailVO.getCategory().getParentId());
             if(articleDetailVO.getOldCategory()!=null){

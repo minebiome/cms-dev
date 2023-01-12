@@ -403,7 +403,7 @@ public class ArticleController {
     }
 
     @GetMapping("/listByComponentsId/{componentsId}")
-    public List<ArticleDto> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
+    public List<ArticleVO> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
         return  articleService.listByComponentsId(componentsId);
     }
 
@@ -549,6 +549,14 @@ public class ArticleController {
     public ArticleDetailVO findDetailArticleById(@PathVariable("id") Integer id){
         ArticleDetailVO articleDetailVO = articleService.findArticleAOById(id);
         return articleDetailVO;
+    }
+
+
+    @GetMapping("/updateArticleInComponentOrder")
+    public Article updateArticleInComponentOrder(@RequestParam Integer id,@RequestParam Integer order){
+        Article article = articleService.findArticleById(id);
+        article.setArticleInComponentOrder(order);
+        return articleService.save(article);
     }
 
 }

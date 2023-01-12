@@ -98,7 +98,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
      * @param componentsId
      * @return
      */
-    List<ArticleDto> listByComponentsId(int componentsId);
+    List<ArticleVO> listByComponentsId(int componentsId);
 
     /**
      * 根据user查找article
@@ -206,6 +206,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
     List<ArticleVO> listVoTree(Set<Integer> ids,Boolean isDesc);
 
     List<ArticleVO> listVoTreeByCategoryViewName(String viewName);
+
+    List<ArticleVO> listVoByCategoryViewName(String viewName);
 
     void updateOrder(Integer id, List<ArticleVO> articleVOS);
 

@@ -19,6 +19,7 @@ import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.*;
+import com.wangyang.service.IComponentsArticleService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
@@ -68,6 +69,9 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     ComponentsArticleRepository componentsArticleRepository;
     @Autowired
     IUserService userService;
+    @Autowired
+    IComponentsArticleService componentsArticleService;
+
 
     private  ArticleRepository articleRepository;
     public ArticleServiceImpl(ArticleRepository articleRepository) {
@@ -1277,11 +1281,17 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 //    }
 
     @Override
-    public List<ArticleDto> listByComponentsId(int componentsId){
+    public List<ArticleVO> listByComponentsId(int componentsId){
         List<ComponentsArticle> componentsArticles = componentsArticleRepository.findByComponentId(componentsId);
         Set<Integer> articleIds = ServiceUtil.fetchProperty(componentsArticles, ComponentsArticle::getArticleId);
-        List<Article> articles = articleRepository.findAllById(articleIds);
-        return convertArticle2ArticleDto(articles);
+//        List<Article> articles = articleRepository.findAllById(articleIds);
+        List<Article> articles = articleRepository.findAll(new Specification<Article>() {
+            @Override
+            public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(root.get("id").in(articleIds)).getRestriction();
+            }
+        },Sort.by(Sort.Direction.DESC,"articleInComponentOrder"));
+        return convertToListVo(articles);
     }
 
     @Override
@@ -1471,6 +1481,32 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         return articleVOTree;
     }
 
+    @Override
+    public List<ArticleVO> listVoByCategoryViewName(String viewName) {
+        Category category = categoryService.findByViewName(viewName);
+        List<CategoryVO> categoryVOS = new ArrayList<>();
+        addChildIds(categoryVOS,category.getId());
+        categoryVOS.add(categoryService.covertToVo(category));
+        Set<Integer> ids = ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId);
+        Page<Article> articles = articleRepository.findAll(articleSpecification(ids,category.getIsDesc(), ArticleList.NO_INCLUDE_TOP),PageRequest.of(0,3));
+        Page<ArticleVO> articleVOS = convertToPageVo(articles);
+
+//        articleVOS
+        //        Category category = categoryService.findById(categoryId);
+//        ArticleQuery articleQuery = new ArticleQuery();
+//        articleQuery.setCategoryId(category.getId());
+//        articleQuery.setDesc(category.getDesc());
+//        Specification<Article> specification = buildPublishByQuery(articleQuery);
+//        List<Article> articles = articleRepository.findAll(specification);
+//                .stream().map(article -> {
+//            ArticleVO articleVO = new ArticleVO();
+//            BeanUtils.copyProperties(article, articleVO);
+//            return articleVO;
+//        }).collect(Collectors.toList());
+//        List<ArticleVO> articleVOS = convertToListVo(articles);
+//        List<ArticleDto> listWithTree = listWithTree(articleDtos);
+        return articleVOS.getContent();
+    }
 
 
     //    public List<ArticleDto> listWithTree(List<ArticleDto> list) {
