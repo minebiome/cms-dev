@@ -785,23 +785,23 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         List<User> users = userService.findAllById(userIds);
 
         Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
-//        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
-//        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
-//            CategoryDto categoryDto = new CategoryDto();
-//            BeanUtils.copyProperties(category, categoryDto);
-//            return categoryDto;
-//        }).collect(Collectors.toList());
-//        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
+        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
+        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(category, categoryDto);
+            return categoryDto;
+        }).collect(Collectors.toList());
+        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
 
 
         List<ArticleVO> articleVOS = articles.stream().map(article -> {
             ArticleVO articleVO = new ArticleVO();
             BeanUtils.copyProperties(article,articleVO);
             articleVO.setUser(userMap.get(article.getUserId()));
-//            if(categoryMap.containsKey(article.getCategoryId())){
-//                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
-//
-//            }
+            if(categoryMap.containsKey(article.getCategoryId())){
+                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
+
+            }
 //            articleVO.setLinkPath(FormatUtil.articleListFormat(article));
             articleVO.setTags(Optional.ofNullable(tagsListMap.get(article.getId()))
                     .orElseGet(LinkedList::new)
