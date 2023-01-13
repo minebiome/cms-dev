@@ -1,7 +1,6 @@
 #!/bin/bash
 git pull
-mvn clean
-mvn install
+
 dir=`pwd`
 app="cms-dev-0.0.1-SNAPSHOT.jar"
 jar="${dir}/target/${app}"
@@ -19,6 +18,8 @@ then
   kill -9 ${pid}
 fi
 
+mvn clean
+mvn install
 echo $jar
 nohup java -jar $jar 2>&1 > bioinfo.log &
 tail -f bioinfo.log
