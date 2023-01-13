@@ -145,6 +145,11 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
             ContentVO contentVO = new ContentVO();
             BeanUtils.copyProperties(content,contentVO);
             contentVO.setUser(userMap.get(content.getUserId()));
+
+            if(content.getOrder()==null){
+                contentVO.setOrder(0);
+            }
+
 //            if(categoryMap.containsKey(article.getCategoryId())){
 //                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
 //
