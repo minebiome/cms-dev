@@ -41,6 +41,9 @@ public class ArticleAspectJ {
 
     public boolean findArticleInCategory(String categoryViewName,String articleCategoryViewName){
         Category category = categoryService.findByViewName(categoryViewName);
+        if(category==null){
+            return false;
+        }
         List<Category> categories = categoryService.findByParentId(category.getId());
         categories.add(category);
         for (Category c : categories){
