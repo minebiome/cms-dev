@@ -1482,13 +1482,13 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     }
 
     @Override
-    public List<ArticleVO> listVoByCategoryViewName(String viewName) {
+    public List<ArticleVO> listVoByCategoryViewName(String viewName,Integer size) {
         Category category = categoryService.findByViewName(viewName);
         List<CategoryVO> categoryVOS = new ArrayList<>();
         addChildIds(categoryVOS,category.getId());
         categoryVOS.add(categoryService.covertToVo(category));
         Set<Integer> ids = ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId);
-        Page<Article> articles = articleRepository.findAll(articleSpecification(ids,category.getIsDesc(), ArticleList.NO_INCLUDE_TOP),PageRequest.of(0,3));
+        Page<Article> articles = articleRepository.findAll(articleSpecification(ids,category.getIsDesc(), ArticleList.NO_INCLUDE_TOP),PageRequest.of(0,size));
         Page<ArticleVO> articleVOS = convertToPageVo(articles);
 
 //        articleVOS
@@ -1506,6 +1506,34 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 //        List<ArticleVO> articleVOS = convertToListVo(articles);
 //        List<ArticleDto> listWithTree = listWithTree(articleDtos);
         return articleVOS.getContent();
+    }
+
+    @Override
+    public List<ArticleVO> listVoByCategoryViewName(String viewName) {
+        Category category = categoryService.findByViewName(viewName);
+        List<CategoryVO> categoryVOS = new ArrayList<>();
+        addChildIds(categoryVOS,category.getId());
+        categoryVOS.add(categoryService.covertToVo(category));
+        Set<Integer> ids = ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId);
+        List<Article> articles = articleRepository.findAll(articleSpecification(ids, category.getIsDesc(), ArticleList.NO_INCLUDE_TOP));
+        List<ArticleVO> articleVOS = convertToListVo(articles);
+//        Page<ArticleVO> articleVOS = convertToPageVo(articles);
+
+//        articleVOS
+        //        Category category = categoryService.findById(categoryId);
+//        ArticleQuery articleQuery = new ArticleQuery();
+//        articleQuery.setCategoryId(category.getId());
+//        articleQuery.setDesc(category.getDesc());
+//        Specification<Article> specification = buildPublishByQuery(articleQuery);
+//        List<Article> articles = articleRepository.findAll(specification);
+//                .stream().map(article -> {
+//            ArticleVO articleVO = new ArticleVO();
+//            BeanUtils.copyProperties(article, articleVO);
+//            return articleVO;
+//        }).collect(Collectors.toList());
+//        List<ArticleVO> articleVOS = convertToListVo(articles);
+//        List<ArticleDto> listWithTree = listWithTree(articleDtos);
+        return articleVOS;
     }
 
 

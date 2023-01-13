@@ -48,7 +48,7 @@ public class ArticleVO extends BaseVo<ArticleVO> {
     // 路径格式
     private String linkPath ;
     private Boolean top;
-
+    private String formatContent;
     private Integer articleInComponentOrder;
     public String getLinkPath() {
       return File.separator+this.getPath().replace(File.separator,"_")+"_"+this.getViewName()+".html";

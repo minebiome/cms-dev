@@ -207,6 +207,8 @@ public interface IArticleService extends IContentService<Article,Article,Article
 
     List<ArticleVO> listVoTreeByCategoryViewName(String viewName);
 
+    List<ArticleVO> listVoByCategoryViewName(String viewName,Integer size);
+
     List<ArticleVO> listVoByCategoryViewName(String viewName);
 
     void updateOrder(Integer id, List<ArticleVO> articleVOS);
