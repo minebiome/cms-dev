@@ -189,7 +189,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
         List<Components> componentsList = new ArrayList<>();
         componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
-        componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("Form",CMSUtils.getComponentsPath(), "components/@Form","form",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("",CMSUtils.getComponentsPath(), "components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
         componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));
         componentsList.add( new Components("热门文章", CMSUtils.getComponentsPath(), "components/@newArticleIndex","hotArticle",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_visits,order_DESC","",true));
         componentsList.add( new Components("当下流行", CMSUtils.getComponentsPath(), "components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
