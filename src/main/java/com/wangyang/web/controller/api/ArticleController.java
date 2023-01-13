@@ -1,5 +1,6 @@
 package com.wangyang.web.controller.api;
 
+import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.utils.*;
 import com.wangyang.pojo.vo.ArticleVO;
@@ -20,6 +21,8 @@ import com.wangyang.common.BaseResponse;
 import com.wangyang.util.AuthorizationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,7 +61,7 @@ public class ArticleController {
     public ArticleDetailVO createArticleDetailVO(@RequestBody @Valid ArticleParams articleParams, HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
         Article article = new Article();
-        BeanUtils.copyProperties(articleParams,article);
+        BeanUtils.copyProperties(articleParams,article,getNullPropertyNames(articleParams));
         article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article, articleParams.getTagIds());
         htmlService.conventHtml(articleDetailVO);
@@ -74,7 +77,7 @@ public class ArticleController {
     public Article saveArticle(@Valid @RequestBody ArticleParams articleParams,@RequestParam(value = "more", defaultValue = "false") Boolean more, HttpServletRequest request){
         int userId = AuthorizationUtil.getUserId(request);
         Article article = new Article();
-        BeanUtils.copyProperties(articleParams,article);
+        BeanUtils.copyProperties(articleParams,article,getNullPropertyNames(articleParams));
         article.setUserId(userId);
 //        article.setStatus(ArticleStatus.DRAFT);
         return  articleService.saveArticleDraft(article,more);
@@ -114,7 +117,7 @@ public class ArticleController {
             return BaseResponse.ok("没有更新的字段!!",article);
         }
 
-        BeanUtils.copyProperties(articleParams,article,"picPath");
+        BeanUtils.copyProperties(articleParams,article,getNullPropertyNames(articleParams));
     //        Boolean haveHtml = Optional.ofNullable(article.getHaveHtml()).orElse(false);
         if(article.getStatus().equals(ArticleStatus.PUBLISHED)||article.getStatus().equals(ArticleStatus.MODIFY)){
             article.setStatus(ArticleStatus.MODIFY);
@@ -127,6 +130,21 @@ public class ArticleController {
         return BaseResponse.ok("更新成功!!",updateArticleDraft);
     }
 
+    public static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<String>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) {
+                emptyNames.add(pd.getName());
+            }
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
+
 
     @PostMapping("/update/{articleId}")
     public ArticleDetailVO updateArticleDetailVO(@Valid @RequestBody ArticleParams articleParams,
@@ -136,7 +154,11 @@ public class ArticleController {
         checkUser(userId,article);
 
         Integer  oldCategoryId = article.getCategoryId();
-        BeanUtils.copyProperties(articleParams,article);
+
+        BeanUtils.copyProperties(articleParams,article,getNullPropertyNames(articleParams));
+
+
+
         ArticleDetailVO articleDetailVO = articleService.updateArticleDetailVo( article, articleParams.getTagIds());
         //有可能更新文章的视图名称
 //        TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
