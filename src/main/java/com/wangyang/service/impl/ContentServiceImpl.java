@@ -3,6 +3,7 @@ package com.wangyang.service.impl;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CategoryContentListDao;
+import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.TagsDto;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
@@ -196,23 +197,23 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         List<User> users = userService.findAllById(userIds);
 
         Map<Integer, User> userMap = ServiceUtil.convertToMap(users, User::getId);
-//        Set<Integer> categories = ServiceUtil.fetchProperty(articles, Article::getCategoryId);
-//        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
-//            CategoryDto categoryDto = new CategoryDto();
-//            BeanUtils.copyProperties(category, categoryDto);
-//            return categoryDto;
-//        }).collect(Collectors.toList());
-//        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
+        Set<Integer> categories = ServiceUtil.fetchProperty(contents, Content::getCategoryId);
+        List<CategoryDto> categoryDtos = categoryService.findAllById(categories).stream().map(category -> {
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(category, categoryDto);
+            return categoryDto;
+        }).collect(Collectors.toList());
+        Map<Integer, CategoryDto> categoryMap = ServiceUtil.convertToMap(categoryDtos, CategoryDto::getId);
 
 
         Page<ContentVO> contentVOS = contentPage.map(content -> {
             ContentVO contentVO = new ContentVO();
             BeanUtils.copyProperties(content,contentVO);
             contentVO.setUser(userMap.get(content.getUserId()));
-//            if(categoryMap.containsKey(article.getCategoryId())){
-//                articleVO.setCategory( categoryMap.get(article.getCategoryId()));
-//
-//            }
+            if(categoryMap.containsKey(content.getCategoryId())){
+                contentVO.setCategory( categoryMap.get(content.getCategoryId()));
+
+            }
 //            articleVO.setLinkPath(FormatUtil.articleListFormat(article));
             contentVO.setTags(Optional.ofNullable(tagsListMap.get(content.getId()))
                     .orElseGet(LinkedList::new)
