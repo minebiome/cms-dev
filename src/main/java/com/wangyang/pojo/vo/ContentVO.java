@@ -18,7 +18,7 @@ import java.util.Set;
 public class ContentVO extends BaseVo<Content>{
     private List<TagsDto> tags;
     private CategoryDto category;
-
+    private String formatContent;
     private Integer id;
     private Date createDate;
     private Date updateDate;
