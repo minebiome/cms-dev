@@ -197,6 +197,7 @@ public class GitLabNodeRenderer implements NodeRenderer
                     html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
                     html.tag("/picture");
                 }else {
+
                     html.withAttr().attr("class",options.imageSrcTag).withAttr().tag("picture");
                     html.attr("class","lazy");
 //                    html.attr("data-original", url);
@@ -217,6 +218,14 @@ public class GitLabNodeRenderer implements NodeRenderer
                     html.attr(resolvedLink.getNonNullAttributes());
                     html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
                     html.tag("/picture");
+                    if(!altTextImg.equals("") && !altTextImg.equals("生信小木屋")){
+                        html.withAttr().attr("class","img-caption").withAttr().tag("p")
+                                .text(altTextImg)
+                                .tag("/p");
+                    }
+
+
+
                 }
 
 //                 we have a title part, use that
