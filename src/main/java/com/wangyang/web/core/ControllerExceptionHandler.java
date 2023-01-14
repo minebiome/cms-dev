@@ -116,7 +116,7 @@ public class ControllerExceptionHandler {
         log.error("Captured an exception", t);
         ModelAndView modelAndView;
         if(!isAjaxRequest(request)){
-            modelAndView= new ModelAndView("templates/error");
+            modelAndView= new ModelAndView("error");
         }else {
             modelAndView = new ModelAndView(new MappingJackson2JsonView());
         }
