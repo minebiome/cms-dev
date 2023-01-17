@@ -8,6 +8,8 @@ import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.pojo.params.SheetParam;
 import com.wangyang.common.utils.TemplateUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -52,7 +57,7 @@ public class SheetController {
 //        if(sheet.getOriginalContent().equals(sheetParam.getOriginalContent())sheetParam.getJsContent().equals()){
 //            return sheet;
 //        }
-        BeanUtils.copyProperties(sheetParam,sheet);
+        BeanUtils.copyProperties(sheetParam,sheet,getNullPropertyNames(sheetParam));
 //        Boolean haveHtml = Optional.ofNullable(sheetParam.getHaveHtml()).orElse(false);
 //        if(haveHtml){
 //            article.setStatus(ArticleStatus.MODIFY);
@@ -62,11 +67,24 @@ public class SheetController {
         sheet.setStatus(ArticleStatus.MODIFY);
         return  sheetService.save(sheet);
     }
+    public static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
+        Set<String> emptyNames = new HashSet<String>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) {
+                emptyNames.add(pd.getName());
+            }
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
     @PostMapping("/update/{id}")
     public Sheet update(@PathVariable("id") int id,@RequestBody SheetParam sheetParam){
         Sheet sheet = findById(id);
-        BeanUtils.copyProperties(sheetParam,sheet);
+        BeanUtils.copyProperties(sheetParam,sheet,getNullPropertyNames(sheetParam));
         Sheet updateSheet = sheetService.addOrUpdate(sheet);
         htmlService.convertArticleListBy(updateSheet);
         return updateSheet;

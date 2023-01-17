@@ -53,6 +53,7 @@ public class CmsConst {
 
 
     public final static String COMPONENT_PATH = "html"+ File.separator+"components";
+    public final static String COMPONENT_FRAGMENT = "html"+ File.separator+"components"+File.separator+"fragment";
     public final static String CATEGORY_MENU = "categoryMenu";
 
 //    public final static String CATEGORY_LIST_PATH = "html"+File.separator+"articleList";

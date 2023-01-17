@@ -5,15 +5,12 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.CommentRole;
-import com.wangyang.pojo.entity.Literature;
-import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.service.*;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.UserDto;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.util.FormatUtil;
@@ -55,6 +52,9 @@ public class UserArticleController {
     @Autowired
     ITemplateService templateService;
 
+    @Autowired
+    ISheetService sheetService;
+
 
     @GetMapping("/write")
     public String writeArticle(){
@@ -64,6 +64,26 @@ public class UserArticleController {
 //        model.addAttribute("view",articlePage);
 //        System.out.println(userId);
         return "user/write";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
+        int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request
+        Article article = articleService.findByIdAndUserId(id, userId);
+        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
+//        ArticleDetailVO articleDetailVO = articleService.convert(article);
+        model.addAttribute("view",articleDetailVO);
+        return "user/write";
+    }
+    @GetMapping("/editSheet/{id}")
+    public String editSheet(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
+        int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request
+        Sheet sheet = sheetService.findById(id);
+//        Article article = articleService.findByIdAndUserId(id, userId);
+//        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
+//        ArticleDetailVO articleDetailVO = articleService.convert(article);
+        model.addAttribute("view",sheet);
+        return "user/writeSheet";
     }
 
     @GetMapping("/literature")
@@ -136,15 +156,7 @@ public class UserArticleController {
 
 
 
-    @GetMapping("/edit/{id}")
-    public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
-        int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request
-        Article article = articleService.findByIdAndUserId(id, userId);
-        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
-//        ArticleDetailVO articleDetailVO = articleService.convert(article);
-        model.addAttribute("view",articleDetailVO);
-        return "user/write";
-    }
+
 
     @GetMapping("/info")
     @CommentRole

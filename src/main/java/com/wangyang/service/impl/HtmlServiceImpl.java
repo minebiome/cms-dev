@@ -300,7 +300,18 @@ public class HtmlServiceImpl implements IHtmlService {
     @Override
     public void convertArticleListBy(Sheet sheet) {
         Template template = templateService.findByEnName(sheet.getTemplateName());
-        TemplateUtil.convertHtmlAndSave(sheet,template);
+        String html = TemplateUtil.convertHtmlAndSave(sheet, template);
+        if(sheet.getCategoryId()!=null){
+            Category category = categoryService.findById(sheet.getCategoryId());
+            convertArticleListBy(category);
+            generateMenuListHtml();
+        }
+
+        String content = DocumentUtil.getDivContent(html, "#fragment");
+        if(StringUtils.isNotEmpty(content)){
+            TemplateUtil.saveFile(CMSUtils.getComponentFragment(),sheet.getViewName(),content);
+        }
+
     }
     @Override
     @Async //异步执行

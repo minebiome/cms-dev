@@ -54,7 +54,7 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
 //        BeanUtils.copyProperties(sheetParam,sheet);
 //        Channel channel = channelService.findById(sheet.getChannelId());
         //如何Channel中没有存储文章路径
-        if(sheet.getIsSource()){
+        if(sheet.getIsSource()!=null && sheet.getIsSource()){
             sheet.setFormatContent(sheet.getOriginalContent());
         }else {
             sheet = super.createOrUpdate(sheet);

@@ -223,9 +223,6 @@ public class GitLabNodeRenderer implements NodeRenderer
                                 .text(altTextImg)
                                 .tag("/p");
                     }
-
-
-
                 }
 
 //                 we have a title part, use that
