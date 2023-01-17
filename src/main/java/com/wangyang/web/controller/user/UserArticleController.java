@@ -7,6 +7,7 @@ import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.CommentRole;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.service.*;
+import com.wangyang.service.authorize.ICustomerService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -18,6 +19,7 @@ import com.wangyang.util.AuthorizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -55,6 +57,9 @@ public class UserArticleController {
     @Autowired
     ISheetService sheetService;
 
+    @Autowired
+    ICustomerService customerService;
+
 
     @GetMapping("/write")
     public String writeArticle(){
@@ -65,7 +70,12 @@ public class UserArticleController {
 //        System.out.println(userId);
         return "user/write";
     }
-
+    @GetMapping("/customer")
+    public String customer(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,Model model){
+        Page<Customer> customers = customerService.pageBy(pageable);
+        model.addAttribute("view",customers);
+        return "user/customer";
+    }
     @GetMapping("/edit/{id}")
     public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
         int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request

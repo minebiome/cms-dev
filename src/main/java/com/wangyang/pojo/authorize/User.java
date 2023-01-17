@@ -18,7 +18,7 @@ public class User extends BaseAuthorize{
 //    private String username;
 //    private String avatar;
     private String password;
-    private String email;
+
     private Integer gender;
 
 

@@ -4,7 +4,7 @@ import com.wangyang.pojo.authorize.BaseAuthorize;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
-@NoRepositoryBean
+
 public interface AuthorizeRepository<T extends BaseAuthorize>
         extends BaseRepository<T, Integer> {
 }
