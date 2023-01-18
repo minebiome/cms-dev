@@ -51,17 +51,8 @@ public class CategoryController {
         Category category = new Category();
 
         BeanUtils.copyProperties(categoryParam,category);
-        Category saveCategory = categoryService.create(category);
+        Category saveCategory = categoryService.create(category,categoryParam.getTagIds());
 
-
-        if(categoryParam.getTagIds()!=null){
-            for (Integer tagId : categoryParam.getTagIds()){
-                CategoryTags categoryTags = new CategoryTags();
-                categoryTags.setTagsId(tagId);
-                categoryTags.setCategoryId(category.getId());
-                CategoryTags save = categoryTagsRepository.save(categoryTags);
-            }
-        }
 
         //生成category列表Html
         htmlService.generateCategoryListHtml();
@@ -92,21 +83,8 @@ public class CategoryController {
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
 
-        categoryTagsRepository.deleteByCategoryId(category.getId());
-
-
-        BeanUtils.copyProperties(categoryParam, category);
-        Category updateCategory = categoryService.update(category);
-
-        if(categoryParam.getTagIds()!=null){
-            for (Integer tagId : categoryParam.getTagIds()){
-                CategoryTags categoryTags = new CategoryTags();
-                categoryTags.setTagsId(tagId);
-                categoryTags.setCategoryId(category.getId());
-                CategoryTags save = categoryTagsRepository.save(categoryTags);
-            }
-        }
-
+        BeanUtils.copyProperties(categoryParam, category,CMSUtils.getNullPropertyNames(categoryParam));
+        Category updateCategory = categoryService.update(category,categoryParam.getTagIds());
 
         //更新Category列表
         htmlService.generateCategoryListHtml();

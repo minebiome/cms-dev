@@ -40,8 +40,9 @@ public class ComponentsController {
 
 
     @PostMapping("/update/{id}")
-    public Components update(@PathVariable("id") Integer id,@RequestBody  ComponentsParam templatePageParam){
-        return componentsService.update(id,templatePageParam);
+    public Components update(@PathVariable("id") Integer id,@RequestBody  ComponentsParam componentsParam){
+
+        return componentsService.update(id,componentsParam);
     }
 
 

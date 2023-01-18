@@ -1485,6 +1485,9 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     @Override
     public List<ArticleVO> listVoByCategoryViewName(String viewName,Integer size) {
         Category category = categoryService.findByViewName(viewName);
+        if(category==null){
+            return null;
+        }
         List<CategoryVO> categoryVOS = new ArrayList<>();
         addChildIds(categoryVOS,category.getId());
         categoryVOS.add(categoryService.covertToVo(category));
@@ -1512,6 +1515,9 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     @Override
     public List<ArticleVO> listVoByCategoryViewName(String viewName) {
         Category category = categoryService.findByViewName(viewName);
+        if(category==null){
+            return null;
+        }
         List<CategoryVO> categoryVOS = new ArrayList<>();
         addChildIds(categoryVOS,category.getId());
         categoryVOS.add(categoryService.covertToVo(category));

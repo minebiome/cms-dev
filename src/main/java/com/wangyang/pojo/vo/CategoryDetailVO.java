@@ -32,4 +32,5 @@ public class CategoryDetailVO {
     //    private Integer articleListPage=0;
     private Boolean isDesc;
     private List<Tags> tags;
+    private String recommendTemplateName;
 }

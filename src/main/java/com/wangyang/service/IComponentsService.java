@@ -38,4 +38,5 @@ public interface IComponentsService {
     Components findByDataName(String dataName);
 
     Components findByViewName(String viewName);
+    Components findByEnName(String viewName);
 }

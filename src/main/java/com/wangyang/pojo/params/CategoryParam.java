@@ -25,6 +25,7 @@ public class CategoryParam implements InputConverter<Category> {
     private Integer order;
     private Boolean recommend=false;
     private String articleTemplateName;
+    private String recommendTemplateName;
     private Integer articleListSize=10;
     private Boolean isDesc=true;
     private String icon;

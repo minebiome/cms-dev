@@ -7,9 +7,9 @@ import lombok.Data;
 import java.io.Serializable;
 import javax.persistence.*;
 @Entity
-//@DiscriminatorValue(value = "0")
+@DiscriminatorValue(value = "0")
 @Data
-@Table(name = "t_category")
+//@Table(name = "t_category")
 public class Category extends BaseCategory{
 
 //    @Id
@@ -39,6 +39,7 @@ public class Category extends BaseCategory{
     @Column(columnDefinition = "bit(1) default false")
     private Boolean existNav=false;
     private String articleTemplateName;
+    private String recommendTemplateName;
     private String icon;
     // 每页显示文章的数量
     private Integer articleListSize=10;

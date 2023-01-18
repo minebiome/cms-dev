@@ -72,19 +72,21 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         return categoryRepository.save(category);
     }
     @Override
-    public Category create(Category categoryParam) {
+    public Category create(Category categoryParam,Set<Integer> tagIds) {
 
-        Category category = createOrUpdate(categoryParam);
+        Category category = createOrUpdate(categoryParam,tagIds);
         return category;
     }
 
     @Override
-    public Category update(Category categoryParam) {
-        Category category = createOrUpdate(categoryParam);
+    public Category update(Category categoryParam,Set<Integer> tagIds) {
+        categoryTagsRepository.deleteByCategoryId(categoryParam.getId());
+
+        Category category = createOrUpdate(categoryParam,tagIds);
         return category;
     }
 
-    public Category createOrUpdate(Category category){
+    public Category createOrUpdate(Category category,Set<Integer> tagIds){
         if(category.getParentId()==null){
             category.setParentId(0);
         }
@@ -98,7 +100,14 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
             String viewName = CMSUtils.randomViewName();
             category.setViewName(viewName);
         }
-
+        if(tagIds!=null){
+            for (Integer tagId : tagIds){
+                CategoryTags categoryTags = new CategoryTags();
+                categoryTags.setTagsId(tagId);
+                categoryTags.setCategoryId(category.getId());
+                categoryTagsRepository.save(categoryTags);
+            }
+        }
         if(category.getHaveHtml()==null){
             category.setHaveHtml(true);
         }
@@ -247,6 +256,9 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
     @Override
     public List<CategoryVO> listChildWithTree(String viewName) {
         Category category = findByViewName(viewName);
+        if(category==null){
+            return null;
+        }
         List<Category> categories = findByParentId(category.getId());
         List<CategoryVO> categoryVOS = convertToListVo(categories);
         return super.listWithTree(categoryVOS, category.getId());

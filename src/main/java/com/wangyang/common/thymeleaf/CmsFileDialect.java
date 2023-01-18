@@ -1,5 +1,9 @@
 package com.wangyang.common.thymeleaf;
 
+import com.wangyang.service.IComponentsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 import org.thymeleaf.standard.StandardDialect;
@@ -14,7 +18,13 @@ import java.util.Set;
  * @author wangyang
  * @date 2020/12/17
  */
+@Service
 public class CmsFileDialect extends AbstractProcessorDialect {
+
+
+    @Autowired
+    IComponentsService componentsService;
+
     //定义方言名称
     private static final String DIALECT_NAME = "Score Dialect";
     public CmsFileDialect() {

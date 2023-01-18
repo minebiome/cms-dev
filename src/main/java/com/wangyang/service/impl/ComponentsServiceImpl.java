@@ -3,6 +3,7 @@ package com.wangyang.service.impl;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.TemplateException;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.dto.ArticleDto;
@@ -87,6 +88,9 @@ public class ComponentsServiceImpl implements IComponentsService {
     public Components update(int id, ComponentsParam componentsParam){
         Components components = findById(id);
         convert(components,componentsParam);
+        if(components.getEnName()==null){
+            components.setEnName(CMSUtils.randomViewName());
+        }
         return componentsRepository.save(components);
     }
 
@@ -300,4 +304,8 @@ public class ComponentsServiceImpl implements IComponentsService {
         return componentsRepository.findByViewName(viewName);
     }
 
+    @Override
+    public Components findByEnName(String enName) {
+        return componentsRepository.findByEnName(enName);
+    }
 }

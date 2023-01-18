@@ -321,7 +321,7 @@ public class ZoteroServiceImpl implements IZoteroService {
                 int id = i+1;
                 com.gimranov.libzotero.model.Collection item = zoteroCollection.get(i);
                 Collection collection = new Collection();
-                collection.setId(id);
+//                collection.setId(id);
                 collection.setKey(item.getKey());
                 collection.setName(item.getData().getName());
                 collection.setVersion(item.getVersion());
@@ -329,17 +329,20 @@ public class ZoteroServiceImpl implements IZoteroService {
                 collections.add(collection);
 
             }
+            List<Collection> saveCollections = collectionService.saveAll(collections);
 
-            Map<String, Collection> collectionMap = ServiceUtil.convertToMap(collections, Collection::getKey);
+            Map<String, Collection> collectionMap = ServiceUtil.convertToMap(saveCollections, Collection::getKey);
             for (Collection collection : collections){
                 if(collectionMap.containsKey(collection.getParentKey())){
                     Integer id = collectionMap.get(collection.getParentKey()).getId();
                     collection.setParentId(id);
                 }
             }
-
             collectionService.deleteAll();
-            collectionService.saveAll(collections);
+           collectionService.saveAll(collections);
+
+
+
 
             task.setStatus(TaskStatus.FINISH);
             taskService.save(task);

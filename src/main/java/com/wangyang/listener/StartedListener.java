@@ -149,7 +149,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
 
 
-                new Template("标签模板",CmsConst.TAGS, "@tags", TemplateType.TAGS,7),
+                new Template("标签模板",CmsConst.TAGS, "@tags", TemplateType.ARTICLE_LIST,7),
 
 
                 new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "@categoryList", TemplateType.CATEGORY_LIST,7),
@@ -166,7 +166,11 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 new Template("文章幻灯片模板","REVEAL","@articleReveal", TemplateType.ARTICLE,11),
 
                 new Template("文章列表(热门文章)",CmsConst.ARTICLE_LIST,"@articleList", TemplateType.ARTICLE_LIST,12),
+
+
                 new Template("文章推荐列表",CmsConst.ARTICLE_RECOMMEND_LIST,"@articleRecommendList", TemplateType.ARTICLE_LIST,12),
+
+
                 new Template("文章置顶列表",CmsConst.ARTICLE_TOP_LIST,"@articleTopList", TemplateType.ARTICLE_LIST,12),
                 new Template("更多文章和文章搜索",CmsConst.ARTICLE_PAGE,"@articleMore", TemplateType.ARTICLE_LIST,12),
                 new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"@jsMind", TemplateType.ARTICLE_MIND,12)

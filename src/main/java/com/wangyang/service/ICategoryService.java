@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ICategoryService  extends IBaseCategoryService<Category,Category,CategoryVO> {
     Category save(Category category);
@@ -21,13 +22,13 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
      * @param category
      * @return
      */
-    Category create(Category category);
+    Category create(Category category,Set<Integer> tagIds);
     /**
      * add category
      * @param category
      * @return
      */
-    Category update(Category category);
+    Category update(Category category, Set<Integer> tagIds);
 
 //    Page<CategoryDto> pageBy(String categoryEnName, int page, int size);
 

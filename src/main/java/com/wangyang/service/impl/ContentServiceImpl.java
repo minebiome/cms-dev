@@ -386,6 +386,9 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
     @Override
     public List<ContentVO> listArticleVOBy(String viewName){
         Category category = categoryService.findByViewName(viewName);
+        if(category==null){
+            return null;
+        }
         Set<Integer> ids = new HashSet<>();
         ids.add(category.getId());
         List<Content> contents = contentRepository.findAll(articleSpecification(ids, true, ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP), Sort.by("order"));

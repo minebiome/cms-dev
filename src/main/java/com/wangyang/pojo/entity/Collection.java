@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Data
-@Table(name = "t_collection")
+@DiscriminatorValue(value = "1")
 public class Collection extends BaseCategory {
     @Column(name = "collection_key")
     private String key;

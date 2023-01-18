@@ -9,6 +9,7 @@ public class ComponentsParam {
     private String description;
     private String templateValue;
     private String viewName;
+    private String enName;
     private String dataName;
     private String path;
 
