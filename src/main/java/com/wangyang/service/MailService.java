@@ -1,11 +1,12 @@
 package com.wangyang.service;
 
+import com.wangyang.pojo.authorize.BaseAuthorize;
 import com.wangyang.pojo.authorize.User;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Comment;
+import com.wangyang.pojo.entity.*;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 /**
  * @author Likaifeng
@@ -51,4 +52,10 @@ public interface MailService {
 
     @Async("taskExecutor")
     void sendEmail(User currentUser, Comment comment, Article article);
+
+    void sendEmail(Customer customer);
+
+    void sendEmail(Subscribe subscribe);
+
+    List<BaseAuthorize> sendEmail(Mail mailInput);
 }

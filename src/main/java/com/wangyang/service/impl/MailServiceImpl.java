@@ -3,21 +3,28 @@ package com.wangyang.service.impl;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.HtmlTemplateEngine;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.pojo.authorize.BaseAuthorize;
+import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Comment;
-import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.authorize.UserRole;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.service.ICommentService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.service.MailService;
+import com.wangyang.service.authorize.IRoleService;
+import com.wangyang.service.authorize.IUserRoleService;
 import com.wangyang.service.authorize.IUserService;
+import com.wangyang.service.base.IAuthorizeService;
 import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -32,6 +39,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.List;
+import java.util.Set;
+
 /**
 * @author Likaifeng
 * @date 2021/6/22
@@ -58,6 +68,17 @@ public class MailServiceImpl implements MailService {
     @Autowired
     IUserService userService;
 
+    @Autowired
+    IUserRoleService userRoleService;
+
+
+    @Autowired
+    @Qualifier("authorizeServiceImpl")
+    IAuthorizeService<BaseAuthorize> authorizeService;
+
+
+    @Autowired
+    IRoleService roleService;
     @Autowired
     ICommentService commentService;
 
@@ -184,10 +205,46 @@ public class MailServiceImpl implements MailService {
                 sendSimpleMail(replyUser.getEmail(),currentUser.getUsername()+"在文章["+article.getTitle()+"]中回复:",emailContent);
             }
         }
-
-
-
     }
 
 
+    @Override
+    public void sendEmail(Customer customer) {
+
+        Context context = new Context();
+        context.setVariable("customer",customer);
+        context.setVariable("proxyUrl",CMSUtils.getProxyUrl());
+
+        Template template = templateService.findByEnName(CmsConst.FOR_CUSTOMER);
+        String emailContent = TemplateUtil.getHtml(template.getTemplateValue(), context);
+
+
+        Role role = roleService.findByEnName("ADMIN");
+        List<UserRole> userRoles = userRoleService.findByRoleId(role.getId());
+        Set<Integer> userIds = ServiceUtil.fetchProperty(userRoles, UserRole::getUserId);
+        List<User> users = userService.findAllById(userIds);
+        sendSimpleMail(customer.getEmail(),"老师感谢您的咨询",emailContent);
+        for (User user:users){
+            sendSimpleMail(user.getEmail(),"客户["+customer.getUsername()+"]发来需求，请尽快回复！",customer.getContent());
+        }
+    }
+
+    @Override
+    public void sendEmail(Subscribe subscribe) {
+
+    }
+
+    @Override
+    public List<BaseAuthorize> sendEmail(Mail mailInput) {
+        List<BaseAuthorize> baseAuthorizes = authorizeService.listAll();
+        for (BaseAuthorize baseAuthorize:baseAuthorizes){
+            try {
+                sendSimpleMail(baseAuthorize.getEmail(),mailInput.getTitle(),mailInput.getContent());
+            }catch (MailException e){
+                e.getMessage();
+            }
+
+        }
+        return baseAuthorizes;
+    }
 }

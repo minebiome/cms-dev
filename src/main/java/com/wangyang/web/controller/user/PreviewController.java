@@ -1,6 +1,7 @@
 package com.wangyang.web.controller.user;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
@@ -206,6 +207,12 @@ public class PreviewController {
         model.addAttribute("comments",commentVos);
         model.addAttribute("viewName","1111111111111111111");
         model.addAttribute("articleId",0);
+        model.addAttribute("proxyUrl", CMSUtils.getProxyUrl());
+
+        Customer customer = new Customer();
+        customer.setUsername("Edward");
+        model.addAttribute("customer", customer);
+
 //        Map<String,Object> o = componentsService.getModel(components);
 ////        String html = TemplateUtil.convertHtmlAndPreview(o, components);
 //////        String convertHtml = FileUtils.convertByString(html);

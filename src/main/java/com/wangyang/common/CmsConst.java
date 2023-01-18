@@ -9,6 +9,8 @@ import java.io.File;
 @Component
 public class CmsConst {
 
+
+
     @Value("${cms.workDir}")
     private void setWorkDir(String workDir) {
         this.WORK_DIR = workDir;
@@ -82,6 +84,7 @@ public class CmsConst {
     public final static String DEFAULT_CATEGORY_TREE_TEMPLATE = "DEFAULT_CATEGORY_TREE_TEMPLATE";
     public final static String DEFAULT_REVEAL_TEMPLATE = "DEFAULT_REVEAL";
     public final static String DEFAULT_EMAIL = "DEFAULT_EMAIL";
+    public static final String FOR_CUSTOMER = "FOR_CUSTOMER";
 
     public final static String DEFAULT_SHEET_TEMPLATE = "DEFAULT_SHEET";
     public final static String COMPANY_INTRODUCTION  = "COMPANY_INTRODUCTION";

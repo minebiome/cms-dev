@@ -8,6 +8,7 @@ import com.wangyang.pojo.annotation.CommentRole;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.service.*;
 import com.wangyang.service.authorize.ICustomerService;
+import com.wangyang.service.authorize.ISubscribeService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -16,6 +17,7 @@ import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.util.FormatUtil;
 import com.wangyang.util.AuthorizationUtil;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -61,6 +63,9 @@ public class UserArticleController {
     ICustomerService customerService;
 
 
+    @Autowired
+    ISubscribeService subscribeService;
+
     @GetMapping("/write")
     public String writeArticle(){
 //        int userId = AuthorizationUtil.getUserId(request);
@@ -75,6 +80,21 @@ public class UserArticleController {
         Page<Customer> customers = customerService.pageBy(pageable);
         model.addAttribute("view",customers);
         return "user/customer";
+    }
+
+    @GetMapping("/subscribe")
+    public String subscribe(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,Model model){
+        Page<Subscribe> subscribes = subscribeService.pageBy(pageable);
+        model.addAttribute("view",subscribes);
+        return "user/subscribe";
+    }
+    @GetMapping("/mailList")
+    public String mailList(Model model){
+        return "user/mailList";
+    }
+    @GetMapping("/pushMail")
+    public String pushMail(Model model){
+        return "user/pushMail";
     }
     @GetMapping("/edit/{id}")
     public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){

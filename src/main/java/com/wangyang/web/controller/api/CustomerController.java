@@ -4,6 +4,7 @@ import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.entity.Customer;
 import com.wangyang.pojo.params.ArticleParams;
+import com.wangyang.service.MailService;
 import com.wangyang.service.authorize.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,14 @@ public class CustomerController {
     @Autowired
     ICustomerService customerService;
 
-
+    @Autowired
+    private MailService mailService;
     @PostMapping
     @Anonymous
-    public Customer add(@RequestBody @Valid Customer customer, HttpServletRequest request){
-        return customerService.add(customer);
+    public Customer add(@RequestBody @Valid Customer customerInput, HttpServletRequest request){
+        Customer customer = customerService.add(customerInput);
+        mailService.sendEmail(customer);
+        return customer;
     }
 
 
