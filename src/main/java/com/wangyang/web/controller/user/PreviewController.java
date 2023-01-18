@@ -7,6 +7,7 @@ import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.params.TemplateParam;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.CommentVo;
 import com.wangyang.service.*;
@@ -14,6 +15,7 @@ import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.vo.ArticleDetailVO;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -213,10 +215,19 @@ public class PreviewController {
         customer.setUsername("Edward");
         model.addAttribute("customer", customer);
 
-//        Map<String,Object> o = componentsService.getModel(components);
-////        String html = TemplateUtil.convertHtmlAndPreview(o, components);
-//////        String convertHtml = FileUtils.convertByString(html);
-//        model.addAllAttributes(o);
+
+        List<Article> articles = new ArrayList<>();
+        Article article = new Article();
+        article.setTitle("测试文章题目");
+        article.setPath("html/articles");
+        article.setViewName("testviewName");
+        articles.add(article);
+
+
+        List<ArticleVO> articleVOS = articleService.convertToListVo(articles);
+        model.addAttribute("articleVOS", articleVOS);
+
+
         return  template.getTemplateValue();
     }
 

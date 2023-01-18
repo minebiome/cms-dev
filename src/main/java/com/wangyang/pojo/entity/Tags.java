@@ -18,6 +18,7 @@ public class Tags extends BaseEntity  implements Serializable {
     private String name;
     private String description;
     private String slugName;
+    private String enName;
 
     public Tags(){}
     public Tags(String name,String slugName){

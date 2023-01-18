@@ -1,12 +1,13 @@
 package com.wangyang.repository;
 
 import com.wangyang.pojo.entity.Tags;
+import com.wangyang.repository.base.BaseRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TagsRepository extends JpaRepository<Tags,Integer> {
+public interface TagsRepository extends BaseRepository<Tags,Integer> {
 
     @Query("select o from Tags o where o.id in (select a.tagsId from ArticleTags a where a.articleId=?1)")
     List<Tags> findTagsByArticleId(int aid);

@@ -2,17 +2,17 @@ package com.wangyang.schedule.util;
 
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryDto;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.Components;
-import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.dto.TagsDto;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.support.ScheduleOption;
 import com.wangyang.pojo.support.TemplateOption;
 import com.wangyang.pojo.support.TemplateOptionMethod;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.service.*;
 import com.wangyang.service.impl.ArticleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,9 @@ public class ArticleJob {
 
     @Autowired
     ITagsService tagsService;
+    @Autowired
+    ArticleTagsRepository articleTagsRepository;
+
 
     @Autowired
     ICategoryService categoryService;
@@ -123,6 +126,44 @@ public class ArticleJob {
 
 //
 //
+    @ArticleJobAnnotation(jobName = "tagsArticleRecommend",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
+    public void tagsArticle(){
+        List<Tags> tags = tagsService.listAll();
+        for (Tags tag : tags){
+            List<ArticleTags> articleTags = articleTagsRepository.findByTagsId(tag.getId());
+            Set<Integer> articleIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getArticleId);
+            Page<Article> articles = articleService.pageByIds(articleIds, 0, 5, null);
+            List<Article> contents = articles.getContent();
+            List<ArticleVO> articleVOS = articleService.convertToListVo(contents);
+            Map<String,Object> map = new HashMap<>();
+            map.put("articleVOS",articleVOS);
+            if(tag.getEnName()==null){
+                tag.setEnName(CMSUtils.randomViewName());
+                tagsService.save(tag);
+            }
+            Template template = templateService.findByEnName(CmsConst.TAGS);
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getTagPath(),tag.getEnName(),map,template);
+
+        }
+
+
+        List<Category> categories = categoryService.listAll();
+        categories.forEach(category -> {
+            PageRequest pageRequest = PageRequest.of(0, 5, Sort.by(Sort.Order.desc("visits")));
+    //            Page<ArticleDto> articleDtos = articleService.pageDtoByCategory(category,pageRequest );
+    //            Page<Article> articles = articleRepository.findAll(articleSpecification(ids,category.getIsDesc(), ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
+            Set<Integer> ids =  new HashSet<>();
+            ids.add(category.getId());
+            Page<Article> articles = articleService.pageArticleByCategoryIds(ids, null, pageRequest);
+            Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
+            Map<String,Object> map = new HashMap<>();
+            map.put("view",articleVOS);
+            map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");
+            map.put("name",category.getName()+"推荐");
+            Template template = templateService.findByEnName(CmsConst.ARTICLE_RECOMMEND_LIST);
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecommendPath(),category.getViewName(),map,template);
+        });
+    }
 
     /**
      * 生成每一个分类下热门文章用于嵌入文章页面

@@ -24,7 +24,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 
@@ -440,5 +442,20 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
     @Override
     public List<DOMAIN> listByIds(Set<ID> ids) {
         return repository.findAllById(ids);
+    }
+
+
+    @Override
+    public Page<DOMAIN> pageByIds(Set<ID> ids,Integer page,Integer size,Sort sort) {
+        if(sort==null){
+            sort = Sort.by(Sort.Direction.DESC, "createDate");
+        }
+        Page<DOMAIN> domains = repository.findAll(new Specification<DOMAIN>() {
+            @Override
+            public Predicate toPredicate(Root<DOMAIN> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(root.get("id").in(ids)).getRestriction();
+            }
+        }, PageRequest.of(page, size, sort));
+        return domains;
     }
 }

@@ -7,6 +7,7 @@ import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.CollectionVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -59,7 +60,7 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
 
     void updateOrder(List<DOMAINVO> domainvos);
     List<DOMAIN> listByIds(Set<ID> ids);
-
+    Page<DOMAIN> pageByIds(Set<ID> ids, Integer page, Integer size, Sort sort);
     List<DOMAIN>  findByParentId(Integer parentId);
 
     List<DOMAINVO> convertToListVo(List<DOMAIN> domains);

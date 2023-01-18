@@ -10,6 +10,7 @@ public interface ArticleTagsRepository extends JpaRepository<ArticleTags,Integer
 
     List<ArticleTags> findAllByArticleIdIn(Collection<Integer> articleIds);
     List<ArticleTags> findByArticleId(int articleId);
+    List<ArticleTags> findByTagsId(int tagsId);
 
     List<ArticleTags> deleteByArticleId(int id);
 

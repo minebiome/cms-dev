@@ -1,9 +1,14 @@
 package com.wangyang.service.impl;
 
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.dto.TagsDto;
 import com.wangyang.pojo.entity.Tags;
+import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.TagsRepository;
+import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.ITagsService;
+import com.wangyang.service.base.AbstractCrudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +22,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class TagsServiceImpl implements ITagsService {
+public class TagsServiceImpl extends AbstractCrudService<Tags,Tags, BaseVo,Integer> implements ITagsService {
 
     @Autowired
     TagsRepository tagsRepository;
+
+    public TagsServiceImpl(TagsRepository tagsRepository) {
+        super(tagsRepository);
+        this.tagsRepository=tagsRepository;
+    }
+
     @Override
     public Page<TagsDto> list(Pageable pageable) {
         Page<Tags> tagsPage = tagsRepository.findAll(pageable);
@@ -32,7 +43,12 @@ public class TagsServiceImpl implements ITagsService {
     }
 
     @Override
-    public List<TagsDto> listAll() {
+    public List<Tags> listAll() {
+        return tagsRepository.findAll();
+    }
+
+    @Override
+    public List<TagsDto> listAll1() {
         List<Tags> tags = tagsRepository.findAll();
         return  tags.stream().map(tag->{
             TagsDto tagsDto = new TagsDto();
@@ -46,8 +62,16 @@ public class TagsServiceImpl implements ITagsService {
         if(tagsOptional.isPresent()){
             return tagsOptional.get();
         }
+        if(tags.getEnName()==null){
+                tags.setEnName(CMSUtils.randomViewName());
+        }
         log.info("添加 Tags"+tags.getName());
         return tagsRepository.save(tags);
+    }
+
+    @Override
+    public boolean supportType(CrudType type) {
+        return false;
     }
 
     @Override

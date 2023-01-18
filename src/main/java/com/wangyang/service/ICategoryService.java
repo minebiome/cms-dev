@@ -3,6 +3,7 @@ package com.wangyang.service;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.CategoryQuery;
+import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.base.IBaseCategoryService;
 import org.springframework.data.domain.Page;
@@ -97,4 +98,7 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
     Category findByViewName(String viewName);
 
     void updateOrder(List<CategoryVO> categoryVOList);
+
+
+    CategoryDetailVO covertToDetailVO(Category category);
 }

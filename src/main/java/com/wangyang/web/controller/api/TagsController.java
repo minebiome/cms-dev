@@ -20,7 +20,7 @@ public class TagsController {
         return tagsService.add(tags);
     }
     @GetMapping
-    public List<TagsDto> list(){
+    public List<Tags> list(){
         return tagsService.listAll();
     }
 }

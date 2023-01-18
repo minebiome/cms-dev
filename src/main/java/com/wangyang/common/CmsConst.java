@@ -54,6 +54,10 @@ public class CmsConst {
     public final static String ARTICLE_LIST_JS_PATH = CATEGORY_PATH+ File.separator+"articleListJs";
 
 
+
+    public final static String TAG_PATH = "html"+ File.separator+"tag";
+
+
     public final static String COMPONENT_PATH = "html"+ File.separator+"components";
     public final static String COMPONENT_FRAGMENT = "html"+ File.separator+"components"+File.separator+"fragment";
     public final static String CATEGORY_MENU = "categoryMenu";
@@ -100,6 +104,7 @@ public class CmsConst {
 
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
     public final static String ARTICLE_RECOMMEND_LIST = "ARTICLE_RECOMMEND_LIST";//分类列表
+    public final static String TAGS = "TAGS";//分类列表
     public final static String ARTICLE_TOP_LIST = "ARTICLE_TOP_LIST";//分类列表
     public final static String ARTICLE_PAGE = "ARTICLE_PAGE";//分类列表
 

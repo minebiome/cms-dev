@@ -2,6 +2,9 @@ package com.wangyang.web.controller.api;
 
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.pojo.entity.CategoryTags;
+import com.wangyang.pojo.vo.CategoryDetailVO;
+import com.wangyang.repository.CategoryTagsRepository;
 import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -35,6 +38,9 @@ public class CategoryController {
     @Autowired
     IHtmlService htmlService;
 
+    @Autowired
+    CategoryTagsRepository categoryTagsRepository;
+
     @GetMapping
     public List<CategoryDto> list(){
         return categoryService.listAllDto();
@@ -43,8 +49,20 @@ public class CategoryController {
     @PostMapping
     public Category add(@Valid @RequestBody CategoryParam categoryParam){
         Category category = new Category();
+
         BeanUtils.copyProperties(categoryParam,category);
         Category saveCategory = categoryService.create(category);
+
+
+        if(categoryParam.getTagIds()!=null){
+            for (Integer tagId : categoryParam.getTagIds()){
+                CategoryTags categoryTags = new CategoryTags();
+                categoryTags.setTagsId(tagId);
+                categoryTags.setCategoryId(category.getId());
+                CategoryTags save = categoryTagsRepository.save(categoryTags);
+            }
+        }
+
         //生成category列表Html
         htmlService.generateCategoryListHtml();
         if(saveCategory.getHaveHtml()){
@@ -73,8 +91,23 @@ public class CategoryController {
     @PostMapping("/update/{categoryId}")
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
+
+        categoryTagsRepository.deleteByCategoryId(category.getId());
+
+
         BeanUtils.copyProperties(categoryParam, category);
         Category updateCategory = categoryService.update(category);
+
+        if(categoryParam.getTagIds()!=null){
+            for (Integer tagId : categoryParam.getTagIds()){
+                CategoryTags categoryTags = new CategoryTags();
+                categoryTags.setTagsId(tagId);
+                categoryTags.setCategoryId(category.getId());
+                CategoryTags save = categoryTagsRepository.save(categoryTags);
+            }
+        }
+
+
         //更新Category列表
         htmlService.generateCategoryListHtml();
         if(updateCategory.getHaveHtml()){
@@ -95,8 +128,10 @@ public class CategoryController {
         return category;
     }
     @RequestMapping("/find/{id}")
-    public Category findByID(@PathVariable("id") Integer id){
-        return categoryService.findById(id);
+    public CategoryDetailVO findByID(@PathVariable("id") Integer id){
+        Category category = categoryService.findById(id);
+        CategoryDetailVO categoryDetailVO = categoryService.covertToDetailVO(category);
+        return categoryDetailVO;
     }
 
     @GetMapping("/updateAll")

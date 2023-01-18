@@ -6,13 +6,14 @@ import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryDto;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.CategoryQuery;
+import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.CategoryRepository;
+import com.wangyang.repository.CategoryTagsRepository;
+import com.wangyang.repository.TagsRepository;
 import com.wangyang.service.*;
 import com.wangyang.service.base.AbstractBaseCategoryServiceImpl;
 import com.wangyang.util.FormatUtil;
@@ -52,6 +53,13 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
     IOptionService optionService;
     @Autowired
     IMenuService menuService;
+
+    @Autowired
+    TagsRepository tagsRepository;
+
+
+    @Autowired
+    CategoryTagsRepository categoryTagsRepository;
 
     private  CategoryRepository categoryRepository;
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -508,8 +516,21 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         return categoryRepository.findByViewName(viewName);
     }
 
+    @Override
+    public CategoryDetailVO covertToDetailVO(Category category) {
+        CategoryDetailVO categoryDetailVO = new CategoryDetailVO();
+        BeanUtils.copyProperties(category,categoryDetailVO);
 
-//    @Override
+        List<CategoryTags> categoryTags = categoryTagsRepository.findByCategoryId(category.getId());
+
+        Set<Integer> tagIds = ServiceUtil.fetchProperty(categoryTags, CategoryTags::getTagsId);
+        List<Tags> tags = tagsRepository.findAllById(tagIds);
+        categoryDetailVO.setTags(tags);
+        return categoryDetailVO;
+    }
+
+
+            //    @Override
 //    public void updateOrder(List<CategoryVO> categoryVOList) {
 //        List<Category> saveCategories = new ArrayList<>();
 //        List<Category> categories = categoryRepository.findAll();

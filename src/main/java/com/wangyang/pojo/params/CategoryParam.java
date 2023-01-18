@@ -1,11 +1,15 @@
 package com.wangyang.pojo.params;
 
+import com.wangyang.pojo.dto.InputConverter;
+import com.wangyang.pojo.entity.Article;
+import com.wangyang.pojo.entity.Category;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Data
-public class CategoryParam {
+public class CategoryParam implements InputConverter<Category> {
 
     private String description;
     @NotBlank(message = "Category name can't empty!!")
@@ -24,4 +28,5 @@ public class CategoryParam {
     private Integer articleListSize=10;
     private Boolean isDesc=true;
     private String icon;
+    private Set<Integer> tagIds;
 }

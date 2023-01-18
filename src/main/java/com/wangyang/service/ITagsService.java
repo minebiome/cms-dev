@@ -1,14 +1,19 @@
 package com.wangyang.service;
 
 import com.wangyang.pojo.dto.TagsDto;
+import com.wangyang.pojo.entity.Comment;
 import com.wangyang.pojo.entity.Tags;
+import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ITagsService {
+public interface ITagsService extends ICrudService<Tags, Tags, BaseVo,Integer> {
 
     /**
      * list tags and calculate quantity
@@ -43,8 +48,8 @@ public interface ITagsService {
      * @return
      */
     Tags findById(int id);
-
-    List<TagsDto> listAll();
+    List<Tags> listAll();
+    List<TagsDto> listAll1();
 
     Optional<Tags> findBy(String tagName);
 
