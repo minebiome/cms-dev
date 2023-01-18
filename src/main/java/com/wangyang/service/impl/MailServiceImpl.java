@@ -235,7 +235,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendEmail(Subscribe subscribe) {
-
+        sendSimpleMail(subscribe.getEmail(),"老师感谢您的订阅！","老师感谢您的订阅");
     }
 
     @Override
