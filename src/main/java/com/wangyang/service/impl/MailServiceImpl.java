@@ -95,7 +95,11 @@ public class MailServiceImpl implements MailService {
         message.setSubject(subject);
         message.setText(content);
         message.setFrom(from);
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        }catch (MailException e){
+            e.getMessage();
+        }
     }
 
     /**
@@ -238,11 +242,9 @@ public class MailServiceImpl implements MailService {
     public List<BaseAuthorize> sendEmail(Mail mailInput) {
         List<BaseAuthorize> baseAuthorizes = authorizeService.listAll();
         for (BaseAuthorize baseAuthorize:baseAuthorizes){
-            try {
-                sendSimpleMail(baseAuthorize.getEmail(),mailInput.getTitle(),mailInput.getContent());
-            }catch (MailException e){
-                e.getMessage();
-            }
+
+            sendSimpleMail(baseAuthorize.getEmail(),mailInput.getTitle(),mailInput.getContent());
+
 
         }
         return baseAuthorizes;
