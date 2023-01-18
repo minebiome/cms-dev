@@ -109,22 +109,23 @@ public class UserController {
         }
         return null;
     }
-
     @PostMapping
-    public User addUser(@Validated UserParam inputUser,
-                        @RequestPart(value = "file",required = false) MultipartFile file){
-        return userService.addUser(inputUser,file);
+    public User addUser(@RequestBody @Validated UserParam inputUser){
+        return userService.addUser(inputUser);
     }
+//    @PostMapping
+//    public User addUser(@Validated UserParam inputUser,
+//                        @RequestPart(value = "file",required = false) MultipartFile file){
+//        return userService.addUser(inputUser,file);
+//    }
 
 //    @PostMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public User updateUser(@PathVariable("id") Integer id, UserParam user,@RequestPart(value = "file",required = false) MultipartFile file){
 //        return userDetailService.updateUser(id,user,file);
 //    };
-    @PostMapping(value = "/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public User updateUser(@PathVariable("id") Integer id,
-                           UserParam user,
-                           @RequestPart(value = "file",required = false) MultipartFile file){
-        return userService.updateUser(id,user,file);
+    @PostMapping("/update/{id}")
+    public User updateUser(@PathVariable("id") Integer id,@RequestBody @Validated UserParam inputUser){
+        return userService.updateUser(id,inputUser);
     }
 
     @GetMapping("/del/{id}")

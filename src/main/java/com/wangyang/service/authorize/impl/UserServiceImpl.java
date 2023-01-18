@@ -2,6 +2,7 @@ package com.wangyang.service.authorize.impl;
 
 
 import com.wangyang.common.exception.UserException;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.UserDto;
@@ -64,14 +65,14 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     @Override
     public User addUser(UserParam userParam) {
         User user = new User();
-        BeanUtils.copyProperties(userParam,user);
+        BeanUtils.copyProperties(userParam,user,CMSUtils.getNullPropertyNames(userParam));
         return userRepository.save(user);
     }
 
     @Override
     public User updateUser(int id, UserParam userParam) {
         User user = findUserById(id);
-        BeanUtils.copyProperties(userParam,user);
+        BeanUtils.copyProperties(userParam,user, CMSUtils.getNullPropertyNames(userParam));
         return userRepository.save(user);
     }
 
