@@ -1443,6 +1443,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             return null;
         }
         List<Category> categories = categoryService.findByParentId(parentCategory.getId());
+
         List<CategoryArticleList> categoryArticleLists =  new ArrayList<>();
         for (Category category:categories){
             CategoryArticleList categoryArticleList = new CategoryArticleList();

@@ -420,7 +420,8 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
        return repository.findAll(new Specification<DOMAIN>() {
             @Override
             public Predicate toPredicate(Root<DOMAIN> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("parentId"),parentId)).getRestriction();
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("parentId"),parentId)).orderBy(criteriaBuilder.asc(root.get("order"))).getRestriction();
+
             }
         });
     }
