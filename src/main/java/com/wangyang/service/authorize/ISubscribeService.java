@@ -5,4 +5,5 @@ import com.wangyang.pojo.entity.Subscribe;
 import com.wangyang.service.base.IAuthorizeService;
 
 public interface ISubscribeService extends IAuthorizeService<Subscribe> {
+    Subscribe findByEmail(String email);
 }

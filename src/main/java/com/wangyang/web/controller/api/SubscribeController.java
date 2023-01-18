@@ -1,6 +1,7 @@
 package com.wangyang.web.controller.api;
 
 
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.entity.Customer;
 import com.wangyang.pojo.entity.Subscribe;
@@ -23,9 +24,13 @@ public class SubscribeController {
     @PostMapping
     @Anonymous
     public Subscribe add(@RequestBody @Valid Subscribe subscribeInput, HttpServletRequest request){
-        Subscribe subscribe = subscribeService.add(subscribeInput);
-        mailService.sendEmail(subscribe);
-        return subscribe;
+        Subscribe serviceByEmail = subscribeService.findByEmail(subscribeInput.getEmail());
+        if(serviceByEmail==null){
+            Subscribe subscribe = subscribeService.add(subscribeInput);
+            mailService.sendEmail(subscribe);
+            return subscribe;
+        }
+        throw new ObjectException("您已经订阅了！");
     }
 
     @GetMapping("/del/{id}")

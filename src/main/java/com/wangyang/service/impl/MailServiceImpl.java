@@ -39,6 +39,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -241,11 +242,9 @@ public class MailServiceImpl implements MailService {
     @Override
     public List<BaseAuthorize> sendEmail(Mail mailInput) {
         List<BaseAuthorize> baseAuthorizes = authorizeService.listAll();
-        for (BaseAuthorize baseAuthorize:baseAuthorizes){
-
-            sendSimpleMail(baseAuthorize.getEmail(),mailInput.getTitle(),mailInput.getContent());
-
-
+        Set<String> strings = ServiceUtil.fetchProperty(baseAuthorizes, BaseAuthorize::getEmail);
+        for (String mail:strings){
+            sendSimpleMail(mail,mailInput.getTitle(),mailInput.getContent());
         }
         return baseAuthorizes;
     }
