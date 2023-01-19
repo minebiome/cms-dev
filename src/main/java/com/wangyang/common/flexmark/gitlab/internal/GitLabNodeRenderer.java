@@ -20,6 +20,7 @@ import com.wangyang.common.flexmark.gitlab.GitLabBlockQuote;
 import com.wangyang.common.flexmark.gitlab.GitLabDel;
 import com.wangyang.common.flexmark.gitlab.GitLabInlineMath;
 import com.wangyang.common.flexmark.gitlab.GitLabIns;
+import com.wangyang.common.utils.CMSUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -198,11 +199,16 @@ public class GitLabNodeRenderer implements NodeRenderer
                     html.tag("/picture");
                 }else {
 
-                    html.withAttr().attr("class",options.imageSrcTag).withAttr().tag("picture");
-                    html.attr("class","lazy");
-//                    html.attr("data-original", url);
+                    String id = "ID"+ CMSUtils.randomViewName();
+                    html.withAttr().attr("class","pic-warp").withAttr().tag("div");
+                    if(altText.contains("carousel")){
+                        html.withAttr().attr("class", " slide ");
+                        html.withAttr().attr("id",id);
+                    }else {
+                        html.withAttr().attr("class", options.imageSrcTag + " row ");
+                    }
+
                     String altTextImg =altText;
-                    html.attr(options.imageSrcTag, url);
                     Matcher matcher = pImgWH.matcher(altTextImg);
                     if (matcher.find()){
                         String group = matcher.group(1);
@@ -210,19 +216,82 @@ public class GitLabNodeRenderer implements NodeRenderer
                         String[] groups = group.split(",");
                         for (int i=0;i<groups.length;i++){
                             String[] items = groups[i].split("=");
-//                            System.out.println(items[0]);
                             html.attr(items[0], items[1]);
+
                         }
                     }
-                    html.attr("alt", altTextImg);
-                    html.attr(resolvedLink.getNonNullAttributes());
-                    html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
-                    html.tag("/picture");
+
+                    html.withAttr().tag("div");
+                    if(url.contains("|")){
+                        String[] urls = url.split("\\|");
+                        html.withAttr().attr("class","carousel-inner").withAttr().tag("div");
+                        Boolean flagFirst=true;
+                        for (String item : urls){
+
+                            if(altText.contains("carousel")){
+                                html.attr("class","carousel-item");
+                            }else {
+                                html.attr("class","col");
+                            }
+                            if(flagFirst){
+                                html.attr("class","active");
+                                flagFirst=false;
+                            }
+                            html.withAttr().tag("div");
+
+
+                            if(altText.contains("carousel")){
+                                html.attr("class","carousel-lazy");
+
+                            }else {
+                                html.attr("class","lazy");
+                            }
+
+                            html.attr(options.imageSrcTag, item);
+
+
+                            html.attr("alt", altTextImg);
+                            html.attr(resolvedLink.getNonNullAttributes());
+                            html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
+                            html.tag("/div");
+                        }
+                        html.tag("/div");
+                        html.raw(" <button class=\"carousel-control-prev\" type=\"button\" data-target=\"#"+id+"\" data-slide=\"prev\">\n" +
+                                "    <span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>\n" +
+                                "    <span class=\"sr-only\">Previous</span>\n" +
+                                "  </button>\n" +
+                                "  <button class=\"carousel-control-next\" type=\"button\" data-target=\"#"+id+"\" data-slide=\"next\">\n" +
+                                "    <span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>\n" +
+                                "    <span class=\"sr-only\">Next</span>\n" +
+                                "  </button>");
+                    }else {
+                        html.attr("class","lazy");
+                        html.attr(options.imageSrcTag, url);
+//                        Matcher matcher = pImgWH.matcher(altTextImg);
+//                        if (matcher.find()){
+//                            String group = matcher.group(1);
+//                            altTextImg = matcher.replaceAll("");
+//                            String[] groups = group.split(",");
+//                            for (int i=0;i<groups.length;i++){
+//                                String[] items = groups[i].split("=");
+////                            System.out.println(items[0]);
+//                                html.attr(items[0], items[1]);
+//                            }
+//                        }
+                        html.attr("alt", altTextImg);
+                        html.attr(resolvedLink.getNonNullAttributes());
+                        html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
+
+                    }
+
+
+                    html.tag("/div");
                     if(!altTextImg.equals("") && !altTextImg.equals("生信小木屋")){
                         html.withAttr().attr("class","img-caption").withAttr().tag("p")
                                 .text(altTextImg)
                                 .tag("/p");
                     }
+                    html.tag("/div");
                 }
 
 //                 we have a title part, use that
