@@ -224,7 +224,10 @@ public class GitLabNodeRenderer implements NodeRenderer
                     html.withAttr().tag("div");
                     if(url.contains("|")){
                         String[] urls = url.split("\\|");
-                        html.withAttr().attr("class","carousel-inner").withAttr().tag("div");
+                        if(altText.contains("carousel")){
+                            html.withAttr().attr("class","carousel-inner").withAttr().tag("div");
+
+                        }
                         Boolean flagFirst=true;
                         for (String item : urls){
 
@@ -255,15 +258,21 @@ public class GitLabNodeRenderer implements NodeRenderer
                             html.srcPos(srcNode.getChars()).withAttr(resolvedLink).tagVoid("img");
                             html.tag("/div");
                         }
-                        html.tag("/div");
-                        html.raw(" <button class=\"carousel-control-prev\" type=\"button\" data-target=\"#"+id+"\" data-slide=\"prev\">\n" +
-                                "    <span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>\n" +
-                                "    <span class=\"sr-only\">Previous</span>\n" +
-                                "  </button>\n" +
-                                "  <button class=\"carousel-control-next\" type=\"button\" data-target=\"#"+id+"\" data-slide=\"next\">\n" +
-                                "    <span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>\n" +
-                                "    <span class=\"sr-only\">Next</span>\n" +
-                                "  </button>");
+                        if(altText.contains("carousel")){
+                            html.tag("/div");
+                        }
+
+                        if(altText.contains("carousel")){
+                            html.raw(" <button class=\"carousel-control-prev\" type=\"button\" data-target=\"#"+id+"\" data-slide=\"prev\">\n" +
+                                    "    <span class=\"carousel-control-prev-icon\" aria-hidden=\"true\"></span>\n" +
+                                    "    <span class=\"sr-only\">Previous</span>\n" +
+                                    "  </button>\n" +
+                                    "  <button class=\"carousel-control-next\" type=\"button\" data-target=\"#"+id+"\" data-slide=\"next\">\n" +
+                                    "    <span class=\"carousel-control-next-icon\" aria-hidden=\"true\"></span>\n" +
+                                    "    <span class=\"sr-only\">Next</span>\n" +
+                                    "  </button>");
+                        }
+
                     }else {
                         html.attr("class","lazy");
                         html.attr(options.imageSrcTag, url);
