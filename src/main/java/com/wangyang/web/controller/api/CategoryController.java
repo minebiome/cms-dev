@@ -2,7 +2,9 @@ package com.wangyang.web.controller.api;
 
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.CategoryTags;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.repository.CategoryTagsRepository;
 import com.wangyang.service.ICategoryService;
@@ -93,6 +95,10 @@ public class CategoryController {
             htmlService.convertArticleListBy(category);
         }
         return updateCategory;
+    }
+    @GetMapping("/listByComponentsId/{componentsId}")
+    public List<CategoryVO> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
+        return  categoryService.listByComponentsId(componentsId);
     }
 
     @RequestMapping("/delete/{id}")
@@ -206,6 +212,13 @@ public class CategoryController {
         //重新生成分类的列表
         htmlService.generateCategoryListHtml();
         return BaseResponse.ok("success");
+    }
+
+    @GetMapping("/updateCategoryInComponentOrder")
+    public Category updateCategoryInComponentOrder(@RequestParam Integer id, @RequestParam Integer order){
+        Category category = categoryService.findById(id);
+        category.setCategoryInComponentOrder(order);
+        return categoryService.save(category);
     }
 
 }

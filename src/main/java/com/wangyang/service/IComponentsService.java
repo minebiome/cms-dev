@@ -1,14 +1,17 @@
 package com.wangyang.service;
 
 import com.wangyang.pojo.entity.Components;
+import com.wangyang.pojo.entity.ComponentsCategory;
 import com.wangyang.pojo.params.ComponentsParam;
+import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IComponentsService {
+public interface IComponentsService  extends ICrudService<Components, Components, BaseVo,Integer> {
 
     Page<Components> list(Pageable pageable);
 

@@ -44,8 +44,14 @@ public class ComponentsArticleServiceImpl implements IComponentsArticleService {
 //        }, Sort.by(Sort.Direction.DESC, "order"));
 //        return componentsArticleList;
 //    }
-
     @Override
+    public List<ComponentsArticle> findByComponentId(Integer componentId){
+        return componentsArticleRepository.findByComponentId(componentId);
+    }
+    @Override
+    public List<ComponentsArticle> findByArticleId(Integer articleId){
+        return componentsArticleRepository.findByArticleId(articleId);
+    }
     public ComponentsArticle add(int articleId, int componentsId){
         Article article = articleService.findArticleById(articleId);
         Components components = componentsService.findById(componentsId);

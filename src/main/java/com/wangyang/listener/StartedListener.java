@@ -200,6 +200,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         List<Components> componentsList = new ArrayList<>();
         componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
         componentsList.add( new Components("Form",CMSUtils.getComponentsPath(), "components/@Form","form",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("categoryComponent",CMSUtils.getComponentsPath(), "components/@categoryComponent","categoryComponent",CmsConst.CATEGORY_DATA,"",true));
         componentsList.add( new Components("Company",CMSUtils.getComponentsPath(), "components/@Company","Company",CmsConst.ARTICLE_DATA,"",true));
         componentsList.add( new Components("myArticle",CMSUtils.getComponentsPath(), "components/@myArticle","myArticle",CmsConst.ARTICLE_DATA,"",true));
         componentsList.add( new Components("点赞最多", CMSUtils.getComponentsPath(), "components/@articleList","likeArticle",CmsConst.ARTICLE_DATA_SORT+"likes,DESC","",true));

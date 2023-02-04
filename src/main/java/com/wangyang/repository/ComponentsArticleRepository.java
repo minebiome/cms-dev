@@ -9,6 +9,7 @@ import java.util.List;
 public interface ComponentsArticleRepository extends BaseRepository< ComponentsArticle,Integer> {
 
     List<ComponentsArticle> findByComponentId(Integer componentId);
+    List<ComponentsArticle> findByArticleId(Integer articleId);
 
     ComponentsArticle findByArticleIdAndComponentId(int articleId, int componentId);
 }

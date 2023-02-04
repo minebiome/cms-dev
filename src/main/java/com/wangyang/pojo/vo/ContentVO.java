@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-public class ContentVO extends BaseVo<Content>{
+public class ContentVO extends BaseVo<ContentVO>{
     private List<TagsDto> tags;
     private CategoryDto category;
     private String formatContent;

@@ -10,14 +10,19 @@ import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Tags;
+import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.ComponentsRepository;
+import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.IArticleService;
+import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.service.ITagsService;
+import com.wangyang.service.base.AbstractCrudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +46,22 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ComponentsServiceImpl implements IComponentsService {
+public class ComponentsServiceImpl extends AbstractCrudService<Components, Components, BaseVo,Integer> implements IComponentsService {
 
-    @Autowired
-    ComponentsRepository componentsRepository;
 
     @Autowired
     IArticleService articleService;
 
     @Autowired
+    ICategoryService categoryService;
+    @Autowired
     ITagsService tagsService;
+    ComponentsRepository componentsRepository;
+
+    public ComponentsServiceImpl(  ComponentsRepository componentsRepository) {
+        super(componentsRepository);
+        this.componentsRepository=componentsRepository;
+    }
 
 
     @Override
@@ -155,9 +166,10 @@ public class ComponentsServiceImpl implements IComponentsService {
         componentsRepository.deleteAll();
     }
 
-
-
-
+    @Override
+    public boolean supportType(CrudType type) {
+        return false;
+    }
 
 
     @Override
@@ -177,7 +189,12 @@ public class ComponentsServiceImpl implements IComponentsService {
 //                Method method = bean.getClass().getMethod(methodName,Set.class);
 //                Object o = method.invoke(bean,ids);
 //                return o;
-            }else if (components.getDataName().startsWith("articleJob")){
+            }else if(components.getDataName().startsWith(CmsConst.CATEGORY_DATA)){
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",categoryService.listByComponentsId(components.getId()));
+                return  map;
+            } else if (components.getDataName().startsWith("articleJob")){
                 String[] names = components.getDataName().split("\\.");
                 String className = names[0];
                 String methodName = names[1];

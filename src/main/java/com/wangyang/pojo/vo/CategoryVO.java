@@ -30,6 +30,7 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private String description;
     private Boolean isDesc;
     private Integer articleListSize;
+    private Integer categoryInComponentOrder;
 
 
 

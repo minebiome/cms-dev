@@ -9,10 +9,12 @@ import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.CategoryQuery;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.CategoryRepository;
 import com.wangyang.repository.CategoryTagsRepository;
+import com.wangyang.repository.ComponentsCategoryRepository;
 import com.wangyang.repository.TagsRepository;
 import com.wangyang.service.*;
 import com.wangyang.service.base.AbstractBaseCategoryServiceImpl;
@@ -45,6 +47,9 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 
 
     @Autowired
+    ComponentsCategoryRepository componentsCategoryRepository;
+
+    @Autowired
     ITemplateService templateService;
     @Autowired
     IArticleService articleService;
@@ -67,6 +72,20 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         this.categoryRepository =categoryRepository;
     }
 
+
+    @Override
+    public List<CategoryVO> listByComponentsId(int componentsId){
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+//        List<Article> articles = articleRepository.findAllById(articleIds);
+        List<Category>  categories = categoryRepository.findAll(new Specification<Category>() {
+            @Override
+            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(root.get("id").in(categoryIds)).getRestriction();
+            }
+        },Sort.by(Sort.Direction.DESC,"categoryInComponentOrder"));
+        return convertToListVo(categories);
+    }
     @Override
     public Category save(Category category){
         return categoryRepository.save(category);

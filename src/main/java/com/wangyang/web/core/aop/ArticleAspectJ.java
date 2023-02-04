@@ -1,12 +1,17 @@
 package com.wangyang.web.core.aop;
 
+import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.entity.Components;
+import com.wangyang.pojo.entity.ComponentsArticle;
+import com.wangyang.pojo.entity.ComponentsCategory;
 import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.service.ICategoryService;
-import com.wangyang.service.IHtmlService;
+import com.wangyang.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,7 +22,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +46,15 @@ public class ArticleAspectJ {
     ICategoryService categoryService;
 
 
+    @Autowired
+    IComponentsService componentsService;
+
+    @Autowired
+    IComponentsArticleService componentsArticleService;
+
+
+    @Autowired
+    IComponentsCategoryService componentsCategoryService;
 
     public boolean findArticleInCategory(String categoryViewName,String articleCategoryViewName){
         Category category = categoryService.findByViewName(categoryViewName);
@@ -49,13 +66,22 @@ public class ArticleAspectJ {
         for (Category c : categories){
             if(c.getViewName().equals(articleCategoryViewName)){
                 return true;
-
             }
         }
         return false;
 
     }
 
+    void findAllCategoryId(Integer categoryId,Set<Category> ids){
+
+        if(categoryId==0){
+            return;
+        }
+
+        Category category = categoryService.findById(categoryId);
+        ids.add(category);
+        findAllCategoryId(category.getParentId(),ids);
+    }
 
     /**
      * 需要执行删除
@@ -70,12 +96,38 @@ public class ArticleAspectJ {
         try {
             Object o = joinPoint.proceed();
             ArticleDetailVO articleDetailVO = (ArticleDetailVO)o;
-            if(findArticleInCategory("technologyServices",articleDetailVO.getCategory().getViewName())){
-                htmlService.generateMenuListHtml();
-            }
-            if(findArticleInCategory("news",articleDetailVO.getCategory().getViewName())){
-                htmlService.generateHome();
-            }
+//            if(findArticleInCategory("technologyServices",articleDetailVO.getCategory().getViewName())){
+//                htmlService.generateMenuListHtml();
+//            }
+//            if(findArticleInCategory("news",articleDetailVO.getCategory().getViewName())){
+//                htmlService.generateHome();
+//            }
+
+            Set<Category> categorySet = new HashSet<>();
+            findAllCategoryId( articleDetailVO.getCategory().getParentId(),categorySet);
+
+            Set<Integer> ids = ServiceUtil.fetchProperty(categorySet, Category::getId);
+            ids.add(articleDetailVO.getCategory().getId());
+
+            List<ComponentsCategory> componentsCategoryList = componentsCategoryService.findByCategoryId(ids);
+            List<Components> components1 = componentsService.listByIds(ServiceUtil.fetchProperty(componentsCategoryList, ComponentsCategory::getComponentId));
+            components1.forEach(component -> {
+                Map<String, Object> model = componentsService.getModel(component);
+                TemplateUtil.convertHtmlAndSave(model, component);
+            });
+
+
+            List<ComponentsArticle> componentsArticleList = componentsArticleService.findByArticleId(articleDetailVO.getId());
+
+            Set<Integer> componentIds = ServiceUtil.fetchProperty(componentsArticleList, ComponentsArticle::getComponentId);
+            List<Components> components = componentsService.listByIds(componentIds);
+            components.forEach(component -> {
+                Map<String, Object> model = componentsService.getModel(component);
+                TemplateUtil.convertHtmlAndSave(model, component);
+            });
+
+
+
 
 
             deleteTemp(articleDetailVO.getCategory().getName(),articleDetailVO.getCategory().getViewName(),articleDetailVO.getCategory().getParentId());
@@ -113,6 +165,15 @@ public class ArticleAspectJ {
             }
 
             htmlService.generateMenuListHtml();
+
+            List<ComponentsCategory> categories = componentsCategoryService.findByCategoryId(category.getId());
+
+            Set<Integer> componentIds = ServiceUtil.fetchProperty(categories, ComponentsCategory::getComponentId);
+            List<Components> components = componentsService.listByIds(componentIds);
+            components.forEach(component -> {
+                Map<String, Object> model = componentsService.getModel(component);
+                TemplateUtil.convertHtmlAndSave(model, component);
+            });
             return category;
         } catch (InstantiationException e) {
             e.printStackTrace();

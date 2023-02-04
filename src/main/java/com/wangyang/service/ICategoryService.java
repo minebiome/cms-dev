@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface ICategoryService  extends IBaseCategoryService<Category,Category,CategoryVO> {
+    List<CategoryVO> listByComponentsId(int componentsId);
+
     Category save(Category category);
 
     /**
