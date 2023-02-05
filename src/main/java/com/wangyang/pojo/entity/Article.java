@@ -20,7 +20,7 @@ public class Article extends Content {
     private String picPath;
     private String picThumbPath;
 
-    private Integer articleInComponentOrder=0;
+
 
 
 

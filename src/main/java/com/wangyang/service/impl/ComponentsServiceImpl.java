@@ -10,12 +10,14 @@ import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Tags;
+import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ComponentsRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.IArticleService;
@@ -23,9 +25,11 @@ import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.service.ITagsService;
 import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.service.base.IContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +55,11 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
     @Autowired
     IArticleService articleService;
+
+    @Autowired
+    @Qualifier("contentServiceImpl")
+    IContentService<Content,Content, ContentVO> contentService;
+
 
     @Autowired
     ICategoryService categoryService;
@@ -177,7 +186,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         try {
             if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA)){
                 Map<String,Object> map = new HashMap<>();
-                map.put("view",articleService.listByComponentsId(components.getId()));
+                map.put("view",contentService.listByComponentsId(components.getId()));
                 return  map;
 
 

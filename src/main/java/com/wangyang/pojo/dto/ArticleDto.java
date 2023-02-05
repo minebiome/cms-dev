@@ -15,7 +15,7 @@ public class ArticleDto  implements Serializable {
     private Integer id;
     private Date createDate;
     private Date updateDate;
-//    private Integer templateId;
+    //    private Integer templateId;
     private String templateName;
     private Integer parentId;
     private ArticleStatus status;
@@ -23,7 +23,7 @@ public class ArticleDto  implements Serializable {
     private Integer visits;
     private Integer userId;
     private Integer commentNum;
-//    private Boolean haveHtml=false;
+    //    private Boolean haveHtml=false;
     private String summary;
     private String title;
     private String viewName;

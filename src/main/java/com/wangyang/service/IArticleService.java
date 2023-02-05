@@ -44,7 +44,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
     ArticleDetailVO updateArticleDetailVo(Article article, Set<Integer> tagsIds);
     ArticleDetailVO createArticleDetailVo(Article article, Set<Integer> tagsIds);
     ArticleDetailVO updateArticleDetailVo(Article article);
-    ArticleDetailVO updateCategory(Article article, int categoryId);
+    ArticleDetailVO updateArticleCategory(Article article, int categoryId);
 
 
     /**
@@ -70,7 +70,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
 //    Article haveHtml(int id);
     Article openComment(int id);
     Article updateOrder(int articleId, int order);
-    Article findByViewName(String viewName);
+
     /**
      * 发送或取消置顶
      * @param id
@@ -98,7 +98,6 @@ public interface IArticleService extends IContentService<Article,Article,Article
      * @param componentsId
      * @return
      */
-    List<ArticleVO> listByComponentsId(int componentsId);
 
     /**
      * 根据user查找article
@@ -187,7 +186,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
     Integer getVisitsNumber(int id);
     void generateSummary(Article article);
 
-    List<ArticleVO> listVoTree(Integer categoryId);
+//    List<ArticleVO> listVoTree(Integer categoryId);
 
     Integer getCommentNum(int id);
     /**
@@ -203,7 +202,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
     ArticleAndCategoryMindDto listArticleMindDto(String viewName);
     String jsMindFormat(ArticleAndCategoryMindDto articleAndCategoryMindDto);
 
-    List<ArticleVO> listVoTree(Set<Integer> ids,Boolean isDesc);
+//    List<ArticleVO> listVoTree(Set<Integer> ids,Boolean isDesc);
 
     List<ArticleVO> listVoTreeByCategoryViewName(String viewName);
 
@@ -211,7 +210,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
 
     List<ArticleVO> listVoByCategoryViewName(String viewName);
 
-    void updateOrder(Integer id, List<ArticleVO> articleVOS);
+//    void updateOrder(Integer id, List<ArticleVO> articleVOS);
 
 
 //    List<ArticleDto> listDtoTree(Integer categoryId);

@@ -163,7 +163,7 @@ public class CategoryController {
     @GetMapping("/addOrRemoveToMenu/{id}")
     public Category addOrRemoveToMenu(@PathVariable("id") int id){
         Category category = categoryService.addOrRemoveToMenu(id);
-        htmlService.generateMenuListHtml();
+//        htmlService.generateMenuListHtml();
         return category;
     }
     @GetMapping("/haveHtml/{id}")
@@ -177,7 +177,7 @@ public class CategoryController {
         }
 
         htmlService.generateCategoryListHtml();
-        htmlService.generateMenuListHtml();
+//        htmlService.generateMenuListHtml();
         htmlService.generateHome();
         return category;
     }

@@ -938,7 +938,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
      * @return
      */
     @Override
-    public ArticleDetailVO updateCategory(Article article, int categoryId){
+    public ArticleDetailVO updateArticleCategory(Article article, int categoryId){
         if(article.getUserId()==null){
             throw new ArticleException("文章用户不能为空!!");
         }

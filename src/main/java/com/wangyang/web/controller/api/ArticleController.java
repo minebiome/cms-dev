@@ -195,7 +195,7 @@ public class ArticleController {
         if(article.getCategoryId()!=null){
             categoryId = article.getCategoryId();
         }
-        ArticleDetailVO articleDetailVO = articleService.updateCategory(article, baseCategoryId);
+        ArticleDetailVO articleDetailVO = articleService.updateArticleCategory(article, baseCategoryId);
         //删除旧文章
 //        TemplateUtil.deleteTemplateHtml(viewName,path);
         //更新旧的文章列表
@@ -424,10 +424,7 @@ public class ArticleController {
         return articleService.listByTitle(title);
     }
 
-    @GetMapping("/listByComponentsId/{componentsId}")
-    public List<ArticleVO> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
-        return  articleService.listByComponentsId(componentsId);
-    }
+
 
     @GetMapping("/listArticleMindDto/{categoryId}")
     public String listArticleMindDto(@PathVariable("categoryId") int categoryId){
@@ -574,6 +571,11 @@ public class ArticleController {
     }
 
 
+
+    @GetMapping("/listByComponentsId/{componentsId}")
+    public List<ArticleVO> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
+        return  articleService.listByComponentsId(componentsId);
+    }
     @GetMapping("/updateArticleInComponentOrder")
     public Article updateArticleInComponentOrder(@RequestParam Integer id,@RequestParam Integer order){
         Article article = articleService.findArticleById(id);

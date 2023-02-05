@@ -118,7 +118,7 @@ public class SheetController {
     @GetMapping("/addOrRemoveToMenu/{id}")
     public Sheet addOrRemoveToMenu(@PathVariable("id") int id){
         Sheet sheet = sheetService.addOrRemoveToMenu(id);
-        htmlService.generateMenuListHtml();
+//        htmlService.generateMenuListHtml();
         return sheet;
     }
 

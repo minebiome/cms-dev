@@ -164,16 +164,18 @@ public class ArticleAspectJ {
                 deleteTemp(category);
             }
 
-            htmlService.generateMenuListHtml();
+//            htmlService.generateMenuListHtml();
+            if(category!=null){
+                List<ComponentsCategory> categories = componentsCategoryService.findByCategoryId(category.getId());
 
-            List<ComponentsCategory> categories = componentsCategoryService.findByCategoryId(category.getId());
+                Set<Integer> componentIds = ServiceUtil.fetchProperty(categories, ComponentsCategory::getComponentId);
+                List<Components> components = componentsService.listByIds(componentIds);
+                components.forEach(component -> {
+                    Map<String, Object> model = componentsService.getModel(component);
+                    TemplateUtil.convertHtmlAndSave(model, component);
+                });
+            }
 
-            Set<Integer> componentIds = ServiceUtil.fetchProperty(categories, ComponentsCategory::getComponentId);
-            List<Components> components = componentsService.listByIds(componentIds);
-            components.forEach(component -> {
-                Map<String, Object> model = componentsService.getModel(component);
-                TemplateUtil.convertHtmlAndSave(model, component);
-            });
             return category;
         } catch (InstantiationException e) {
             e.printStackTrace();

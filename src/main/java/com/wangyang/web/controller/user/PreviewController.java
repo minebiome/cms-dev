@@ -6,17 +6,17 @@ import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CategoryContentListDao;
+import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.params.TemplateParam;
-import com.wangyang.pojo.vo.ArticleVO;
-import com.wangyang.pojo.vo.CategoryVO;
-import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.pojo.vo.*;
 import com.wangyang.service.*;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
-import com.wangyang.pojo.vo.ArticleDetailVO;
+import com.wangyang.service.base.IContentService;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +51,8 @@ public class PreviewController {
     IHtmlService htmlService;
 
     @Autowired
-    IContentServiceEntity contentService;
+    @Qualifier("contentServiceImpl")
+    IContentService<Content,Content, ContentVO> contentService;
 
 
     @PostMapping("/templates/update/{id}")

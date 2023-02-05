@@ -1,5 +1,6 @@
 package com.wangyang.service.impl;
 
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CategoryContentListDao;
@@ -9,16 +10,18 @@ import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.ContentDetailVO;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ArticleTagsRepository;
+import com.wangyang.repository.ComponentsArticleRepository;
 import com.wangyang.repository.TagsRepository;
 import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.ICategoryService;
-import com.wangyang.service.IContentServiceEntity;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.base.AbstractContentServiceImpl;
+import com.wangyang.service.base.IContentService;
 import com.wangyang.util.FormatUtil;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
@@ -29,16 +32,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Content, ContentVO>  implements IContentServiceEntity {
+public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Content, ContentVO>  implements IContentService<Content,Content, ContentVO>  {
     @Autowired
     TagsRepository tagsRepository;
     @Autowired
     ArticleTagsRepository articleTagsRepository;
+
+
 
     @Autowired
     IUserService userService;
@@ -402,6 +410,9 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         Optional<Category> category = categoryService.findOptionalById(baseCategoryId);
         ContentDetailVO contentDetailVO = new ContentDetailVO();
         contentDetailVO.setContent(content);
+        if(content.getParentId()==null){
+            content.setParentId(0);
+        }
         if(category.isPresent()){
             content.setCategoryId(category.get().getId());
             contentDetailVO.setCategory(category.get());
@@ -413,4 +424,8 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
 
 
     }
+
+
+
+
 }

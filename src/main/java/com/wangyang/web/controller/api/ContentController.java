@@ -9,11 +9,12 @@ import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.ContentDetailVO;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.service.ICategoryService;
-import com.wangyang.service.IContentServiceEntity;
 import com.wangyang.service.IHtmlService;
+import com.wangyang.service.base.IContentService;
 import com.wangyang.util.AuthorizationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +27,8 @@ import java.util.List;
 public class ContentController {
 
     @Autowired
-    IContentServiceEntity contentService;
+    @Qualifier("contentServiceImpl")
+    IContentService<Content,Content, ContentVO> contentService;
     @Autowired
     ICategoryService categoryService;
     @Autowired
@@ -87,6 +89,17 @@ public class ContentController {
 //        FileUtils.remove(CmsConst.WORK_DIR+"/html/articleList/queryTemp");
 
         return updateContent.getCategory();
+    }
+
+    @GetMapping("/listByComponentsId/{componentsId}")
+    public List<ContentVO> listByComponentsId(@PathVariable("componentsId") Integer componentsId){
+        return  contentService.listByComponentsId(componentsId);
+    }
+    @GetMapping("/updateArticleInComponentOrder")
+    public Content updateArticleInComponentOrder(@RequestParam Integer id,@RequestParam Integer order){
+        Content content = contentService.findById(id);
+        content.setArticleInComponentOrder(order);
+        return contentService.save(content);
     }
 }
 

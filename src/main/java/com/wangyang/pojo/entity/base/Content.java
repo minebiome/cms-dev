@@ -41,6 +41,6 @@ public class Content extends BaseEntity{
     // 父亲id 0是只没有父亲 此时指向category
     private Boolean expanded; // 节点是否展开
     private String direction; //节点的方向
-
+    private Integer articleInComponentOrder=0;
 }
 

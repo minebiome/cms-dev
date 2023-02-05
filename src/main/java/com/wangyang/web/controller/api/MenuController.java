@@ -32,7 +32,7 @@ public class MenuController {
             menu.setParentId(0);
         }
         Menu saveMenu = menuService.add(menu);
-       htmlService.generateMenuListHtml();
+//       htmlService.generateMenuListHtml();
         return saveMenu;
     }
     @GetMapping
@@ -54,14 +54,14 @@ public class MenuController {
     @PostMapping("/update/{id}")
     public Menu update(@RequestBody  Menu menu,@PathVariable("id") Integer id){
         Menu updateMenu = menuService.update(id, menu);
-        htmlService.generateMenuListHtml();
+//        htmlService.generateMenuListHtml();
         return updateMenu;
     }
 
     @RequestMapping("/delete/{id}")
     public BaseResponse delete(@PathVariable("id") Integer id){
         menuService.delete(id);
-        htmlService.generateMenuListHtml();
+//        htmlService.generateMenuListHtml();
         return BaseResponse.ok("Delete id "+id+" menu success!!");
     }
     @GetMapping("/find/{id}")

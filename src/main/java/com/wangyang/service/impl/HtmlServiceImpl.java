@@ -8,6 +8,7 @@ import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.*;
+import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.vo.*;
 import com.wangyang.config.ApplicationBean;
@@ -18,6 +19,7 @@ import com.wangyang.service.base.IContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -59,7 +61,8 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
     @Autowired
-    IContentServiceEntity contentService;
+    @Qualifier("contentServiceImpl")
+    IContentService<Content,Content, ContentVO> contentService;
 
 
     @Override
@@ -304,7 +307,7 @@ public class HtmlServiceImpl implements IHtmlService {
         if(sheet.getCategoryId()!=null){
             Category category = categoryService.findById(sheet.getCategoryId());
             convertArticleListBy(category);
-            generateMenuListHtml();
+//            generateMenuListHtml();
         }
 
         String content = DocumentUtil.getDivContent(html, "#fragment");
