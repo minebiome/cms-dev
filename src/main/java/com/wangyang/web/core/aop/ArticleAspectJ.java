@@ -6,11 +6,12 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
-import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.Components;
-import com.wangyang.pojo.entity.ComponentsArticle;
-import com.wangyang.pojo.entity.ComponentsCategory;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.vo.ArticleDetailVO;
+import com.wangyang.pojo.vo.ArticleVO;
+import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.repository.ArticleTagsRepository;
+import com.wangyang.repository.CategoryTagsRepository;
 import com.wangyang.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,14 +19,12 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +55,20 @@ public class ArticleAspectJ {
     @Autowired
     IComponentsCategoryService componentsCategoryService;
 
+    @Autowired
+    CategoryTagsRepository categoryTagsRepository;
+
+    @Autowired
+    ArticleTagsRepository articleTagsRepository;
+
+
+    ITemplateService templateService;
+
+
+    @Autowired
+    IArticleService articleService;
+
+
     public boolean findArticleInCategory(String categoryViewName,String articleCategoryViewName){
         Category category = categoryService.findByViewName(categoryViewName);
         if(category==null){
@@ -83,6 +96,27 @@ public class ArticleAspectJ {
         findAllCategoryId(category.getParentId(),ids);
     }
 
+
+    public void generateRecommendArticle(Integer id, String recommendTemplateName,String viewName){
+        List<CategoryTags> categoryTags = categoryTagsRepository.findByCategoryId(id);
+        if(categoryTags.size()!=0){
+            Set<Integer> tagIds = ServiceUtil.fetchProperty(categoryTags, CategoryTags::getTagsId);
+
+            List<ArticleTags> articleTags = articleTagsRepository.findAllByTagsIdIn(tagIds);
+            Set<Integer> articleIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getArticleId);
+            Page<Article> articles = articleService.pageByIds(articleIds, 0, 5, null);
+            List<Article> contents = articles.getContent();
+            List<ArticleVO> articleVOS = articleService.convertToListVo(contents);
+            Map<String,Object> map = new HashMap<>();
+            map.put("articleVOS",articleVOS);
+            if(recommendTemplateName==null){
+                recommendTemplateName = CmsConst.ARTICLE_RECOMMEND_LIST;
+            }
+            Template template = templateService.findByEnName(recommendTemplateName);
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecommendPath(),viewName,map,template);
+        }
+    }
+
     /**
      * 需要执行删除
      */
@@ -102,9 +136,10 @@ public class ArticleAspectJ {
 //            if(findArticleInCategory("news",articleDetailVO.getCategory().getViewName())){
 //                htmlService.generateHome();
 //            }
-
+            CategoryVO categoryVO = articleDetailVO.getCategory();
+            generateRecommendArticle(categoryVO.getId(),categoryVO.getRecommendTemplateName(),categoryVO.getViewName());
             Set<Category> categorySet = new HashSet<>();
-            findAllCategoryId( articleDetailVO.getCategory().getParentId(),categorySet);
+            findAllCategoryId(categoryVO.getParentId(),categorySet);
 
             Set<Integer> ids = ServiceUtil.fetchProperty(categorySet, Category::getId);
             ids.add(articleDetailVO.getCategory().getId());

@@ -31,7 +31,7 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private Boolean isDesc;
     private Integer articleListSize;
     private Integer categoryInComponentOrder;
-
+    private String recommendTemplateName;
 
 
 }
