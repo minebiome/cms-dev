@@ -75,6 +75,7 @@ public class CmsConst {
 
 
     public final static String DEFAULT_ARTICLE_TEMPLATE = "DEFAULT_ARTICLE";
+    public final static String DEFAULT_COURSE_TEMPLATE = "DEFAULT_COURSE_TEMPLATE";
     public final static String DEFAULT_LITERATURE_TEMPLATE = "DEFAULT_LITERATURE_TEMPLATE";
     public final static String DEFAULT_TREE_ARTICLE_TEMPLATE = "DEFAULT_TREE_ARTICLE_TEMPLATE";
     public final static String DEFAULT_ARTICLE_CHANNEL_TEMPLATE = "DEFAULT_ARTICLE_CHANNEL";

@@ -1,6 +1,6 @@
 cms:
   workDir: ${user.home}/cms
-  templates: templates/enterprise
+  templates: templates/templates
   uploadPrefix: http://47.93.201.74:8080
   isDebug: false
   authorizeInit: true

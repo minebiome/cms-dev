@@ -18,6 +18,7 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private String linkPath;
     private String recommendPath;
     private String recentPath;
+    private String firstTitleList;
     private Integer order;
     private String resource;
     private Boolean haveHtml;

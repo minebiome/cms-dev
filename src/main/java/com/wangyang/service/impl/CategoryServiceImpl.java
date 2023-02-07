@@ -530,6 +530,7 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
         categoryVO.setRecommendPath(CMSUtils.getArticleRecommendPath()+ File.separator+category.getViewName());
         categoryVO.setRecentPath(CMSUtils.getArticleRecentPath()+ File.separator+category.getViewName());
+        categoryVO.setFirstTitleList(CMSUtils.getFirstArticleTitleList()+ File.separator+category.getViewName());
         return categoryVO;
     }
             @Override
