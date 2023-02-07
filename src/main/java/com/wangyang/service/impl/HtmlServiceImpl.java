@@ -70,6 +70,11 @@ public class HtmlServiceImpl implements IHtmlService {
     @Qualifier("contentServiceImpl")
     IContentService<Content,Content, ContentVO> contentService;
 
+    @Autowired
+    IComponentsArticleService componentsArticleService;
+
+    @Autowired
+    IComponentsCategoryService componentsCategoryService;
 
     @Override
     @Async //异步执行
@@ -172,6 +177,47 @@ public class HtmlServiceImpl implements IHtmlService {
 //        }
 //    }
 
+    public void findAllParentCategoryId(Integer categoryId,Set<Category> ids){
+        if(categoryId==0){
+            return;
+        }
+        Category category = categoryService.findById(categoryId);
+        ids.add(category);
+        findAllParentCategoryId(category.getParentId(),ids);
+    }
+
+
+    @Override
+    public Set<Category> findAllCategoryPatent(Integer categoryParentId){
+        Set<Category> categorySet = new HashSet<>();
+        findAllParentCategoryId(categoryParentId,categorySet);
+        return categorySet;
+    }
+
+    @Override
+    public void generateComponentsByCategory(Integer categoryId, Integer categoryParentId){
+        Set<Category> categorySet = findAllCategoryPatent(categoryParentId);
+        Set<Integer> ids = ServiceUtil.fetchProperty(categorySet, Category::getId);
+        ids.add(categoryId);
+        List<ComponentsCategory> componentsCategoryList = componentsCategoryService.findByCategoryId(ids);
+        List<Components> components1 = componentsService.listByIds(ServiceUtil.fetchProperty(componentsCategoryList, ComponentsCategory::getComponentId));
+        components1.forEach(component -> {
+            Map<String, Object> model = componentsService.getModel(component);
+            TemplateUtil.convertHtmlAndSave(model, component);
+        });
+    }
+
+
+    @Override
+    public void generateComponentsByArticle(Integer articleId){
+        List<ComponentsArticle> componentsArticleList = componentsArticleService.findByArticleId(articleId);
+        Set<Integer> componentIds = ServiceUtil.fetchProperty(componentsArticleList, ComponentsArticle::getComponentId);
+        List<Components> components = componentsService.listByIds(componentIds);
+        components.forEach(component -> {
+            Map<String, Object> model = componentsService.getModel(component);
+            TemplateUtil.convertHtmlAndSave(model, component);
+        });
+    }
 
     @Override
     public CategoryContentListDao convertArticleListBy(Category category) {

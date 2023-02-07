@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 public interface IHtmlService {
 
@@ -23,12 +24,19 @@ public interface IHtmlService {
      * @param articleVO
      */
     void conventHtml(ArticleDetailVO articleVO);
+
+    Set<Category> findAllCategoryPatent(Integer categoryParentId);
+
     /**
      * 生成该栏目下所有文章的列表, 用于动态添加到文章详情的旁边
      * @param channel
      * @return
      */
 //    ChannelVo conventHtml(Channel channel);
+
+    void generateComponentsByCategory(Integer categoryId, Integer categoryParentId);
+
+    void generateComponentsByArticle(Integer articleId);
 
     /**
      * 生成该栏目下文章列表, 只展示文章列表

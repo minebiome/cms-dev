@@ -149,7 +149,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
 
 
-                new Template("标签模板",CmsConst.TAGS, "@tags", TemplateType.ARTICLE_LIST,7),
+                new Template("标签模板",CmsConst.TAGS, "@tags", TemplateType.TAGS,7),
 
 
                 new Template("默认分类列表",CmsConst.DEFAULT_CATEGORY_LIST, "@categoryList", TemplateType.CATEGORY_LIST,7),
@@ -200,6 +200,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
         List<Components> componentsList = new ArrayList<>();
         componentsList.add( new Components("Carousel", CMSUtils.getComponentsPath(), "components/@carousel","carousel",CmsConst.ARTICLE_DATA,"",true));
+        componentsList.add( new Components("标签列表", CMSUtils.getComponentsPath(), "components/@tagList","tagList",CmsConst.TAG_DATA,"",true));
         componentsList.add( new Components("Form",CMSUtils.getComponentsPath(), "components/@Form","form",CmsConst.ARTICLE_DATA,"",true));
         componentsList.add( new Components("categoryComponent",CMSUtils.getComponentsPath(), "components/@categoryComponent","categoryComponent",CmsConst.CATEGORY_DATA,"",true));
         componentsList.add( new Components("Company",CMSUtils.getComponentsPath(), "components/@Company","Company",CmsConst.ARTICLE_DATA,"",true));

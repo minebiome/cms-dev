@@ -139,7 +139,7 @@ public class UserArticleController {
         }
         int userId = AuthorizationUtil.getUserId(request);
         ArticleDetailVO articleDetailVO = fastWriteArticleHtml(categoryId, title, userId);
-
+        htmlService.generateComponentsByCategory(articleDetailVO.getCategory().getId(),articleDetailVO.getCategory().getParentId());
 //        model.addAttribute("view",articleDetailVO);
         return "redirect:"+ FormatUtil.categoryListFormat(articleDetailVO.getCategory());
     }

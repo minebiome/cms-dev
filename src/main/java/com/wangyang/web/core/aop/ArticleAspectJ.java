@@ -49,9 +49,6 @@ public class ArticleAspectJ {
     @Autowired
     IComponentsService componentsService;
 
-    @Autowired
-    IComponentsArticleService componentsArticleService;
-
 
     @Autowired
     IComponentsCategoryService componentsCategoryService;
@@ -87,16 +84,7 @@ public class ArticleAspectJ {
 
     }
 
-    void findAllCategoryId(Integer categoryId,Set<Category> ids){
 
-        if(categoryId==0){
-            return;
-        }
-
-        Category category = categoryService.findById(categoryId);
-        ids.add(category);
-        findAllCategoryId(category.getParentId(),ids);
-    }
 
 
     public void generateRecommendArticle(Integer articleId){
@@ -136,31 +124,13 @@ public class ArticleAspectJ {
 //            if(findArticleInCategory("news",articleDetailVO.getCategory().getViewName())){
 //                htmlService.generateHome();
 //            }
-            CategoryVO categoryVO = articleDetailVO.getCategory();
+
 
             generateRecommendArticle(articleDetailVO.getId());
-            Set<Category> categorySet = new HashSet<>();
-            findAllCategoryId(categoryVO.getParentId(),categorySet);
-
-            Set<Integer> ids = ServiceUtil.fetchProperty(categorySet, Category::getId);
-            ids.add(articleDetailVO.getCategory().getId());
-
-            List<ComponentsCategory> componentsCategoryList = componentsCategoryService.findByCategoryId(ids);
-            List<Components> components1 = componentsService.listByIds(ServiceUtil.fetchProperty(componentsCategoryList, ComponentsCategory::getComponentId));
-            components1.forEach(component -> {
-                Map<String, Object> model = componentsService.getModel(component);
-                TemplateUtil.convertHtmlAndSave(model, component);
-            });
+            htmlService.generateComponentsByCategory(articleDetailVO.getCategory().getId(),articleDetailVO.getCategory().getParentId());
+            htmlService.generateComponentsByArticle(articleDetailVO.getId());
 
 
-            List<ComponentsArticle> componentsArticleList = componentsArticleService.findByArticleId(articleDetailVO.getId());
-
-            Set<Integer> componentIds = ServiceUtil.fetchProperty(componentsArticleList, ComponentsArticle::getComponentId);
-            List<Components> components = componentsService.listByIds(componentIds);
-            components.forEach(component -> {
-                Map<String, Object> model = componentsService.getModel(component);
-                TemplateUtil.convertHtmlAndSave(model, component);
-            });
 
 
 
@@ -182,6 +152,11 @@ public class ArticleAspectJ {
     }
 
 
+    public void findAllChildCategoryId(Integer categoryParentId,Set<Category> categoriesInput){
+        List<Category> categories = categoryService.findByParentId(categoryParentId);
+        categoriesInput.addAll(categories);
+        // 没有递归 只是查找一级分类
+    }
 
 
     /**
@@ -202,9 +177,13 @@ public class ArticleAspectJ {
 
 //            htmlService.generateMenuListHtml();
             if(category!=null){
-                List<ComponentsCategory> categories = componentsCategoryService.findByCategoryId(category.getId());
 
-                Set<Integer> componentIds = ServiceUtil.fetchProperty(categories, ComponentsCategory::getComponentId);
+                Set<Category> categories = htmlService.findAllCategoryPatent(category.getParentId());
+                Set<Integer> categoryIds = ServiceUtil.fetchProperty(categories, Category::getId);
+                categoryIds.add(category.getId());
+
+                List<ComponentsCategory> componentsCategories = componentsCategoryService.findByCategoryId(categoryIds);
+                Set<Integer> componentIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getComponentId);
                 List<Components> components = componentsService.listByIds(componentIds);
                 components.forEach(component -> {
                     Map<String, Object> model = componentsService.getModel(component);

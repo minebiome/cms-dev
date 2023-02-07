@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //@Component
 @Slf4j
@@ -137,6 +138,19 @@ public class ArticleJob {
     }
 
 
+
+
+    @ArticleJobAnnotation(jobName = "tagsTopList",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
+    public void tagsTopList(){
+
+        Components components = componentsService.findByViewName("tagsList");
+        Object o = componentsService.getModel(components);
+        TemplateUtil.convertHtmlAndSave(o, components);
+//
+//        Template template = templateService.findByEnName(CmsConst.TAGS_LIST);
+//        TemplateUtil.convertHtmlAndSave(CMSUtils.getTagPath(),"tagsList",model,template);
+    }
+
 //
 //
     @ArticleJobAnnotation(jobName = "tagsArticleRecommend",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
@@ -156,7 +170,6 @@ public class ArticleJob {
             }
             Template template = templateService.findByEnName(CmsConst.TAGS);
             TemplateUtil.convertHtmlAndSave(CMSUtils.getTagPath(),tag.getEnName(),map,template);
-
         }
 
     }

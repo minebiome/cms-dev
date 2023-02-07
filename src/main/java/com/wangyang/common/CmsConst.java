@@ -107,6 +107,8 @@ public class CmsConst {
     public final static String ARTICLE_RECOMMEND_LIST = "ARTICLE_RECOMMEND_LIST";//分类列表
     public final static String ARTICLE_RECENT_LIST = "ARTICLE_RECENT_LIST";//分类列表
     public final static String TAGS = "TAGS";//分类列表
+
+
     public final static String ARTICLE_TOP_LIST = "ARTICLE_TOP_LIST";//分类列表
     public final static String ARTICLE_PAGE = "ARTICLE_PAGE";//分类列表
 
@@ -123,6 +125,7 @@ public class CmsConst {
     public final static String ARTICLE_DATA_KEYWORD = "@KeywordArticle:";//文章的Components标识
     public final static String ARTICLE_DATA_TAGS = "@TagsArticle:";//文章的Components标识
     public final static String ARTICLE_DATA_SORT_SIZE = "@SizeSortArticle:";//文章的Components标识
+    public final static String TAG_DATA = "@Tag:";//文章的Components标识
     public final static String ZOTERO_LITERATURE = "ZOTERO_LITERATURE";
     public final static String ZOTERO_COLLECTION = "ZOTERO_COLLECTION";
 

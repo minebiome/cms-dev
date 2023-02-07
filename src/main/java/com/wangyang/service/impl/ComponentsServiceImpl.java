@@ -5,9 +5,11 @@ import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.TemplateException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Article;
+import com.wangyang.pojo.entity.ArticleTags;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Tags;
 import com.wangyang.pojo.entity.base.Content;
@@ -18,6 +20,7 @@ import com.wangyang.config.ApplicationBean;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.ContentVO;
+import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.repository.ComponentsRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.IArticleService;
@@ -66,7 +69,8 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
     @Autowired
     ITagsService tagsService;
     ComponentsRepository componentsRepository;
-
+    @Autowired
+    ArticleTagsRepository articleTagsRepository;
     public ComponentsServiceImpl(  ComponentsRepository componentsRepository) {
         super(componentsRepository);
         this.componentsRepository=componentsRepository;
@@ -293,7 +297,34 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
                 map.put("name",components.getName());
                 return map;
-            }else {
+            } else if (components.getDataName().startsWith(CmsConst.TAG_DATA)) {
+                List<Tags> tags = tagsService.listAll();
+                Map<Tags,Integer> map =  new HashMap<>();
+                for (Tags tag : tags){
+                    List<ArticleTags> articleTags = articleTagsRepository.findByTagsId(tag.getId());
+                    int size = articleTags.stream().filter(articleTag -> {
+                        boolean b = articleTag.getTagsId() == tag.getId();
+                        return b;
+                    }).collect(Collectors.toSet()).size();
+                    map.put(tag,size);
+                }
+                Map<Tags, Integer> sortMap = ServiceUtil.sortDescend(map);
+                Set<Map.Entry<Tags, Integer>> entries = sortMap.entrySet();
+
+                List<Tags> topTags = new ArrayList<>();
+
+                int i=0;
+                for(Map.Entry<Tags, Integer>  item : entries){
+                    if(i>10){
+                        break;
+                    }
+                    topTags.add(item.getKey());
+                }
+
+                Map<String,Object> model = new HashMap<>();
+                model.put("view",topTags);
+                return model;
+            } else {
 
             }
         } catch (NoSuchMethodException e) {
