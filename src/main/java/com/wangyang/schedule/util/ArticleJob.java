@@ -55,12 +55,15 @@ public class ArticleJob {
     @Autowired
     ICollectionService collectionService;
 
+
+    @Autowired
+    IHtmlService htmlService;
+
     @Autowired
     ITemplateService templateService;
 
 
-    @Autowired
-    CategoryTagsRepository categoryTagsRepository;
+
 
     public Object test1(String test){
         return "aaaa"+test;
@@ -130,26 +133,7 @@ public class ArticleJob {
     @ArticleJobAnnotation(jobName = "tagsCategory",jobGroup = "ArticleJob",cornExpression = "0 0 0 * * ?")
     public void tagsCategory(){
         List<Category> categories = categoryService.listAll();
-        for(Category category:categories){
-            List<CategoryTags> categoryTags = categoryTagsRepository.findByCategoryId(category.getId());
-            if(categoryTags.size()!=0){
-                Set<Integer> tagIds = ServiceUtil.fetchProperty(categoryTags, CategoryTags::getTagsId);
-
-                List<ArticleTags> articleTags = articleTagsRepository.findAllByTagsIdIn(tagIds);
-                Set<Integer> articleIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getArticleId);
-                Page<Article> articles = articleService.pageByIds(articleIds, 0, 5, null);
-                List<Article> contents = articles.getContent();
-                List<ArticleVO> articleVOS = articleService.convertToListVo(contents);
-                Map<String,Object> map = new HashMap<>();
-                map.put("articleVOS",articleVOS);
-                if(category.getRecommendTemplateName()==null){
-                    category.setRecommendTemplateName(CmsConst.ARTICLE_RECOMMEND_LIST);
-                }
-                Template template = templateService.findByEnName(category.getRecommendTemplateName());
-                TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecommendPath(),category.getViewName(),map,template);
-            }
-
-        }
+        htmlService.generateRecommendArticle(categories);
     }
 
 

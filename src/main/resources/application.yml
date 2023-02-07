@@ -2,7 +2,7 @@ cms:
   workDir: ${user.home}/cms
   templates: templates/enterprise
   uploadPrefix: http://47.93.201.74:8080
-  isDebug: false
+  isDebug: true
   authorizeInit: true
   url: http://localhost:8080
   proxy_url: "http://w66h994817.zicp.fun/"

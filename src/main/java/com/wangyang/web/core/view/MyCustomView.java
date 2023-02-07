@@ -38,11 +38,13 @@ public class MyCustomView implements View {
 
     private ConversionService mvcConversionService;
 
+    private Boolean isDebug;
     private String viewName;
-    public  MyCustomView(String viewName,ApplicationContext applicationContext,ConversionService mvcConversionService){
+    public  MyCustomView(String viewName,Boolean isDebug,ApplicationContext applicationContext,ConversionService mvcConversionService){
         this.viewName = viewName;
         this.applicationContext =applicationContext;
         this.mvcConversionService =mvcConversionService;
+        this.isDebug =isDebug;
     }
     @Override
     public void render(Map<String, ?> mapInput, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -80,6 +82,13 @@ public class MyCustomView implements View {
                 map.put("roles",new HashSet<>());
             }
         }
+
+        if (isDebug){
+            map.put("debug",true);
+        }else {
+            map.put("debug",false);
+        }
+
 //        https://stackoverflow.com/questions/38518377/thymeleaf-email-template-and-conversionservice
         WebContext ctx = new WebContext(request, response, request.getServletContext(), request.getLocale(),map);
         final ThymeleafEvaluationContext evaluationContext = new ThymeleafEvaluationContext(applicationContext, mvcConversionService);

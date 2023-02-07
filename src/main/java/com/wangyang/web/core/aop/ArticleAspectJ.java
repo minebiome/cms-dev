@@ -12,6 +12,7 @@ import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.repository.CategoryTagsRepository;
+import com.wangyang.schedule.util.ArticleJob;
 import com.wangyang.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -56,7 +57,7 @@ public class ArticleAspectJ {
     IComponentsCategoryService componentsCategoryService;
 
     @Autowired
-    CategoryTagsRepository categoryTagsRepository;
+    ICategoryTagsService categoryTagsService;
 
     @Autowired
     ArticleTagsRepository articleTagsRepository;
@@ -67,6 +68,7 @@ public class ArticleAspectJ {
 
     @Autowired
     IArticleService articleService;
+
 
 
     public boolean findArticleInCategory(String categoryViewName,String articleCategoryViewName){
@@ -97,24 +99,22 @@ public class ArticleAspectJ {
     }
 
 
-    public void generateRecommendArticle(Integer id, String recommendTemplateName,String viewName){
-        List<CategoryTags> categoryTags = categoryTagsRepository.findByCategoryId(id);
-        if(categoryTags.size()!=0){
-            Set<Integer> tagIds = ServiceUtil.fetchProperty(categoryTags, CategoryTags::getTagsId);
-
-            List<ArticleTags> articleTags = articleTagsRepository.findAllByTagsIdIn(tagIds);
-            Set<Integer> articleIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getArticleId);
-            Page<Article> articles = articleService.pageByIds(articleIds, 0, 5, null);
-            List<Article> contents = articles.getContent();
-            List<ArticleVO> articleVOS = articleService.convertToListVo(contents);
-            Map<String,Object> map = new HashMap<>();
-            map.put("articleVOS",articleVOS);
-            if(recommendTemplateName==null){
-                recommendTemplateName = CmsConst.ARTICLE_RECOMMEND_LIST;
-            }
-            Template template = templateService.findByEnName(recommendTemplateName);
-            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecommendPath(),viewName,map,template);
+    public void generateRecommendArticle(Integer articleId){
+        List<ArticleTags> articleTags = articleTagsRepository.findByArticleId(articleId);
+        if(articleTags.size()==0){
+            return;
         }
+        Set<Integer> tagIds = ServiceUtil.fetchProperty(articleTags, ArticleTags::getTagsId);
+        List<CategoryTags> categoryTags = categoryTagsService.listByTagIds(tagIds);
+        if(categoryTags.size()==0){
+            return;
+        }
+
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(categoryTags, CategoryTags::getCategoryId);
+
+        List<Category> categories = categoryService.findAllById(categoryIds);
+
+        htmlService.generateRecommendArticle(categories);
     }
 
     /**
@@ -137,7 +137,8 @@ public class ArticleAspectJ {
 //                htmlService.generateHome();
 //            }
             CategoryVO categoryVO = articleDetailVO.getCategory();
-            generateRecommendArticle(categoryVO.getId(),categoryVO.getRecommendTemplateName(),categoryVO.getViewName());
+
+            generateRecommendArticle(articleDetailVO.getId());
             Set<Category> categorySet = new HashSet<>();
             findAllCategoryId(categoryVO.getParentId(),categorySet);
 

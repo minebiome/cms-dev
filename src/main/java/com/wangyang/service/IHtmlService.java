@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public interface IHtmlService {
 
@@ -42,6 +43,9 @@ public interface IHtmlService {
 //    void updateCategoryPage(Integer oldCategoryId);
 
 //    void deleteTempFileByCategory(Category category);
+
+    @Async
+    void generateRecommendArticle(List<Category> categories);
 
     @Async
         //异步执行
