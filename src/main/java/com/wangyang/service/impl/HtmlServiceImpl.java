@@ -196,9 +196,11 @@ public class HtmlServiceImpl implements IHtmlService {
 
     @Override
     public void generateComponentsByCategory(Integer categoryId, Integer categoryParentId){
-        Set<Category> categorySet = findAllCategoryPatent(categoryParentId);
-        Set<Integer> ids = ServiceUtil.fetchProperty(categorySet, Category::getId);
+        Set<Integer> ids = new HashSet<>();
         ids.add(categoryId);
+        Set<Category> categorySet = findAllCategoryPatent(categoryParentId);
+        ids.addAll(ServiceUtil.fetchProperty(categorySet, Category::getId));
+
         List<ComponentsCategory> componentsCategoryList = componentsCategoryService.findByCategoryId(ids);
         List<Components> components1 = componentsService.listByIds(ServiceUtil.fetchProperty(componentsCategoryList, ComponentsCategory::getComponentId));
         components1.forEach(component -> {
@@ -381,7 +383,7 @@ public class HtmlServiceImpl implements IHtmlService {
     public void convertArticleListBy(Sheet sheet) {
         Template template = templateService.findByEnName(sheet.getTemplateName());
         String html = TemplateUtil.convertHtmlAndSave(sheet, template);
-        if(sheet.getCategoryId()!=null){
+        if(sheet.getCategoryId()!=null && sheet.getCategoryId()!=0){
             Category category = categoryService.findById(sheet.getCategoryId());
             convertArticleListBy(category);
 //            generateMenuListHtml();

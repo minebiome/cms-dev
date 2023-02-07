@@ -238,6 +238,8 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         });
         return contentVOS;
     }
+
+
     public void addChildIds( List<CategoryVO> categoryVOS, Integer id){
         List<Category> categories = categoryService.findByParentId(id);
         if(categories.size()==0){
@@ -336,11 +338,31 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         return articleListVo;
     }
 
+
+    public void addChildAllIds( List<Category> categoryVOS, Integer id){
+        List<Category> categories = categoryService.findByParentId(id);
+        if(categories.size()==0){
+            return;
+        }
+        categoryVOS.addAll(categories);
+        if(categories.size()!=0){
+            for (Category category:categories){
+                addChildAllIds(categoryVOS,category.getId());
+            }
+        }
+
+    }
     @Override
     public List<ContentVO> listVoTree(Integer categoryId) {
         Category category = categoryService.findById(categoryId);
-        Set<Integer> ids  = new HashSet<>();
+        Set<Integer> ids =new HashSet<>();
         ids.add(category.getId());
+
+        List<Category> categories = new ArrayList<>();
+        addChildAllIds(categories,category.getId());
+        ids.addAll(ServiceUtil.fetchProperty(categories, Category::getId));
+
+
         return listVoTree(ids,category.getDesc());
 //        ArticleQuery articleQuery = new ArticleQuery();
 //        articleQuery.setCategoryId(category.getId());
@@ -384,6 +406,12 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         Category category = categoryService.findById(id);
         Set<Integer> ids= new HashSet<>();
         ids.add(category.getId());
+
+        List<Category> categories = new ArrayList<>();
+        addChildAllIds(categories,category.getId());
+        ids.addAll(ServiceUtil.fetchProperty(categories, Category::getId));
+
+
         List<Content> contents = listContentByCategoryIds(ids, true);
 
 //        List<Article> articles = listArticleByCategoryIds(category.getId());
@@ -410,9 +438,7 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         Optional<Category> category = categoryService.findOptionalById(baseCategoryId);
         ContentDetailVO contentDetailVO = new ContentDetailVO();
         contentDetailVO.setContent(content);
-        if(content.getParentId()==null){
-            content.setParentId(0);
-        }
+        content.setParentId(0);
         if(category.isPresent()){
             content.setCategoryId(category.get().getId());
             contentDetailVO.setCategory(category.get());

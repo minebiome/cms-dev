@@ -7,6 +7,7 @@ import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.pojo.params.SheetParam;
 import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.util.AuthorizationUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.util.HashSet;
@@ -34,30 +36,37 @@ public class SheetController {
     IHtmlService htmlService;
 
     @PostMapping
-    public Sheet add(@RequestBody SheetParam sheetParam){
+    public Sheet add(@RequestBody SheetParam sheetParam, HttpServletRequest request){
         Sheet sheet = new Sheet();
+
         BeanUtils.copyProperties(sheetParam,sheet);
+        int userId = AuthorizationUtil.getUserId(request);
+        sheet.setUserId(userId);
         Sheet saveSheet = sheetService.addOrUpdate(sheet);
         htmlService.convertArticleListBy(saveSheet);
         return saveSheet;
     }
 
     @PostMapping("/save")
-    public Sheet save(@RequestBody SheetParam sheetParam){
+    public Sheet save(@RequestBody SheetParam sheetParam, HttpServletRequest request){
         Sheet sheet = new Sheet();
         BeanUtils.copyProperties(sheetParam,sheet);
+        int userId = AuthorizationUtil.getUserId(request);
+        sheet.setUserId(userId);
         Sheet saveSheet = sheetService.save(sheet);
 //        htmlService.convertArticleListBy(saveSheet);
         return saveSheet;
     }
 
     @PostMapping("/save/{id}")
-    public Sheet updateArticle(@PathVariable("id") Integer id, @Valid @RequestBody SheetParam sheetParam){
+    public Sheet updateArticle(@PathVariable("id") Integer id, @Valid @RequestBody SheetParam sheetParam, HttpServletRequest request){
         Sheet sheet= sheetService.findById(id);
 //        if(sheet.getOriginalContent().equals(sheetParam.getOriginalContent())sheetParam.getJsContent().equals()){
 //            return sheet;
 //        }
         BeanUtils.copyProperties(sheetParam,sheet,getNullPropertyNames(sheetParam));
+        int userId = AuthorizationUtil.getUserId(request);
+        sheet.setUserId(userId);
 //        Boolean haveHtml = Optional.ofNullable(sheetParam.getHaveHtml()).orElse(false);
 //        if(haveHtml){
 //            article.setStatus(ArticleStatus.MODIFY);
@@ -82,9 +91,11 @@ public class SheetController {
         return emptyNames.toArray(result);
     }
     @PostMapping("/update/{id}")
-    public Sheet update(@PathVariable("id") int id,@RequestBody SheetParam sheetParam){
+    public Sheet update(@PathVariable("id") int id,@RequestBody SheetParam sheetParam, HttpServletRequest request){
         Sheet sheet = findById(id);
         BeanUtils.copyProperties(sheetParam,sheet,getNullPropertyNames(sheetParam));
+        int userId = AuthorizationUtil.getUserId(request);
+        sheet.setUserId(userId);
         Sheet updateSheet = sheetService.addOrUpdate(sheet);
         htmlService.convertArticleListBy(updateSheet);
         return updateSheet;

@@ -60,6 +60,7 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
             sheet = super.createOrUpdate(sheet);
         }
         sheet.setPath(CMSUtils.getSheetPath());
+
 //        sheet.setPath(channel.getPath()+"/"+channel.getName());
         if(sheet.getViewName()==null||"".equals(sheet.getViewName())){
             sheet.setViewName(CMSUtils.randomViewName());

@@ -177,9 +177,10 @@ public class ArticleAspectJ {
 
 //            htmlService.generateMenuListHtml();
             if(category!=null){
-
+                Set<Integer> categoryIds =  new HashSet<>();
                 Set<Category> categories = htmlService.findAllCategoryPatent(category.getParentId());
-                Set<Integer> categoryIds = ServiceUtil.fetchProperty(categories, Category::getId);
+                Set<Integer> set = ServiceUtil.fetchProperty(categories, Category::getId);
+                categoryIds.addAll(set);
                 categoryIds.add(category.getId());
 
                 List<ComponentsCategory> componentsCategories = componentsCategoryService.findByCategoryId(categoryIds);

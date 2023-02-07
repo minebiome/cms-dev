@@ -451,6 +451,11 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     @Override
     public Article deleteByArticleId(int id) {
         Article article = findArticleById(id);
+        List<Article> articles = findByParentId(article.getId());
+        if(articles.size()!=0){
+            throw new ObjectException("文章存在子类不能删除！");
+        }
+
         log.debug(">>> delete comment");
 //        commentRepository.deleteByArticleId(id);
         log.debug(">>> delete article tags");

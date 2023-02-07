@@ -227,6 +227,11 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         if(articleDtos.size()!=0){
             throw new ObjectException("不能删除该分类，由于存在"+articleDtos.size()+"篇文章！");
         }
+
+        List<Category> categories = findByParentId(category.getId());
+        if(categories.size()!=0){
+            throw new ObjectException("不能删除分类包含子类！！");
+        }
         categoryRepository.deleteById(id);
         return category;
     }
