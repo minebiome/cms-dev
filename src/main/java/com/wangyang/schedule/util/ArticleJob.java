@@ -179,8 +179,8 @@ public class ArticleJob {
             map.put("view",articleVOS);
             map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");
             map.put("name",category.getName()+"推荐");
-            Template template = templateService.findByEnName(CmsConst.ARTICLE_RECOMMEND_LIST);
-            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecommendPath(),category.getViewName(),map,template);
+            Template template = templateService.findByEnName(CmsConst.ARTICLE_RECENT_LIST);
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecentPath(),category.getViewName(),map,template);
         });
     }
 

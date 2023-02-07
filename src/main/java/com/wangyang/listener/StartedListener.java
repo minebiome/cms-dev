@@ -169,6 +169,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
 
                 new Template("文章推荐列表",CmsConst.ARTICLE_RECOMMEND_LIST,"@articleRecommendList", TemplateType.ARTICLE_LIST,12),
+                new Template("分类下的最新列表",CmsConst.ARTICLE_RECENT_LIST,"@articleRecentList", TemplateType.ARTICLE_LIST,12),
 
 
                 new Template("文章置顶列表",CmsConst.ARTICLE_TOP_LIST,"@articleTopList", TemplateType.ARTICLE_LIST,12),

@@ -63,6 +63,9 @@ public class CMSUtils {
     public static String getArticleRecommendPath(){
         return CmsConst.ARTICLE_RECOMMEND_LIST_PATH;
     }
+    public static String getArticleRecentPath(){
+        return CmsConst.ARTICLE_RECENT_LIST_PATH;
+    }
     public static String getTagPath(){
         return CmsConst.TAG_PATH;
     }

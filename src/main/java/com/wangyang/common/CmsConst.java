@@ -49,6 +49,7 @@ public class CmsConst {
     public final static String CATEGORY_PATH = "html"+ File.separator+"articleList";
     public final static String FIRST_ARTICLE_LIST = CATEGORY_PATH+ File.separator+"firstArticleList";
     public final static String ARTICLE_RECOMMEND_LIST_PATH = CATEGORY_PATH+ File.separator+"articleRecommendList";
+    public final static String ARTICLE_RECENT_LIST_PATH = CATEGORY_PATH+ File.separator+"articleRecentList";
     public final static String CATEGORY_CHILDREN = CATEGORY_PATH+ File.separator+"categoryChildren";
     public final static String FIRST_ARTICLE_TITLE_LIST = CATEGORY_PATH+ File.separator+"firstTitleList";
     public final static String ARTICLE_LIST_JS_PATH = CATEGORY_PATH+ File.separator+"articleListJs";
@@ -104,6 +105,7 @@ public class CmsConst {
 
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
     public final static String ARTICLE_RECOMMEND_LIST = "ARTICLE_RECOMMEND_LIST";//分类列表
+    public final static String ARTICLE_RECENT_LIST = "ARTICLE_RECENT_LIST";//分类列表
     public final static String TAGS = "TAGS";//分类列表
     public final static String ARTICLE_TOP_LIST = "ARTICLE_TOP_LIST";//分类列表
     public final static String ARTICLE_PAGE = "ARTICLE_PAGE";//分类列表
