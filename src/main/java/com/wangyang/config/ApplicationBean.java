@@ -4,8 +4,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
+//@EnableAspectJAutoProxy(proxyTargetClass= true)
 public class ApplicationBean implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;

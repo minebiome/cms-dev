@@ -20,9 +20,12 @@ public class CmsWebDialect extends AbstractProcessorDialect {
     @Override
     public Set<IProcessor> getProcessors(final String dialectPrefix) {
         final Set<IProcessor> processors = new HashSet<IProcessor>();
+
         processors.add(new StandardTextTagProcessor(TemplateMode.HTML, dialectPrefix));
         processors.add(new StandardValueTagProcessor(dialectPrefix));
-       processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
+        processors.add(new WebReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
+//       processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
+//        processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
        processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
        processors.add(new StandardFragmentTagProcessor(TemplateMode.HTML, dialectPrefix));
        processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
@@ -81,7 +84,7 @@ public class CmsWebDialect extends AbstractProcessorDialect {
             processors.add(new StandardRemovableAttributeTagProcessor(dialectPrefix, attrName));
         }
         processors.add(new StandardRemoveTagProcessor(TemplateMode.HTML, dialectPrefix));
-        processors.add(new StandardReplaceTagProcessor(TemplateMode.HTML, dialectPrefix));
+
         processors.add(new StandardSrcTagProcessor(dialectPrefix));
         processors.add(new StandardStyleappendTagProcessor(dialectPrefix));
         processors.add(new StandardSubstituteByTagProcessor(TemplateMode.HTML, dialectPrefix));

@@ -35,10 +35,10 @@ public class HtmlTemplateEngine {
             fileTemplateResolver.setSuffix(suffix);
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
-            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
+//            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
 
-            stringTemplateResolver.setOrder(Integer.valueOf(2));
-            stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
+//            stringTemplateResolver.setOrder(Integer.valueOf(2));
+//            stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
             // 添加字符串模板
 //            templateEngineFile.addTemplateResolver(stringTemplateResolver);
             templateEngineFile.addTemplateResolver(fileTemplateResolver);
@@ -59,12 +59,12 @@ public class HtmlTemplateEngine {
             fileTemplateResolver.setSuffix(suffix);
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
-            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
-
-            stringTemplateResolver.setOrder(Integer.valueOf(2));
-            stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
+//            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
+//
+//            stringTemplateResolver.setOrder(Integer.valueOf(2));
+//            stringTemplateResolver.getResolvablePatternSpec().addPattern("str:");
             // 添加字符串模板
-            templateWebEngine.addTemplateResolver(stringTemplateResolver);
+//            templateWebEngine.addTemplateResolver(stringTemplateResolver);
             templateWebEngine.addTemplateResolver(fileTemplateResolver);
         }
         return templateWebEngine;

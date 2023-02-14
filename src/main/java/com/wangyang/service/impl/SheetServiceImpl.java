@@ -22,8 +22,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,6 +189,19 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
 
         }
         return  sheetRepository.save(sheet);
+    }
+
+
+    @Override
+    public Sheet findByViewName(String viewName) {
+        List<Sheet> sheets = sheetRepository.findAll(new Specification<Sheet>() {
+            @Override
+            public Predicate toPredicate(Root<Sheet> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("viewName"),viewName)).getRestriction();
+            }
+        });
+        if(sheets.size()==0)return null;
+        return sheets.get(0);
     }
 
     @Override
