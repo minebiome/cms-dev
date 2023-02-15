@@ -1,6 +1,8 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.common.utils.FileUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ITemplateService;
@@ -15,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -84,7 +87,12 @@ public class TemplateController {
         if(template!=null){
             throw new ObjectException(template.getEnName()+"已经存在!!");
         }
-        return templateService.add(templateInput);
+        template = templateService.add(templateInput);
+        File file = new File(CMSUtils.getWorkDir()+File.separator+CMSUtils.getTemplates() +template.getTemplateValue()+".html");
+        if(!file.exists()){
+            FileUtils.saveFile(file,"空模板 for" + templateInput.getTemplateValue());
+        }
+        return template;
     }
 
     @GetMapping("/delete/{id}")

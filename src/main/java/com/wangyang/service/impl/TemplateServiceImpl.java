@@ -178,7 +178,9 @@ public class TemplateServiceImpl implements ITemplateService {
     @Override
     public Template deleteById(int id) {
         Template template = findById(id);
-
+        if(template.getIsSystem()!=null && template.getIsSystem()){
+            throw new ObjectException("系统模板不能删除！");
+        }
         templateRepository.deleteById(id);
         List<ArticleAttachment> articleAttachments = articleAttachmentService.findByTemplateId(template.getId());
         for (ArticleAttachment articleAttachment : articleAttachments){

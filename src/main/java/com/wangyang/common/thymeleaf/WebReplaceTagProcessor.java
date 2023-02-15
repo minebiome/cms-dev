@@ -63,7 +63,6 @@ public class WebReplaceTagProcessor extends AbstractStandardFragmentInsertionTag
 
     @Override
     protected void doProcess(ITemplateContext context, IProcessableElementTag tag, AttributeName attributeName, String attributeValue, IElementTagStructureHandler structureHandler) {
-        super.doProcess(context,tag,attributeName,attributeValue,structureHandler);
         String pathStrOrigin=attributeValue;
         if(pathStrOrigin.startsWith("~{")){
             Matcher matcher = rv.matcher(attributeValue);
