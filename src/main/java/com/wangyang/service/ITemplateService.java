@@ -27,6 +27,8 @@ public interface ITemplateService {
 
     List<Template> listByAndStatusTrue(TemplateType templateType);
 
+    Template findByEnNameReturnNUll(String enName);
+
     Template findByEnName(String enName);
 
     Template findOptionalByEnName(String enName);

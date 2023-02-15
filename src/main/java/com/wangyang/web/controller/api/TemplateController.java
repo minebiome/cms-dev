@@ -1,5 +1,6 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ITemplateService;
@@ -78,13 +79,17 @@ public class TemplateController {
     }
 
     @PostMapping
-    public Template add(@RequestBody Template template){
-
-        return templateService.add(template);
+    public Template add(@RequestBody Template templateInput){
+        Template template = templateService.findByEnNameReturnNUll(templateInput.getEnName());
+        if(template!=null){
+            throw new ObjectException(template.getEnName()+"已经存在!!");
+        }
+        return templateService.add(templateInput);
     }
 
     @GetMapping("/delete/{id}")
     public Template delete(@PathVariable("id") Integer id){
+
         return templateService.deleteById(id);
     }
 

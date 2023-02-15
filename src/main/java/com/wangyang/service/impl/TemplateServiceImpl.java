@@ -178,6 +178,7 @@ public class TemplateServiceImpl implements ITemplateService {
     @Override
     public Template deleteById(int id) {
         Template template = findById(id);
+
         templateRepository.deleteById(id);
         List<ArticleAttachment> articleAttachments = articleAttachmentService.findByTemplateId(template.getId());
         for (ArticleAttachment articleAttachment : articleAttachments){
@@ -228,14 +229,32 @@ public class TemplateServiceImpl implements ITemplateService {
         };
         return templateRepository.findAll(specification, Sort.by(Sort.Order.asc("order")));
     }
-
+    @Override
+    public Template findByEnNameReturnNUll(String enName){
+        List<Template> templates = templateRepository.findAll(new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("enName"),enName)).getRestriction();
+            }
+        });
+        if(templates.size()==0){
+           return null;
+        }
+        return templates.get(0);
+    }
     @Override
     public Template findByEnName(String enName){
-        Template template = templateRepository.findByEnName(enName);
-        if(template==null){
+
+        List<Template> templates = templateRepository.findAll(new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("enName"),enName)).getRestriction();
+            }
+        });
+        if(templates.size()==0){
             throw new ObjectException(enName+"Template模板没有找到!!!");
         }
-        return template;
+        return templates.get(0);
     }
 
     @Override

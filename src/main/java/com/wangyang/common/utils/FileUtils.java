@@ -2,6 +2,7 @@ package com.wangyang.common.utils;
 
 import com.google.common.base.Joiner;
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
@@ -14,6 +15,7 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -243,4 +245,44 @@ public class FileUtils {
         }
         return dirFile.delete();
     }
+    public static List<String> getFileNames( String fileStr) {
+        File file = new File(fileStr);
+        if(!file.exists()){
+            throw new ObjectException(fileStr+"文件不存在！！");
+        }
+        return  getFileNames(file);
+    }
+    /**
+     * 得到文件名称
+     *
+     * @param path 路径
+     * @return {@link List}<{@link String}>
+     */
+    public static List<String> getFileNames( File file) {
+        if (!file.exists()) {
+            return null;
+        }
+        List<String> fileNames = new ArrayList<>();
+        return getFileNames(file, fileNames);
+    }
+
+    /**
+     * 得到文件名称
+     *
+     * @param file      文件
+     * @param fileNames 文件名
+     * @return {@link List}<{@link String}>
+     */
+    private static List<String> getFileNames(File file, List<String> fileNames) {
+        File[] files = file.listFiles();
+        for (File f : files) {
+            if (f.isDirectory()) {
+                getFileNames(f, fileNames);
+            } else {
+                fileNames.add(f.getName());
+            }
+        }
+        return fileNames;
+    }
+
 }

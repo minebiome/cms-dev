@@ -38,6 +38,16 @@ public class Components extends BaseTemplate {
         this.setStatus(status);
         super.setIsSystem(true);
     }
+    public Components(String name, String path , String templateValue, String viewName, String dataName, String event, Boolean status,Boolean isSystem){
+        this.path=path;
 
+        super.setName(name);
+        super.setTemplateValue(templateValue);
+        this.setViewName(viewName);
+        this.setDataName(dataName);
+        this.setEvent(event);
+        this.setStatus(status);
+        super.setIsSystem(isSystem);
+    }
 
 }

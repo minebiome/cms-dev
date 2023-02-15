@@ -22,7 +22,9 @@ public class CMSUtils {
 //        return UUID.randomUUID().toString();
         return viewName;
     }
-
+    public static String getWorkDir(){
+        return CmsConst.WORK_DIR;
+    }
     public static String getArticlePath(){
         return CmsConst.ARTICLE_DETAIL_PATH;
     }
