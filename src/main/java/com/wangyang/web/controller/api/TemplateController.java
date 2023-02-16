@@ -1,9 +1,14 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.entity.Components;
+import com.wangyang.pojo.entity.TemplateChild;
+import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.pojo.enums.TemplateType;
@@ -18,7 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -87,6 +95,7 @@ public class TemplateController {
         if(template!=null){
             throw new ObjectException(template.getEnName()+"已经存在!!");
         }
+        template.setIsSystem(false);
         template = templateService.add(templateInput);
         File file = new File(CMSUtils.getWorkDir()+File.separator+CMSUtils.getTemplates() +template.getTemplateValue()+".html");
         if(!file.exists()){
@@ -100,6 +109,75 @@ public class TemplateController {
 
         return templateService.deleteById(id);
     }
+
+
+    @GetMapping("/updateAllTemplate")
+    public List<Template> updateAllTemplate(){
+        List<Template> templates = templateService.findAll();
+        for (Template template : templates){
+            if(template.getTemplateType().equals(TemplateType.CATEGORY)){
+                if(template.getTree()){
+                    template.setTemplateData(TemplateData.ARTICLE_TREE);
+                }else {
+                    template.setTemplateData(TemplateData.ARTICLE_PAGE);
+                }
+            }else {
+                template.setTemplateData(TemplateData.OTHER);
+            }
+        }
+        List<Template> saveAll = templateService.saveAll(templates);
+        return saveAll;
+    }
+
+    @GetMapping("/addChild/{id}")
+    public TemplateChild addChild(@PathVariable("id") Integer id,@RequestParam(required = true)String enName){
+        TemplateChild templateChild = templateService.addChild(id, enName);
+        return templateChild;
+    }
+    @GetMapping("/findByChild/{id}")
+    public List<Template> findByChild(@PathVariable("id") Integer id){
+        List<Template> templates = templateService.findByChild(id);
+        return templates;
+    }
+
+    @GetMapping("/removeChildTemplate")
+    public TemplateChild removeChildTemplate(@RequestParam Integer templateId,@RequestParam Integer templateChildId){
+        TemplateChild templateChild = templateService.removeChildTemplate(templateId,templateChildId);
+        return templateChild;
+    }
+    @GetMapping("/fetchComponents")
+    public List<Template> fetchComponents(@RequestParam(required = false) String path){
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir;
+        if(path!=null && !path.equals("")){
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+path;
+        }else{
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+"templates";
+        }
+        List<String> fileNames = FileUtils.getFileNames(componentsDir);
+        List<Template> components = templateService.findAll();
+        Set<String> templateValue = ServiceUtil.fetchProperty(components, Template::getTemplateValue);
+        Set<String> filterFileNames = fileNames.stream().filter(item -> {
+            return !templateValue.contains("templates"+File.separator+item.replace(".html","")) && !item.endsWith("bak") && !item.contains(" ");
+        }).collect(Collectors.toSet());
+
+        if(filterFileNames.size()==0){
+            throw new ObjectException("模板中没有新的文件！！");
+        }
+
+        List<Template> templateList = new ArrayList<>();
+        filterFileNames.forEach(item->{
+            String name = item.replace("@", "").replace(".html", "").replace(" ","_");
+            String viewPath = "templates"+File.separator+item.replace(".html", "");
+            templateList.add(new Template(name,name.replace("/","_"),viewPath, TemplateType.ARTICLE,false));
+
+        });
+
+        List<Template> saveAll = templateService.saveAll(templateList);
+
+        return saveAll;
+    }
+
 
 //    public void deleteById(Integer id){
 //        templateService.deleteById(id);

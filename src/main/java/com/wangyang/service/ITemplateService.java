@@ -1,10 +1,12 @@
 package com.wangyang.service;
 
 import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.entity.TemplateChild;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.params.TemplateParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -41,4 +43,10 @@ public interface ITemplateService {
     Template addZipFile(MultipartFile file);
 
     Template tree(int id);
+
+    TemplateChild addChild(Integer id, String enName);
+
+    List<Template> findByChild(Integer id);
+
+    TemplateChild removeChildTemplate(Integer templateId,Integer templateChildId);
 }

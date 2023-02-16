@@ -3,13 +3,13 @@ package com.wangyang.service.impl;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.User;
-import com.wangyang.pojo.dto.CategoryContentListDao;
-import com.wangyang.pojo.dto.CategoryDto;
-import com.wangyang.pojo.dto.TagsDto;
+import com.wangyang.pojo.dto.*;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.enums.TemplateData;
+import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.ContentDetailVO;
@@ -266,7 +266,101 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         }
 
     }
+    public List<CategoryContentList> listCategoryChild(String viewName){
+        Category parentCategory = categoryService.findByViewName(viewName);
+        if(parentCategory==null){
+            return null;
+        }
 
+        return listCategoryChild(parentCategory.getId(),0);
+/*
+        List<Category> categories = categoryService.findByParentId(parentCategory.getId());
+
+        List<CategoryContentList> categoryArticleLists =  new ArrayList<>();
+        for (Category category:categories){
+            CategoryContentList categoryContentList = new CategoryContentList();
+            CategoryVO categoryVO = categoryService.covertToVo(category);
+            categoryContentList.setCategory(categoryVO);
+            ArticleQuery articleQuery = new ArticleQuery();
+            articleQuery.setCategoryId(category.getId());
+            articleQuery.setDesc(category.getDesc());
+            Specification<Content> specification = buildPublishByQuery(articleQuery);
+            List<Content> articles = contentRepository.findAll(specification);
+            List<ContentVO> articleVOS = convertToListVo(articles);
+            List<ContentVO> articleVOTree = super.listWithTree(articleVOS);
+            categoryContentList.setContentVOS(articleVOTree);
+            categoryArticleLists.add(categoryContentList);
+        }
+        return categoryArticleLists;
+*/
+    }
+
+    public List<CategoryContentList> listCategoryChild(Integer id,int page){
+        List<Category> categories = categoryService.findByParentId(id);
+
+        List<CategoryContentList> categoryArticleLists =  new ArrayList<>();
+        for (Category category:categories){
+            CategoryContentList categoryContentList = new CategoryContentList();
+            CategoryVO categoryVO = categoryService.covertToVo(category);
+            categoryContentList.setCategory(categoryVO);
+            ArticleQuery articleQuery = new ArticleQuery();
+            articleQuery.setCategoryId(category.getId());
+            articleQuery.setDesc(category.getDesc());
+
+            Set<Integer> ids =new HashSet<>();
+            List<CategoryVO> categoryVOS = new ArrayList<>();
+            ids.add(category.getId());
+            addChildIds(categoryVOS,category.getId());
+            ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
+
+            Page<Content> contentsPage = pageContentByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
+            Page<ContentVO> contentVOS = convertToPageVo(contentsPage);
+
+//            Specification<Content> specification = buildPublishByQuery(articleQuery);
+//            List<Content> articles = contentRepository.findAll(specification);
+//            List<ContentVO> articleVOS = convertToListVo(articles);
+
+//            List<ContentVO> articleVOTree = super.listWithTree(contentVOS);
+            List<ContentVO> contentVOList = contentVOS.getContent();
+            categoryContentList.setContentVOS(contentVOList);
+            categoryArticleLists.add(categoryContentList);
+        }
+        return categoryArticleLists;
+    }
+    public List<CategoryContentList> listCategoryChild(Integer id){
+        List<Category> categories = categoryService.findByParentId(id);
+
+        List<CategoryContentList> categoryArticleLists =  new ArrayList<>();
+        for (Category category:categories){
+            CategoryContentList categoryContentList = new CategoryContentList();
+            CategoryVO categoryVO = categoryService.covertToVo(category);
+            categoryContentList.setCategory(categoryVO);
+            ArticleQuery articleQuery = new ArticleQuery();
+            articleQuery.setCategoryId(category.getId());
+            articleQuery.setDesc(category.getDesc());
+
+            Set<Integer> ids =new HashSet<>();
+            List<CategoryVO> categoryVOS = new ArrayList<>();
+            ids.add(category.getId());
+            addChildIds(categoryVOS,category.getId());
+            ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
+            List<ContentVO> contents=listVoTree(ids,category.getIsDesc());
+//            articleListVo.setContents(contents);
+//
+//            Page<Content> contentsPage = pageContentByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
+//            Page<ContentVO> contentVOS = convertToPageVo(contentsPage);
+//
+////            Specification<Content> specification = buildPublishByQuery(articleQuery);
+////            List<Content> articles = contentRepository.findAll(specification);
+////            List<ContentVO> articleVOS = convertToListVo(articles);
+//
+////            List<ContentVO> articleVOTree = super.listWithTree(contentVOS);
+//            List<ContentVO> contentVOList = contentVOS.getContent();
+            categoryContentList.setContentVOS(contents);
+            categoryArticleLists.add(categoryContentList);
+        }
+        return categoryArticleLists;
+    }
     @Override
     public CategoryContentListDao findCategoryContentBy(CategoryVO category, Template template, int page){
         CategoryContentListDao articleListVo = new CategoryContentListDao();
@@ -309,10 +403,28 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         }
 
 
-        List<ContentVO> contents;
-
-
-        if(!template.getTree()){
+        if(template.getTemplateData().equals(TemplateData.ARTICLE_TREE)){
+            List<ContentVO> contents=listVoTree(ids,category.getIsDesc());
+            articleListVo.setContents(contents);
+        }else if(template.getTemplateData().equals(TemplateData.CATEGORY_CHILD_PAGE)){
+            List<CategoryContentList> categoryContentLists = listCategoryChild(category.getId(), page);
+            articleListVo.setCategoryContentLists(categoryContentLists);
+            List<ContentVO> allVos = new ArrayList<>();
+            for(CategoryContentList categoryContentList: categoryContentLists){
+                List<ContentVO> contentVOS = categoryContentList.getContentVOS();
+                allVos.addAll(contentVOS);
+            }
+            articleListVo.setContents(allVos);
+        }else if(template.getTemplateData().equals(TemplateData.CATEGORY_CHILD_TREE)){
+            List<CategoryContentList> categoryContentLists = listCategoryChild(category.getId());
+            articleListVo.setCategoryContentLists(categoryContentLists);
+            List<ContentVO> allVos = new ArrayList<>();
+            for(CategoryContentList categoryContentList: categoryContentLists){
+                List<ContentVO> contentVOS = categoryContentList.getContentVOS();
+                allVos.addAll(contentVOS);
+            }
+            articleListVo.setContents(allVos);
+        }else {
 //            Page<Article> articles = pageArticleByCategoryIds(articleSpecification(ids,category.getIsDesc(), ArticleServiceImpl.ArticleList.NO_INCLUDE_TOP),PageRequest.of(page,category.getArticleListSize()));
             Page<Content> contentsPage = pageContentByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
             Page<ContentVO> contentVOS = convertToPageVo(contentsPage);
@@ -322,12 +434,11 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
             articleListVo.setTotalPages(totalPages);
             articleListVo.setSize(size);
             articleListVo.setTotalElements(totalElements);
-            contents = contentVOS.getContent();
-        }else {
-            contents=listVoTree(ids,category.getIsDesc());
+            List<ContentVO> contents = contentVOS.getContent();
+            articleListVo.setContents(contents);
         }
 
-        articleListVo.setContents(contents);
+
         articleListVo.setCategory(category);
         articleListVo.setViewName(category.getViewName());
         articleListVo.setPath(category.getPath());

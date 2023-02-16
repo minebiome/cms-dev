@@ -103,8 +103,9 @@ public class WebReplaceTagProcessor extends AbstractStandardFragmentInsertionTag
                     structureHandler.setBody("sheet 文件["+path+"]不存在！",false);
                 }
             }else {
-                structureHandler.setAttribute("cms:if","${debug}");
-                structureHandler.setBody("其他文件["+path+"]不存在！",false);
+//                structureHandler.setAttribute("cms:if","${debug}");
+//                structureHandler.setBody("其他文件["+path+"]不存在！",false);
+                processHtml(context,tag,attributeName,attributeValue,structureHandler);
             }
         }else {
             processHtml(context,tag,attributeName,attributeValue,structureHandler);

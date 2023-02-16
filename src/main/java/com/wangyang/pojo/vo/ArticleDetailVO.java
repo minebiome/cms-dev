@@ -17,7 +17,7 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
     private Set<Integer> tagIds;
     private List<Tags> tags;
     private List<CategoryVO> parentCategory;
-    private List<CategoryVO> partnerCategory;
+//    private List<CategoryVO> partnerCategory;
 
     //更新channel的文章视图名称,将html的更新从service转移controller
 //    private Boolean isUpdateChannelFirstName=false;

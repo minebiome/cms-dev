@@ -1,5 +1,6 @@
 package com.wangyang.pojo.params;
 
+import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.pojo.enums.TemplateType;
 import lombok.Data;
 
@@ -15,5 +16,6 @@ public class TemplateParam {
     private Integer order;
     private Boolean isSystem;
     private String templateContent;
+    private TemplateData templateData;
 
 }

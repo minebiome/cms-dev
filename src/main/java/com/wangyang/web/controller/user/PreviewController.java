@@ -3,6 +3,7 @@ package com.wangyang.web.controller.user;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.MarkdownUtils;
+import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CategoryContentListDao;
@@ -22,7 +23,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,8 +109,14 @@ public class PreviewController {
 
         articleDetailVo.setParentCategory(categoryVOS);
         List<Category> partnerCategory = categoryService.findByParentId(articleDetailVo.getCategory().getParentId());
-        articleDetailVo.setPartnerCategory(categoryService.convertToListVo(partnerCategory));
+//        articleDetailVo.setPartnerCategory(categoryService.convertToListVo(partnerCategory));
 
+
+//        Template categoryTemplate = templateService.findOptionalByEnName(category.getTemplateName());
+//        List<Template> templates = templateService.findByChild(categoryTemplate.getId());
+//        for (Template templateChild : templates){
+//            model.addAttribute(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+category.getViewName());
+//        }
 
 
 //        ModelAndView modelAndView = new ModelAndView();
@@ -167,7 +176,11 @@ public class PreviewController {
 
         //预览
         CategoryContentListDao articleListVo = contentService.findCategoryContentBy(categoryService.covertToVo(category),template,0);
-
+        List<Template> templates = templateService.findByChild(template.getId());
+        for (Template templateChild : templates){
+//            TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName(),articleListVo.getViewName(),articleListVo, templateChild);
+            model.addAttribute(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+articleListVo.getViewName());
+        }
 //        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
 //        String convertHtml = FileUtils.convertByString(html);
         model.addAttribute("view", articleListVo);

@@ -86,8 +86,8 @@ public class HtmlServiceImpl implements IHtmlService {
             articleService.addParentCategory(categoryVOS,articleVO.getCategory().getParentId());
             articleVO.setParentCategory(categoryVOS);
 
-            List<Category> partnerCategory = categoryService.findByParentId(categoryVO.getParentId());
-            articleVO.setPartnerCategory(categoryService.convertToListVo(partnerCategory));
+//            List<Category> partnerCategory = categoryService.findByParentId(categoryVO.getParentId());
+//            articleVO.setPartnerCategory(categoryService.convertToListVo(partnerCategory));
 
 //            EntityCreatedEvent<Category> createArticle = new EntityCreatedEvent<>(category);
 //            publisher.publishEvent(createArticle);
@@ -245,11 +245,24 @@ public class HtmlServiceImpl implements IHtmlService {
 //        }else {
 //
 //        }
+        Map<String,Object> map = new HashMap<>();
+//        List<Template> templates = templateService.findByChild(template.getId());
+//        for (Template templateChild : templates){
+//            TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
+//            map.put(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+categoryArticle.getViewName());
+//        }
+
+
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
         String json = JSON.toJSON(categoryArticle).toString();
         TemplateUtil.saveFile(CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
 
-        String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),categoryArticle.getViewName(),categoryArticle, template);
+
+
+
+        map.put("view",categoryArticle);
+
+        String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),categoryArticle.getViewName(),map, template);
         //生成文章列表组件,用于首页嵌入
         String content = DocumentUtil.getDivContent(html, "#components");
         if(StringUtils.isNotEmpty(content)){
@@ -265,9 +278,9 @@ public class HtmlServiceImpl implements IHtmlService {
 
 
         /*生成只有标题的第一页文章列表*/
-        Template templateTitleList = templateService.findOptionalByEnName(CmsConst.CATEGORY_TITLE);
-        List<ContentVO> articleVOS = categoryArticle.getContents();
-        TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
+//        Template templateTitleList = templateService.findOptionalByEnName(CmsConst.CATEGORY_TITLE);
+//        List<ContentVO> articleVOS = categoryArticle.getContents();
+//        TemplateUtil.convertHtmlAndSave(CMSUtils.getFirstArticleTitleList(),categoryArticle.getViewName(),articleVOS, templateTitleList);
 
 
        /**
@@ -370,8 +383,16 @@ public class HtmlServiceImpl implements IHtmlService {
     private String covertHtml(ArticleDetailVO articleDetailVO) {
         Template template = templateService.findByEnName(articleDetailVO.getTemplateName());
 
+        CategoryVO category = articleDetailVO.getCategory();
+        Template categoryTemplate = templateService.findOptionalByEnName(category.getTemplateName());
+        List<Template> templates = templateService.findByChild(categoryTemplate.getId());
         Map<String,Object> map = new HashMap<>();
-        map = new HashMap<>();
+        for (Template templateChild : templates){
+            map.put(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+category.getViewName());
+        }
+
+
+
         map.put("view",articleDetailVO);
         map.put("template",template);
         String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getArticlePath(),articleDetailVO.getViewName(),map, template);

@@ -1467,6 +1467,27 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         return categoryArticleLists;
     }
 
+
+    public List<CategoryArticleList> listCategoryChild(Integer categoryId){
+        List<Category> categories = categoryService.findByParentId(categoryId);
+        List<CategoryArticleList> categoryArticleLists =  new ArrayList<>();
+        for (Category category:categories){
+            CategoryArticleList categoryArticleList = new CategoryArticleList();
+            CategoryVO categoryVO = categoryService.covertToVo(category);
+            categoryArticleList.setCategory(categoryVO);
+            ArticleQuery articleQuery = new ArticleQuery();
+            articleQuery.setCategoryId(category.getId());
+            articleQuery.setDesc(category.getDesc());
+            Specification<Article> specification = buildPublishByQuery(articleQuery);
+            List<Article> articles = articleRepository.findAll(specification);
+            List<ArticleVO> articleVOS = convertToListVo(articles);
+            List<ArticleVO> articleVOTree = super.listWithTree(articleVOS);
+            categoryArticleList.setArticleVOS(articleVOTree);
+            categoryArticleLists.add(categoryArticleList);
+        }
+        return categoryArticleLists;
+    }
+
     @Override
     public List<ArticleVO> listVoTreeByCategoryViewName(String viewName) {
         Category category = categoryService.findByViewName(viewName);

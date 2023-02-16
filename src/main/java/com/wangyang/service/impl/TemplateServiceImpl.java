@@ -7,15 +7,18 @@ import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.FileDTO;
 import com.wangyang.pojo.entity.ArticleAttachment;
 import com.wangyang.pojo.entity.Attachment;
 import com.wangyang.pojo.entity.Template;
+import com.wangyang.pojo.entity.TemplateChild;
 import com.wangyang.pojo.enums.AttachmentType;
 import com.wangyang.pojo.enums.FileWriteType;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.params.TemplateParam;
+import com.wangyang.repository.TemplateChildRepository;
 import com.wangyang.service.authorize.IArticleAttachmentService;
 import com.wangyang.repository.TemplateRepository;
 import com.wangyang.service.IAttachmentService;
@@ -62,6 +65,9 @@ public class TemplateServiceImpl implements ITemplateService {
     @Autowired
     IArticleAttachmentService articleAttachmentService;
 
+    @Autowired
+    TemplateChildRepository templateChildRepository;
+
     @Value("${cms.workDir}")
     private String workDir;
 
@@ -83,18 +89,21 @@ public class TemplateServiceImpl implements ITemplateService {
     }
 
     public Template addCssAndJs(Template template){
-        List<String> cssSet = getLink(css, template.getTemplateContent(),".css");
-        List<String> jsSet = getLink(js, template.getTemplateContent(),".js");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("css",cssSet);
-        jsonObject.put("js",jsSet);
+        if(template.getTemplateContent()!=null){
+            List<String> cssSet = getLink(css, template.getTemplateContent(),".css");
+            List<String> jsSet = getLink(js, template.getTemplateContent(),".js");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("css",cssSet);
+            jsonObject.put("js",jsSet);
 
-        template.setResource(jsonObject.toJSONString());
-        Document html = Jsoup.parse(template.getTemplateContent());
+            template.setResource(jsonObject.toJSONString());
+            Document html = Jsoup.parse(template.getTemplateContent());
 //         <div  th:utext="${view.formatContent}">
-        Elements formatContent = html.body().getElementsByAttributeValueContaining("th:utext", "formatContent");
-        String formatContentHtml = formatContent.html();
-        template.setBase(formatContentHtml);
+            Elements formatContent = html.body().getElementsByAttributeValueContaining("th:utext", "formatContent");
+            String formatContentHtml = formatContent.html();
+            template.setBase(formatContentHtml);
+        }
+
         return template;
     }
 
@@ -130,7 +139,10 @@ public class TemplateServiceImpl implements ITemplateService {
         Template template = findById(id);
         BeanUtils.copyProperties(templateParam,template);
 //        convert(template,templateParam);
-        createFile(template);
+        if(template.getTemplateContent()!=null){
+            createFile(template);
+        }
+
         return save(template);
     }
     private void createFile(Template template) {
@@ -392,5 +404,39 @@ public class TemplateServiceImpl implements ITemplateService {
         }
         Template save = templateRepository.save(template);
         return save;
+    }
+
+    @Override
+    public TemplateChild addChild(Integer id, String enName) {
+        Template template = findById(id);
+        Template template2= findByEnName(enName);
+        TemplateChild findTemplateChild = templateChildRepository.findByTemplateIdAndTemplateChildId(template.getId(), template2.getId());
+        if(findTemplateChild!=null){
+            throw new ObjectException(template2.getName()+"已经是"+template.getName()+"的子类了！！");
+        }
+        TemplateChild templateChild = new TemplateChild();
+        templateChild.setTemplateId(template.getId());
+        templateChild.setTemplateChildId(template2.getId());
+        templateChildRepository.save(templateChild);
+        return templateChild;
+    }
+
+    @Override
+    public List<Template> findByChild(Integer id) {
+        List<TemplateChild> childList = templateChildRepository.findByTemplateId(id);
+        Set<Integer> ids = ServiceUtil.fetchProperty(childList, TemplateChild::getTemplateChildId);
+        List<Template> templates = templateRepository.findAllById(ids);
+        return templates;
+    }
+
+    @Override
+    public TemplateChild removeChildTemplate(Integer templateId,Integer templateChildId) {
+        TemplateChild templateChild = templateChildRepository.findByTemplateIdAndTemplateChildId(templateId, templateChildId);
+        if(templateChild==null){
+            throw new ObjectException("要删除的对象不存在！！");
+        }
+
+        templateChildRepository.delete(templateChild);
+        return templateChild;
     }
 }

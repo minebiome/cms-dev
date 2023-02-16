@@ -1,6 +1,7 @@
 package com.wangyang.pojo.entity;
 
 import com.wangyang.pojo.entity.base.BaseTemplate;
+import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.pojo.enums.TemplateType;
 import lombok.Data;
 
@@ -18,6 +19,7 @@ public class Template extends BaseTemplate implements Serializable {
 
 //    @Column(name = "template_type", columnDefinition = "int")
     private TemplateType templateType;
+    private TemplateData templateData;
 
     public Template(){}
 
@@ -29,6 +31,15 @@ public class Template extends BaseTemplate implements Serializable {
         this.setStatus(false);
         this.setOrder(order);
         this.setIsSystem(true);
+    }
+    public Template(String name,String enName,String templateValue,TemplateType templateType,Boolean isSystem){
+        super.setName(name);
+        super.setEnName(enName);
+        super.setTemplateValue(templateValue);
+        this.templateType = templateType;
+        this.setStatus(false);
+        this.setIsSystem(isSystem);
+        this.setTemplateData(TemplateData.OTHER);
     }
     public Template(String name,String enName,String templateValue,TemplateType templateType,Integer order,Boolean tree){
         super.setName(name);

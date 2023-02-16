@@ -4,6 +4,7 @@ import com.wangyang.common.exception.CmsException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.enums.ValueEnum;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,8 @@ public class EnumController {
 
         if(name.equals("TemplateType")){
             return TemplateType.values();
+        }else if (name.equals("TemplateData")){
+            return TemplateData.values();
         }
         throw new ObjectException("enum 不存在！");
     }
