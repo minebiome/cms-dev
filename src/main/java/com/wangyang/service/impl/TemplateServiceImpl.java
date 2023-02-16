@@ -56,8 +56,7 @@ public class TemplateServiceImpl implements ITemplateService {
 
     @Autowired
     TemplateRepository templateRepository;
-    @Autowired
-    ICategoryService categoryService;
+
 
     @Autowired
     IAttachmentService attachmentService;
@@ -289,20 +288,20 @@ public class TemplateServiceImpl implements ITemplateService {
 
 
 
-    @Override
-    public Template setStatus(int id){
-        Template template = findById(id);
-        if(template.getStatus()){
-            template.setStatus(false);
-        }else {
-            List<CategoryDto> categoryDtos = categoryService.listBy(template.getEnName());
-            if(categoryDtos.size()==0){
-                throw new OptionException("不能启用"+template.getName()+"在首页,因为该模板下没有分类!");
-            }
-            template.setStatus(true);
-        }
-        return templateRepository.save(template);
-    }
+//    @Override
+//    public Template setStatus(int id){
+//        Template template = findById(id);
+//        if(template.getStatus()){
+//            template.setStatus(false);
+//        }else {
+//            List<CategoryDto> categoryDtos = categoryService.listBy(template.getEnName());
+//            if(categoryDtos.size()==0){
+//                throw new OptionException("不能启用"+template.getName()+"在首页,因为该模板下没有分类!");
+//            }
+//            template.setStatus(true);
+//        }
+//        return templateRepository.save(template);
+//    }
 
     @Override
     public Template addZipFile(MultipartFile uploadFile) {

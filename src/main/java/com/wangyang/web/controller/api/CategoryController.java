@@ -1,12 +1,14 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.BaseResponse;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.CategoryTags;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.repository.CategoryTagsRepository;
+import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.pojo.dto.CategoryDto;
@@ -36,7 +38,8 @@ public class CategoryController {
     @Autowired
     ICategoryService categoryService;
 
-
+    @Autowired
+    IArticleService articleService;
     @Autowired
     IHtmlService htmlService;
 
@@ -103,7 +106,12 @@ public class CategoryController {
 
     @RequestMapping("/delete/{id}")
     public Category deleteById(@PathVariable("id") Integer id){
-        Category category = categoryService.deleteById(id);
+        Category category = categoryService.findById(id);
+        List<Article> articleDtos = articleService.listArticleDtoBy(category.getId());
+        if(articleDtos.size()!=0){
+            throw new ObjectException("不能删除该分类，由于存在"+articleDtos.size()+"篇文章！");
+        }
+        categoryService.deleteById(category.getId());
         //删除分离的列表页面
         TemplateUtil.deleteTemplateHtml(category.getViewName(), category.getPath());
         log.info("### delete category" + category.getName());

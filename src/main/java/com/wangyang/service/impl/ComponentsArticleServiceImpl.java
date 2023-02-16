@@ -9,6 +9,7 @@ import com.wangyang.pojo.entity.ComponentsArticle;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ComponentsArticleRepository;
+import com.wangyang.repository.ComponentsRepository;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.IComponentsArticleService;
 import com.wangyang.service.IComponentsService;
@@ -32,9 +33,11 @@ public class ComponentsArticleServiceImpl implements IComponentsArticleService {
 
 
 
-    @Autowired
-    IComponentsService componentsService;
+//    @Autowired
+//    IComponentsService componentsService;
 
+    @Autowired
+    ComponentsRepository componentsRepository;
     @Autowired
     ComponentsArticleRepository componentsArticleRepository;
 
@@ -64,7 +67,7 @@ public class ComponentsArticleServiceImpl implements IComponentsArticleService {
     }
     public ComponentsArticle add(int articleId, int componentsId){
         Content content = contentService.findById(articleId);
-        Components components = componentsService.findById(componentsId);
+        Components components = componentsRepository.findById(componentsId).get();
         ComponentsArticle findComponentsArticle = componentsArticleRepository.findByArticleIdAndComponentId(content.getId(), componentsId);
         if(findComponentsArticle!=null){
             throw new ObjectException(content.getTitle()+"已经在组件"+components.getName()+"中！！！");
@@ -78,7 +81,7 @@ public class ComponentsArticleServiceImpl implements IComponentsArticleService {
     @Override
     public ComponentsArticle add(String viewName, int componentsId){
         Content content = contentService.findByViewName(viewName);
-        Components components = componentsService.findById(componentsId);
+        Components components = componentsRepository.findById(componentsId).get();
 
         if(content==null){
             throw new ObjectException("要添加的内容不存在！！");

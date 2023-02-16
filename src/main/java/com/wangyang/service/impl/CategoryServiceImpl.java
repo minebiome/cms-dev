@@ -51,8 +51,7 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 
     @Autowired
     ITemplateService templateService;
-    @Autowired
-    IArticleService articleService;
+
 
     @Autowired
     IOptionService optionService;
@@ -221,19 +220,13 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 
 
     @Override
-    public Category deleteById(int id) {
-        Category category = findById(id);
-        List<Article> articleDtos = articleService.listArticleDtoBy(category.getId());
-        if(articleDtos.size()!=0){
-            throw new ObjectException("不能删除该分类，由于存在"+articleDtos.size()+"篇文章！");
-        }
+    public void deleteById(int id) {
 
-        List<Category> categories = findByParentId(category.getId());
+        List<Category> categories = findByParentId(id);
         if(categories.size()!=0){
             throw new ObjectException("不能删除分类包含子类！！");
         }
         categoryRepository.deleteById(id);
-        return category;
     }
 
 

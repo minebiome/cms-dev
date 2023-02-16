@@ -46,7 +46,7 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
      * delete by Id
      * @param id
      */
-    Category deleteById(int id);
+    void deleteById(int id);
 
 
 

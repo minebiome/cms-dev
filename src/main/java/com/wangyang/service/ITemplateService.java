@@ -38,7 +38,7 @@ public interface ITemplateService {
     void deleteAll();
     List<Template> findByTemplateType(TemplateType type);
 
-    Template setStatus(int id);
+//    Template setStatus(int id);
 
     Template addZipFile(MultipartFile file);
 
