@@ -55,7 +55,7 @@ spring:
   datasource:
     platform: h2
     driverClassName: org.h2.Driver
-    url: jdbc:h2:file:${user.home}/cms/h2/db
+    url: jdbc:h2:file:${user.home}/cms/h2/db1;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
     username: root
     password: 1234567
     #    schema: classpath:db/user.sql #启动时需要初始化的建表语句
