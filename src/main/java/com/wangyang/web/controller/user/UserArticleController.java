@@ -6,6 +6,7 @@ import com.wangyang.common.utils.FileUtils;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.CommentRole;
 import com.wangyang.pojo.entity.*;
+import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.*;
 import com.wangyang.service.authorize.ICustomerService;
 import com.wangyang.service.authorize.ISubscribeService;
@@ -104,6 +105,16 @@ public class UserArticleController {
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",articleDetailVO);
         return "user/write";
+    }
+    @GetMapping("/editCategory/{id}")
+    public String editCategory(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
+        int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request
+        Category category = categoryService.findById(id);
+        CategoryVO categoryVO = categoryService.covertToVo(category);
+//        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
+//        ArticleDetailVO articleDetailVO = articleService.convert(article);
+        model.addAttribute("view",categoryVO);
+        return "user/editCategory";
     }
     @GetMapping("/editSheet/{id}")
     public String editSheet(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
