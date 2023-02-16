@@ -246,11 +246,11 @@ public class HtmlServiceImpl implements IHtmlService {
 //
 //        }
         Map<String,Object> map = new HashMap<>();
-//        List<Template> templates = templateService.findByChild(template.getId());
-//        for (Template templateChild : templates){
-//            TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
-//            map.put(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+categoryArticle.getViewName());
-//        }
+        List<Template> templates = templateService.findByChild(template.getId());
+        for (Template templateChild : templates){
+            TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
+            map.put(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+categoryArticle.getViewName());
+        }
 
 
         log.debug("生成"+category.getName()+"分类下的第一个页面!");
@@ -384,15 +384,15 @@ public class HtmlServiceImpl implements IHtmlService {
         Template template = templateService.findByEnName(articleDetailVO.getTemplateName());
 
         CategoryVO category = articleDetailVO.getCategory();
-        Template categoryTemplate = templateService.findOptionalByEnName(category.getTemplateName());
-        List<Template> templates = templateService.findByChild(categoryTemplate.getId());
+//        Template categoryTemplate = templateService.findOptionalByEnName(category.getTemplateName());
+//        List<Template> templates = templateService.findByChild(categoryTemplate.getId());
+//        Map<String,Object> map = new HashMap<>();
+//        for (Template templateChild : templates){
+//            map.put(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+category.getViewName());
+//        }
+
+
         Map<String,Object> map = new HashMap<>();
-        for (Template templateChild : templates){
-            map.put(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+category.getViewName());
-        }
-
-
-
         map.put("view",articleDetailVO);
         map.put("template",template);
         String html = TemplateUtil.convertHtmlAndSave(CMSUtils.getArticlePath(),articleDetailVO.getViewName(),map, template);
