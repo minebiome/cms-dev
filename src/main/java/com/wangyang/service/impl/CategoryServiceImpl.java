@@ -6,6 +6,8 @@ import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.pojo.dto.CategoryChild;
+import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.CrudType;
@@ -63,6 +65,7 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
     TagsRepository tagsRepository;
 
 
+
     @Autowired
     CategoryTagsRepository categoryTagsRepository;
 
@@ -72,18 +75,50 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         this.categoryRepository =categoryRepository;
     }
 
-
     @Override
-    public List<CategoryVO> listByComponentsId(int componentsId){
-        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
-        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
-//        List<Article> articles = articleRepository.findAllById(articleIds);
+    public List<Category> listByIdsOrderComponent(Set<Integer> categoryIds){
+        if(categoryIds.size()==0){
+            return Collections.emptyList();
+        }
         List<Category>  categories = categoryRepository.findAll(new Specification<Category>() {
             @Override
             public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 return criteriaQuery.where(root.get("id").in(categoryIds)).getRestriction();
             }
         },Sort.by(Sort.Direction.DESC,"categoryInComponentOrder"));
+        return categories;
+    }
+
+    @Override
+    public List<CategoryChild> listChildByComponentsId(int componentsId){
+
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+//        List<Article> articles = articleRepository.findAllById(articleIds);
+        List<Category>  categories = listByIdsOrderComponent(categoryIds);
+        List<CategoryVO> categoryVOS = convertToListVo(categories);
+
+        List<CategoryChild> categoryChildList = new ArrayList<>();
+        for(CategoryVO categoryVO: categoryVOS){
+            CategoryChild categoryChild = new CategoryChild();
+            categoryChild.setCategory(categoryVO);
+            List<CategoryVO> allChild = getAllChild(categoryVO.getId());
+            List<CategoryVO> withTree = listWithTree(allChild, categoryVO.getId());
+           categoryChild.setCategoryVOS(withTree);
+           categoryChildList.add(categoryChild);
+        }
+        return categoryChildList;
+    }
+    @Override
+    public List<CategoryVO> listByComponentsId(int componentsId){
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+        if(categoryIds.size()==0){
+            return Collections.emptyList();
+        }
+//        List<Article> articles = articleRepository.findAllById(articleIds);
+        List<Category>  categories = listByIdsOrderComponent(categoryIds);
+
         return convertToListVo(categories);
     }
     @Override

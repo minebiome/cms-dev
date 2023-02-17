@@ -3,6 +3,7 @@ package com.wangyang.service.base;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.ComponentsArticle;
 import com.wangyang.pojo.entity.Template;
@@ -28,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -123,6 +125,9 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
     public List<ARTICLEVO> listByComponentsId(int componentsId){
         List<ComponentsArticle> componentsArticles = componentsArticleRepository.findByComponentId(componentsId);
         Set<Integer> articleIds = ServiceUtil.fetchProperty(componentsArticles, ComponentsArticle::getArticleId);
+        if(articleIds.size()==0){
+            return Collections.emptyList();
+        }
 //        List<Article> articles = articleRepository.findAllById(articleIds);
         List<ARTICLE> articles = contentRepository.findAll(new Specification<ARTICLE>() {
             @Override
@@ -145,5 +150,20 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
             throw new ObjectException("查找的内容对象不存在");
         }
         return contents.get(0);
+    }
+
+    @Override
+    public List<CategoryContentList> listCategoryContentByComponentsId(int componentsId) {
+        return null;
+    }
+
+    @Override
+    public List<CategoryContentList> listCategoryContentByComponentsId(int componentsId, Integer page) {
+        return null;
+    }
+
+    @Override
+    public List<CategoryContentList> listCategoryContentByComponentsIdSize(int componentsId, Integer size) {
+        return null;
     }
 }

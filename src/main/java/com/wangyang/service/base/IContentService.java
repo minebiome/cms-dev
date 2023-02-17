@@ -1,5 +1,6 @@
 package com.wangyang.service.base;
 
+import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Template;
@@ -22,6 +23,12 @@ public interface IContentService<ARTICLE extends Content,ARTICLEDTO,ARTICLEVO>  
     Page<ARTICLEVO> convertToPageVo(Page<ARTICLE> contentPage);
 
     void addParentCategory(List<CategoryVO> categoryVOS, Integer parentId);
+
+    List<CategoryContentList> listCategoryContentByComponentsId(int componentsId);
+
+    List<CategoryContentList> listCategoryContentByComponentsId(int componentsId, Integer page);
+
+    List<CategoryContentList> listCategoryContentByComponentsIdSize(int componentsId, Integer size);
 
     CategoryContentListDao findCategoryContentBy(CategoryVO category, Template template, int page);
 

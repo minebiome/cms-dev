@@ -188,7 +188,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
     @Override
     public Map<String ,Object> getModel(Components components) {
         try {
-            if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA)){
+            if(components.getDataName().equals(CmsConst.ARTICLE_DATA)){
                 Map<String,Object> map = new HashMap<>();
                 map.put("view",contentService.listByComponentsId(components.getId()));
                 return  map;
@@ -202,12 +202,32 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 //                Method method = bean.getClass().getMethod(methodName,Set.class);
 //                Object o = method.invoke(bean,ids);
 //                return o;
-            }else if(components.getDataName().startsWith(CmsConst.CATEGORY_DATA)){
+            }else if(components.getDataName().equals(CmsConst.CATEGORY_DATA)){
 
                 Map<String,Object> map = new HashMap<>();
                 map.put("view",categoryService.listByComponentsId(components.getId()));
                 return  map;
-            } else if (components.getDataName().startsWith("articleJob")){
+            }else if(components.getDataName().equals(CmsConst.CATEGORY_CHILD_DATA)){
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",categoryService.listChildByComponentsId(components.getId()));
+                return  map;
+            }else if(components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_DATA)){
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",contentService.listCategoryContentByComponentsId(components.getId()));
+                return  map;
+            }else if(components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_PAGE_DATA)){
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",contentService.listCategoryContentByComponentsId(components.getId(),5));
+                return  map;
+            } else if(components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_SIZE_DATA)){
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("view",contentService.listCategoryContentByComponentsIdSize(components.getId(),5));
+                return  map;
+            }  else if (components.getDataName().startsWith("articleJob")){
                 String[] names = components.getDataName().split("\\.");
                 String className = names[0];
                 String methodName = names[1];

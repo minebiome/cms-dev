@@ -16,6 +16,7 @@ import com.wangyang.pojo.vo.ContentDetailVO;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.repository.ComponentsArticleRepository;
+import com.wangyang.repository.ComponentsCategoryRepository;
 import com.wangyang.repository.TagsRepository;
 import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.ICategoryService;
@@ -45,7 +46,8 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
     TagsRepository tagsRepository;
     @Autowired
     ArticleTagsRepository articleTagsRepository;
-
+    @Autowired
+    ComponentsCategoryRepository componentsCategoryRepository;
 
 
     @Autowired
@@ -240,19 +242,7 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
     }
 
 
-    public void addChildIds( List<CategoryVO> categoryVOS, Integer id){
-        List<Category> categories = categoryService.findByParentId(id);
-        if(categories.size()==0){
-            return;
-        }
-        categoryVOS.addAll(categoryService.convertToListVo(categories));
-        if(categories.size()!=0){
-            for (Category category:categories){
-                addChildIds(categoryVOS,category.getId());
-            }
-        }
 
-    }
 
     @Override
     public void addParentCategory(List<CategoryVO> categoryVOS, Integer parentId){
@@ -266,13 +256,13 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         }
 
     }
-    public List<CategoryContentList> listCategoryChild(String viewName){
+    public List<CategoryContentList> listCategoryChild(String viewName,Integer page){
         Category parentCategory = categoryService.findByViewName(viewName);
         if(parentCategory==null){
             return null;
         }
 
-        return listCategoryChild(parentCategory.getId(),0);
+        return listCategoryChild(parentCategory.getId(),page);
 /*
         List<Category> categories = categoryService.findByParentId(parentCategory.getId());
 
@@ -295,9 +285,30 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
 */
     }
 
-    public List<CategoryContentList> listCategoryChild(Integer id,int page){
-        List<Category> categories = categoryService.findByParentId(id);
 
+
+    @Override
+    public List<CategoryContentList> listCategoryContentByComponentsId(int componentsId) {
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+        List<Category>  categories = categoryService.listByIdsOrderComponent(categoryIds);
+        return listCategoryContent(categories);
+    }
+    @Override
+    public List<CategoryContentList> listCategoryContentByComponentsId(int componentsId, Integer page) {
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+        List<Category>  categories = categoryService.listByIdsOrderComponent(categoryIds);
+        return listCategoryContent(categories,page);
+    }
+    @Override
+    public List<CategoryContentList> listCategoryContentByComponentsIdSize(int componentsId, Integer size) {
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+        List<Category>  categories = categoryService.listByIdsOrderComponent(categoryIds);
+        return listCategoryConetntSize(categories,size);
+    }
+    public List<CategoryContentList> listCategoryContent(List<Category> categories,int page){
         List<CategoryContentList> categoryArticleLists =  new ArrayList<>();
         for (Category category:categories){
             CategoryContentList categoryContentList = new CategoryContentList();
@@ -310,7 +321,7 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
             Set<Integer> ids =new HashSet<>();
             List<CategoryVO> categoryVOS = new ArrayList<>();
             ids.add(category.getId());
-            addChildIds(categoryVOS,category.getId());
+            categoryService.addChild(categoryVOS,category.getId());
             ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
 
             Page<Content> contentsPage = pageContentByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
@@ -327,9 +338,21 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         }
         return categoryArticleLists;
     }
-    public List<CategoryContentList> listCategoryChild(Integer id){
+    public List<CategoryContentList> listCategoryChild(Integer id,int page){
         List<Category> categories = categoryService.findByParentId(id);
+        return listCategoryContent(categories,page);
 
+    }
+    public List<CategoryContentList> listCategoryChild(String viewName) {
+        Category parentCategory = categoryService.findByViewName(viewName);
+        if (parentCategory == null) {
+            return null;
+        }
+        return listCategoryChild(parentCategory.getId());
+    }
+
+    //TUDO
+    public List<CategoryContentList> listCategoryConetntSize( List<Category> categories, Integer size){
         List<CategoryContentList> categoryArticleLists =  new ArrayList<>();
         for (Category category:categories){
             CategoryContentList categoryContentList = new CategoryContentList();
@@ -342,24 +365,38 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
             Set<Integer> ids =new HashSet<>();
             List<CategoryVO> categoryVOS = new ArrayList<>();
             ids.add(category.getId());
-            addChildIds(categoryVOS,category.getId());
+            categoryService.addChild(categoryVOS,category.getId());
             ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
             List<ContentVO> contents=listVoTree(ids,category.getIsDesc());
-//            articleListVo.setContents(contents);
-//
-//            Page<Content> contentsPage = pageContentByCategoryIds(ids, category.getIsDesc(), PageRequest.of(page, category.getArticleListSize()));
-//            Page<ContentVO> contentVOS = convertToPageVo(contentsPage);
-//
-////            Specification<Content> specification = buildPublishByQuery(articleQuery);
-////            List<Content> articles = contentRepository.findAll(specification);
-////            List<ContentVO> articleVOS = convertToListVo(articles);
-//
-////            List<ContentVO> articleVOTree = super.listWithTree(contentVOS);
-//            List<ContentVO> contentVOList = contentVOS.getContent();
             categoryContentList.setContentVOS(contents);
             categoryArticleLists.add(categoryContentList);
         }
         return categoryArticleLists;
+    }
+    public List<CategoryContentList> listCategoryContent( List<Category> categories){
+        List<CategoryContentList> categoryArticleLists =  new ArrayList<>();
+        for (Category category:categories){
+            CategoryContentList categoryContentList = new CategoryContentList();
+            CategoryVO categoryVO = categoryService.covertToVo(category);
+            categoryContentList.setCategory(categoryVO);
+            ArticleQuery articleQuery = new ArticleQuery();
+            articleQuery.setCategoryId(category.getId());
+            articleQuery.setDesc(category.getDesc());
+
+            Set<Integer> ids =new HashSet<>();
+            List<CategoryVO> categoryVOS = new ArrayList<>();
+            ids.add(category.getId());
+            categoryService.addChild(categoryVOS,category.getId());
+            ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
+            List<ContentVO> contents=listVoTree(ids,category.getIsDesc());
+            categoryContentList.setContentVOS(contents);
+            categoryArticleLists.add(categoryContentList);
+        }
+        return categoryArticleLists;
+    }
+    public List<CategoryContentList> listCategoryChild(Integer id){
+        List<Category> categories = categoryService.findByParentId(id);
+        return listCategoryContent(categories);
     }
     @Override
     public CategoryContentListDao findCategoryContentBy(CategoryVO category, Template template, int page){
@@ -371,7 +408,7 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         Set<Integer> ids =new HashSet<>();
         List<CategoryVO> categoryVOS = new ArrayList<>();
         ids.add(category.getId());
-        addChildIds(categoryVOS,category.getId());
+        categoryService.addChild(categoryVOS,category.getId());
 
 
         List<Category> categoryPartner = categoryService.findByParentId(category.getParentId());
@@ -561,6 +598,7 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
 
 
     }
+
 
 
 

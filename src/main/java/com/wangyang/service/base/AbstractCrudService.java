@@ -458,4 +458,27 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         }, PageRequest.of(page, size, sort));
         return domains;
     }
+    @Override
+    public void addChild(List<DOMAINVO> domainvos, Integer id){
+        List<DOMAIN> domains = findByParentId(id);
+        if(domains.size()==0){
+            return;
+        }
+        domainvos.addAll(convertToListVo(domains));
+        if(domains.size()!=0){
+            for (DOMAIN domain:domains){
+                addChild(domainvos,domain.getId());
+            }
+        }
+
+    }
+
+    @Override
+    public List<DOMAINVO> getAllChild(Integer id){
+        List<DOMAINVO> domainvos =new ArrayList<>();
+        addChild(domainvos,id);
+        return domainvos;
+
+
+    }
 }

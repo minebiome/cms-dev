@@ -1,5 +1,7 @@
 package com.wangyang.service;
 
+import com.wangyang.pojo.dto.CategoryChild;
+import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.CategoryQuery;
@@ -15,6 +17,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface ICategoryService  extends IBaseCategoryService<Category,Category,CategoryVO> {
+    List<Category> listByIdsOrderComponent(Set<Integer> categoryIds);
+
+    List<CategoryChild> listChildByComponentsId(int componentsId);
+
     List<CategoryVO> listByComponentsId(int componentsId);
 
     Category save(Category category);

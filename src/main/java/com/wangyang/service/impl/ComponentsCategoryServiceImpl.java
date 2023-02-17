@@ -56,7 +56,11 @@ public class ComponentsCategoryServiceImpl extends AbstractCrudService<Component
         if(components==null){
             throw new ObjectException("要添加的组件不存在！！");
         }
-        if(components.getDataName().equals(CmsConst.CATEGORY_DATA)){
+        if(components.getDataName().equals(CmsConst.CATEGORY_DATA) ||
+                components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_DATA) ||
+                components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_PAGE_DATA) ||
+                components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_SIZE_DATA) ||
+                components.getDataName().equals(CmsConst.CATEGORY_CHILD_DATA)){
             ComponentsCategory componentsCategory = componentsCategoryRepository.findByCategoryIdAndComponentId(category.getId(), componentsId);
             if(componentsCategory!=null){
                 throw new ObjectException("["+category.getName()+"]已经在组件["+components.getName()+"]中！！！");
