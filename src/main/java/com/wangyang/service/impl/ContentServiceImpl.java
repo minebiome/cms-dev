@@ -368,6 +368,10 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
             categoryService.addChild(categoryVOS,category.getId());
             ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));
             List<ContentVO> contents=listVoTree(ids,category.getIsDesc());
+            if(size>contents.size()){
+                size=contents.size();
+            }
+            contents = contents.subList(0, size);
             categoryContentList.setContentVOS(contents);
             categoryArticleLists.add(categoryContentList);
         }

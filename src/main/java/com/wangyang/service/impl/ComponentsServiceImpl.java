@@ -217,15 +217,23 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 Map<String,Object> map = new HashMap<>();
                 map.put("view",contentService.listCategoryContentByComponentsId(components.getId()));
                 return  map;
-            }else if(components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_PAGE_DATA)){
-
+            }else if(components.getDataName().startsWith(CmsConst.CATEGORY_ARTICLE_PAGE_DATA)){
+                if(!components.getDataName().contains("_")){
+                    throw new ObjectException("数据中必须包含[@CategoryArticlePage_5]格式");
+                }
+                String[] split = components.getDataName().split("_");
+                int page = Integer.parseInt(split[1]);
                 Map<String,Object> map = new HashMap<>();
-                map.put("view",contentService.listCategoryContentByComponentsId(components.getId(),5));
+                map.put("view",contentService.listCategoryContentByComponentsId(components.getId(),page));
                 return  map;
-            } else if(components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_SIZE_DATA)){
-
+            } else if(components.getDataName().startsWith(CmsConst.CATEGORY_ARTICLE_SIZE_DATA)){
+                if(!components.getDataName().contains("_")){
+                    throw new ObjectException("数据中必须包含[@CategoryArticleSize_5]格式");
+                }
+                String[] split = components.getDataName().split("_");
+                int size = Integer.parseInt(split[1]);
                 Map<String,Object> map = new HashMap<>();
-                map.put("view",contentService.listCategoryContentByComponentsIdSize(components.getId(),5));
+                map.put("view",contentService.listCategoryContentByComponentsIdSize(components.getId(),size));
                 return  map;
             }  else if (components.getDataName().startsWith("articleJob")){
                 String[] names = components.getDataName().split("\\.");
