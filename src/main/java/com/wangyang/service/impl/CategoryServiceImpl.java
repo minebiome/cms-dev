@@ -4,6 +4,7 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.*;
@@ -141,6 +142,13 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         }
 
         category.setPath(CMSUtils.getCategoryPath());
+        if(category.getUseHtml()!=null && category.getUseHtml()){
+            String renderHtml = MarkdownUtils.renderHtml(category.getOriginalContent());
+            category.setFormatContent(renderHtml);
+        }else {
+            category.setFormatContent(category.getOriginalContent());
+        }
+
 
         Category saveCategory = categoryRepository.save(category);
         return saveCategory;

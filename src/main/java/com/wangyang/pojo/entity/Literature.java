@@ -15,6 +15,7 @@ public class Literature extends Content {
     private String key;
     private String zoteroKey;
     private String author;
+    @Column(name = "url_")
     private String url;
     private Integer categoryId;
     @Column(name = "publish_data")

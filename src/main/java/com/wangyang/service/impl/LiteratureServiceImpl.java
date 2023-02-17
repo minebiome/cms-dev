@@ -53,10 +53,13 @@ public class LiteratureServiceImpl  extends AbstractContentServiceImpl<Literatur
     public List<Literature> listByKeys(Set<String> literatureStrIds) {
 //        List<Literature> literatures = new ArrayList<>();
 
+        if(literatureStrIds.size()==0){
+            return new ArrayList<>();
+        }
         List<Literature> literatures = literatureRepository.findAll(new Specification<Literature>() {
             @Override
             public Predicate toPredicate(Root<Literature> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(root.get("key").in(literatureStrIds)).getRestriction();
+                return criteriaQuery.where(criteriaBuilder.in(root.get("key")).value(literatureStrIds)).getRestriction();
             }
         });
 

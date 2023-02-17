@@ -83,7 +83,22 @@ public class CategoryController {
     public Page<Category> pageBy(@PathVariable("categoryEnName") String categoryEnName,@PageableDefault(size = 50)  Pageable pageable){
         return categoryService.pageBy(categoryEnName,pageable);
     }
+    @PostMapping("/save/{categoryId}")
+    public Category save(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
+        categoryParam.setUseHtml(true);
+        Category category = categoryService.findById(categoryId);
 
+        BeanUtils.copyProperties(categoryParam, category,CMSUtils.getNullPropertyNames(categoryParam));
+        Category updateCategory = categoryService.update(category,categoryParam.getTagIds());
+
+//        //更新Category列表
+//        htmlService.generateCategoryListHtml();
+//        if(updateCategory.getHaveHtml()){
+//            //生成文章第一页的列表
+//            htmlService.convertArticleListBy(category);
+//        }
+        return updateCategory;
+    }
     @PostMapping("/update/{categoryId}")
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);

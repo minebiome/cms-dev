@@ -70,6 +70,12 @@ public class MarkdownUtils {
     private static final Parser PARSER = Parser.builder(OPTIONS).build();
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
+    public static String renderHtml(String content) {
+        Node document = PARSER.parse(content);
+        String render = RENDERER.render(document);
+        return  render;
+
+    }
 
     public static Content renderHtml(Content article) {
         if(StringUtils.isBlank(article.getOriginalContent())){
