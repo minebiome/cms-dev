@@ -30,4 +30,5 @@ public class CategoryParam implements InputConverter<Category> {
     private Boolean isDesc=true;
     private String icon;
     private Set<Integer> tagIds;
+    private String originalContent;
 }

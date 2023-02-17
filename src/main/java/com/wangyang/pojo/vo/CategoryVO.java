@@ -3,6 +3,7 @@ package com.wangyang.pojo.vo;
 import com.wangyang.pojo.dto.CategoryDto;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.util.List;
 
 @Data
@@ -34,6 +35,7 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private Integer articleListSize;
     private Integer categoryInComponentOrder;
     private String recommendTemplateName;
-
+    private String originalContent;
+    private String formatContent;
 
 }

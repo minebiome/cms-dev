@@ -18,7 +18,12 @@ public class Category extends BaseCategory{
 
 //    @Column(columnDefinition = "int default 0")
 //    private Integer parentId;
+    @Column(columnDefinition = "longtext")
     private String description;
+    @Column(name = "original_content", columnDefinition = "longtext")
+    private String originalContent;
+    @Column(name = "format_content", columnDefinition = "longtext")
+    private String formatContent;
     @Column(columnDefinition = "int default 0")
     private Integer articleNumber;
 //    private Integer templateId;
