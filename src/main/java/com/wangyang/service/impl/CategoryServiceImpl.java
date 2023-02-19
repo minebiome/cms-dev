@@ -319,8 +319,8 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         if(category==null){
             return null;
         }
-        List<Category> categories = findByParentId(category.getId());
-        List<CategoryVO> categoryVOS = convertToListVo(categories);
+        List<CategoryVO> categoryVOS = getAllChild(category.getId());
+//        List<Category> categories = findByParentId(category.getId());
         return super.listWithTree(categoryVOS, category.getId());
     }
 
