@@ -28,6 +28,6 @@ public class ArticleParams  implements InputConverter<Article> {
 //    private Integer userId;
 //    private String  path;
     private String picPath;
-
+    private String cssClass; //节点的方向
 
 }

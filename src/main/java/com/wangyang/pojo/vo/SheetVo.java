@@ -8,5 +8,5 @@ public class SheetVo extends SheetDto {
     private String cssContent;
     private String jsContent;
     private Integer categoryId;
-
+    private String cssClass;
 }

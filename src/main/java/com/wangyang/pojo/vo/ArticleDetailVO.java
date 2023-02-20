@@ -22,6 +22,7 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
     //更新channel的文章视图名称,将html的更新从service转移controller
 //    private Boolean isUpdateChannelFirstName=false;
     private Category oldCategory;
+    private String cssClass;
 
 //    public Category getOldCategory() {
 //        return oldCategory;

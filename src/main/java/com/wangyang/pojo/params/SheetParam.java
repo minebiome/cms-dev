@@ -18,5 +18,5 @@ public class SheetParam {
 //    private String cssContent;
 //    private String jsContent;
     private Boolean isSource;
-
+    private String cssClass; //节点的方向
 }

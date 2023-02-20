@@ -51,7 +51,7 @@ public class ContentVO extends BaseVo<ContentVO>{
     // 路径格式
     private String linkPath ;
     private Boolean top;
-
+    private String cssClass;
     public String getLinkPath() {
         return File.separator+this.getPath().replace(File.separator,"_")+"_"+this.getViewName()+".html";
     }

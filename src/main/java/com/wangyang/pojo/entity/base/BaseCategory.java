@@ -10,4 +10,5 @@ import javax.persistence.*;
 @Data
 public class BaseCategory extends BaseEntity{
     private String name;
+    private String cssClass; //节点的方向
 }

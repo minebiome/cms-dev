@@ -38,4 +38,5 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private String originalContent;
     private String formatContent;
     private Boolean useHtml;
+    private String cssClass;
 }

@@ -21,7 +21,7 @@ public class CategoryDetailVO {
     private String picPath;
     private String picThumbPath;
     private String path;
-
+    private String cssClass;
     private Boolean recommend;
 
     private Boolean existNav;

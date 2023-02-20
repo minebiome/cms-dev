@@ -15,7 +15,7 @@ import java.util.List;
 public class ArticleVO extends BaseVo<ArticleVO> {
     private List<TagsDto> tags;
     private CategoryDto category;
-
+    private String cssClass;
     private Integer id;
     private Date createDate;
     private Date updateDate;
