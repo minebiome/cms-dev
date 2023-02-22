@@ -176,7 +176,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         Components components = findById(id);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(components,componentsVO);
-        if(components.getOriginalContent()==null || components.getOriginalContent().equals("")){
+        if(!components.getParse()){
             String templateValue = components.getTemplateValue();
             String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
             File file = new File(path);
