@@ -48,12 +48,16 @@ public class ComponentsController {
 
 
 
+
+
     @PostMapping("/update/{id}")
     public Components update(@PathVariable("id") Integer id,@RequestBody  ComponentsParam componentsParam){
-
         return componentsService.update(id,componentsParam);
     }
-
+    @PostMapping("/save/{id}")
+    public Components saveUpdate(@PathVariable("id") Integer id,@RequestBody  ComponentsParam componentsParam){
+        return componentsService.saveUpdate(id,componentsParam);
+    }
 
 
 

@@ -19,6 +19,7 @@ import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.ComponentsVO;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.repository.ComponentsRepository;
@@ -106,31 +107,40 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         return componentsRepository.save(components);
     }
 
-
+    @Override
+    public Components saveUpdate(Integer id, ComponentsParam componentsParam) {
+        Components components = findById(id);
+//        convert(components,componentsParam);
+        BeanUtils.copyProperties(componentsParam,components,CMSUtils.getNullPropertyNames(componentsParam));
+        Components saveComponents = componentsRepository.save(components);
+        ComponentsVO componentsVO = new ComponentsVO();
+        BeanUtils.copyProperties(saveComponents,componentsVO);
+        componentsVO.setHtmlFile(saveComponents.getOriginalContent());
+        return componentsVO;
+    }
 
     @Override
     public Components update(int id, ComponentsParam componentsParam){
         Components components = findById(id);
         convert(components,componentsParam);
-        if(components.getEnName()==null){
-            components.setEnName(CMSUtils.randomViewName());
-        }
-        return componentsRepository.save(components);
+//        if(components.getEnName()==null){
+//            components.setEnName(CMSUtils.randomViewName());
+//        }
+        Components saveComponents = componentsRepository.save(components);
+        ComponentsVO componentsVO = new ComponentsVO();
+        BeanUtils.copyProperties(saveComponents,componentsVO);
+        componentsVO.setHtmlFile(saveComponents.getOriginalContent());
+        return componentsVO;
     }
 
     private void convert(Components components,ComponentsParam componentsParam){
-        BeanUtils.copyProperties(componentsParam,components,"templateValue");
-        String templateValue =componentsParam.getTemplateValue();
-        if(templateValue.startsWith("templates")){
-            String templateValueName = templateValue.split("\n")[0];
-            String path = CmsConst.WORK_DIR+"/"+templateValueName+".html";
+        BeanUtils.copyProperties(componentsParam,components,CMSUtils.getNullPropertyNames(componentsParam));
+        String templateValue =components.getTemplateValue();
+        if(templateValue.startsWith("components")){
+            String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
             File file = new File(path);
-            String fileTemplateValue = componentsParam.getTemplateValue();
-            components.setTemplateValue(templateValueName);
-            String replaceFileTemplateValue = fileTemplateValue.replace(templateValueName+"\n", "");
-            FileUtils.saveFile(file,replaceFileTemplateValue);
-        }else {
-            components.setTemplateValue(componentsParam.getTemplateValue());
+            String originalContent = components.getOriginalContent();
+            FileUtils.saveFile(file,originalContent);
         }
     }
 
@@ -150,18 +160,21 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
 
     @Override
-    public Components findDetailsById(int id){
+    public ComponentsVO findDetailsById(int id){
         Components components = findById(id);
+        ComponentsVO componentsVO = new ComponentsVO();
+        BeanUtils.copyProperties(components,componentsVO);
         String templateValue = components.getTemplateValue();
-        if(templateValue.startsWith("templates")){
-            String path = CmsConst.WORK_DIR+"/"+templateValue+".html";
+        if(templateValue.startsWith("components")){
+            String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
             File file = new File(path);
             if(file.exists()){
                 String openFile = FileUtils.openFile(file);
-                components.setTemplateValue(components.getTemplateValue()+"\n"+openFile);
+                componentsVO.setTemplateValue(templateValue);
+                componentsVO.setHtmlFile(openFile);
             }
         }
-        return components;
+        return componentsVO;
     }
 
     @Override
@@ -187,9 +200,11 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
     @Override
     public Map<String ,Object> getModel(Components components) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("component",components);
         try {
             if(components.getDataName().equals(CmsConst.ARTICLE_DATA)){
-                Map<String,Object> map = new HashMap<>();
+
                 map.put("view",contentService.listByComponentsId(components.getId()));
                 return  map;
 
@@ -204,17 +219,17 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 //                return o;
             }else if(components.getDataName().equals(CmsConst.CATEGORY_DATA)){
 
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",categoryService.listByComponentsId(components.getId()));
                 return  map;
             }else if(components.getDataName().equals(CmsConst.CATEGORY_CHILD_DATA)){
 
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",categoryService.listChildByComponentsId(components.getId()));
                 return  map;
             }else if(components.getDataName().equals(CmsConst.CATEGORY_ARTICLE_DATA)){
 
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",contentService.listCategoryContentByComponentsId(components.getId()));
                 return  map;
             }else if(components.getDataName().startsWith(CmsConst.CATEGORY_ARTICLE_PAGE_DATA)){
@@ -223,7 +238,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 }
                 String[] split = components.getDataName().split("_");
                 int page = Integer.parseInt(split[1]);
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",contentService.listCategoryContentByComponentsId(components.getId(),page));
                 return  map;
             } else if(components.getDataName().startsWith(CmsConst.CATEGORY_ARTICLE_SIZE_DATA)){
@@ -232,7 +247,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 }
                 String[] split = components.getDataName().split("_");
                 int size = Integer.parseInt(split[1]);
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",contentService.listCategoryContentByComponentsIdSize(components.getId(),size));
                 return  map;
             }  else if (components.getDataName().startsWith("articleJob")){
@@ -242,7 +257,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 Object bean = ApplicationBean.getBean(className);
                 Method method = bean.getClass().getMethod(methodName);
                 Object o = method.invoke(bean);
-                Map<String,Object> map = (Map<String,Object>)o;
+                map = (Map<String,Object>)o;
                 return map;
 
             }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){
@@ -262,7 +277,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 }
                 Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, 5, sort));
                 Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",articleVOS);
                 map.put("showUrl","/articleList?sort="+args); //likes,DESC
                 map.put("name",components.getName());
@@ -277,7 +292,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 //                articleQuery.setHaveHtml(true);
                 Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, 5, Sort.by(Sort.Order.desc("updateDate"))), articleQuery);
                 Page<ArticleDto> pageDto = articleService.convertArticle2ArticleDto(articles);
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",pageDto);
                 map.put("showUrl","/articleList?keyword="+args); //
                 map.put("name",components.getName());
@@ -287,7 +302,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 Optional<Tags> tags = tagsService.findBy(args);
                 if(tags.isPresent()){
                     Page<ArticleDto> articleDtos = articleService.pageByTagId(tags.get().getId(), 5);
-                    Map<String,Object> map = new HashMap<>();
+//                    Map<String,Object> map = new HashMap<>();
                     map.put("view",articleDtos);
                     map.put("showUrl","/articleList?tagsId="+tags.get().getId());
                     map.put("name",components.getName());
@@ -320,23 +335,23 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
                 Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, size, sort));
                 Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
-                Map<String,Object> map = new HashMap<>();
+//                Map<String,Object> map = new HashMap<>();
                 map.put("view",articleVOS);
                 map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
                 map.put("name",components.getName());
                 return map;
             } else if (components.getDataName().startsWith(CmsConst.TAG_DATA)) {
                 List<Tags> tags = tagsService.listAll();
-                Map<Tags,Integer> map =  new HashMap<>();
+                Map<Tags,Integer> mapTags =  new HashMap<>();
                 for (Tags tag : tags){
                     List<ArticleTags> articleTags = articleTagsRepository.findByTagsId(tag.getId());
                     int size = articleTags.stream().filter(articleTag -> {
                         boolean b = articleTag.getTagsId() == tag.getId();
                         return b;
                     }).collect(Collectors.toSet()).size();
-                    map.put(tag,size);
+                    mapTags.put(tag,size);
                 }
-                Map<Tags, Integer> sortMap = ServiceUtil.sortDescend(map);
+                Map<Tags, Integer> sortMap = ServiceUtil.sortDescend(mapTags);
                 Set<Map.Entry<Tags, Integer>> entries = sortMap.entrySet();
 
                 List<Tags> topTags = new ArrayList<>();
@@ -349,9 +364,9 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                     topTags.add(item.getKey());
                 }
 
-                Map<String,Object> model = new HashMap<>();
-                model.put("view",topTags);
-                return model;
+//                Map<String,Object> map = new HashMap<>();
+                map.put("view",topTags);
+                return map;
             } else {
 
             }

@@ -12,5 +12,6 @@ public class ComponentsParam {
     private String enName;
     private String dataName;
     private String path;
+    private String originalContent;
 
 }

@@ -65,6 +65,9 @@ public class UserArticleController {
 
 
     @Autowired
+    IComponentsService componentsService;
+
+    @Autowired
     ISubscribeService subscribeService;
 
     @GetMapping("/write")
@@ -105,6 +108,16 @@ public class UserArticleController {
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",articleDetailVO);
         return "user/write";
+    }
+    @GetMapping("/editComponents/{id}")
+    public String editComponents(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
+        int userId = AuthorizationUtil.getUserId(request);//在授权时将userId存入request
+        Components components = componentsService.findDetailsById(id);
+
+//        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
+//        ArticleDetailVO articleDetailVO = articleService.convert(article);
+        model.addAttribute("view",components);
+        return "user/editComponents";
     }
     @GetMapping("/editCategory/{id}")
     public String editCategory(HttpServletRequest request,Model model,@PathVariable("id") Integer id){

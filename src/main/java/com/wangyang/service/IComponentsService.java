@@ -42,4 +42,6 @@ public interface IComponentsService  extends ICrudService<Components, Components
 
     Components findByViewName(String viewName);
     Components findByEnName(String viewName);
+
+    Components saveUpdate(Integer id, ComponentsParam componentsParam);
 }
