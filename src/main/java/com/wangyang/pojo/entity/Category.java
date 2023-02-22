@@ -51,7 +51,8 @@ public class Category extends BaseCategory{
 //    private Integer articleListPage=0;
     private Boolean isDesc=true;
     private Integer categoryInComponentOrder=0;
-    private Boolean useHtml=true;
+    @Column(name = "parse_")
+    private Boolean parse=true;
     public Boolean getDesc() {
         return isDesc;
     }

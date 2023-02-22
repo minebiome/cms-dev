@@ -5,6 +5,7 @@ import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.TemplateException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
+import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.dto.ArticleDto;
@@ -102,9 +103,14 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
     @Override
     public Components add(ComponentsParam componentsParam){
         Components components = new Components();
-        convert(components,componentsParam);
         components.setIsSystem(false);
-        return componentsRepository.save(components);
+        BeanUtils.copyProperties(componentsParam,components,CMSUtils.getNullPropertyNames(componentsParam));
+        Components saveComponents = componentsRepository.save(components);
+        ComponentsVO componentsVO = new ComponentsVO();
+        BeanUtils.copyProperties(saveComponents,componentsVO);
+
+        convert(componentsVO,true);
+        return componentsVO;
     }
 
     @Override
@@ -115,33 +121,39 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         Components saveComponents = componentsRepository.save(components);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(saveComponents,componentsVO);
-        componentsVO.setHtmlFile(saveComponents.getOriginalContent());
+
+        convert(componentsVO,false);
         return componentsVO;
     }
 
     @Override
     public Components update(int id, ComponentsParam componentsParam){
         Components components = findById(id);
-        convert(components,componentsParam);
-//        if(components.getEnName()==null){
-//            components.setEnName(CMSUtils.randomViewName());
-//        }
+
+        BeanUtils.copyProperties(componentsParam,components,CMSUtils.getNullPropertyNames(componentsParam));
         Components saveComponents = componentsRepository.save(components);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(saveComponents,componentsVO);
-        componentsVO.setHtmlFile(saveComponents.getOriginalContent());
+
+        convert(componentsVO,true);
         return componentsVO;
     }
 
-    private void convert(Components components,ComponentsParam componentsParam){
-        BeanUtils.copyProperties(componentsParam,components,CMSUtils.getNullPropertyNames(componentsParam));
-        String templateValue =components.getTemplateValue();
-        if(templateValue.startsWith("components")){
+    private void convert(ComponentsVO componentsVO,Boolean isFile){
+
+        String htmlContent = componentsVO.getOriginalContent();
+        if(componentsVO.getParse()!=null && componentsVO.getParse()){
+            htmlContent = MarkdownUtils.renderHtml(htmlContent);
+        }
+        componentsVO.setHtmlFile(htmlContent);
+
+        if(isFile){
+            String templateValue =componentsVO.getTemplateValue();
             String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
             File file = new File(path);
-            String originalContent = components.getOriginalContent();
-            FileUtils.saveFile(file,originalContent);
+            FileUtils.saveFile(file,htmlContent);
         }
+
     }
 
     @Override
@@ -164,16 +176,20 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         Components components = findById(id);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(components,componentsVO);
-        String templateValue = components.getTemplateValue();
-        if(templateValue.startsWith("components")){
+        if(components.getOriginalContent()==null || components.getOriginalContent().equals("")){
+            String templateValue = components.getTemplateValue();
             String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
             File file = new File(path);
             if(file.exists()){
                 String openFile = FileUtils.openFile(file);
-                componentsVO.setTemplateValue(templateValue);
                 componentsVO.setHtmlFile(openFile);
+                componentsVO.setOriginalContent(openFile);
+
             }
+        }else {
+            convert(componentsVO,false);
         }
+
         return componentsVO;
     }
 
@@ -257,7 +273,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 Object bean = ApplicationBean.getBean(className);
                 Method method = bean.getClass().getMethod(methodName);
                 Object o = method.invoke(bean);
-                map = (Map<String,Object>)o;
+                map.putAll((Map<String,Object>)o);
                 return map;
 
             }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){

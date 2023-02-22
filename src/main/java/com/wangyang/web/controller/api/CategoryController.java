@@ -85,7 +85,6 @@ public class CategoryController {
     }
     @PostMapping("/save/{categoryId}")
     public Category save(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
-        categoryParam.setUseHtml(true);
         Category category = categoryService.findById(categoryId);
 
         BeanUtils.copyProperties(categoryParam, category,CMSUtils.getNullPropertyNames(categoryParam));

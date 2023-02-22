@@ -14,7 +14,6 @@ public class CategoryDetailVO {
     //    private Integer templateId;
     private String templateName;
     private Boolean haveHtml=true;
-
     private String viewName;
     //    @Column(columnDefinition = "bit(1) default true")
 //    private Boolean status=true;
@@ -33,4 +32,5 @@ public class CategoryDetailVO {
     private Boolean isDesc;
     private List<Tags> tags;
     private String recommendTemplateName;
+    private Boolean parse;
 }

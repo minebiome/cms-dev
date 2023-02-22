@@ -31,6 +31,8 @@ public class BaseTemplate extends  BaseEntity{
     private String base;
     @Column(columnDefinition = "bit(1) default false")
     private Boolean tree=false;
+    @Column(name = "parse_")
+    private Boolean parse=true;
 
     @Column(name = "original_content", columnDefinition = "longtext")
     private String originalContent;

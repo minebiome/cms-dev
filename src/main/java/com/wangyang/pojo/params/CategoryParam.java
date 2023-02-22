@@ -31,6 +31,6 @@ public class CategoryParam implements InputConverter<Category> {
     private String icon;
     private Set<Integer> tagIds;
     private String originalContent;
-    private Boolean useHtml;
+    private Boolean parse;
     private String cssClass; //节点的方向
 }

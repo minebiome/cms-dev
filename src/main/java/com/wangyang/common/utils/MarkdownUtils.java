@@ -66,6 +66,7 @@ public class MarkdownUtils {
             .set(TocExtension.LEVELS, -1)
             .set(TocExtension.LIST_CLASS,"thisToc")
             .set(TocExtension.IS_NUMBERED,false)
+            .set(Parser.INDENTED_CODE_BLOCK_PARSER,false)
 
             .set(EmojiExtension.USE_SHORTCUT_TYPE, EmojiShortcutType.EMOJI_CHEAT_SHEET)
                 .set(EmojiExtension.USE_IMAGE_TYPE, EmojiImageType.UNICODE_ONLY);
@@ -149,11 +150,13 @@ public class MarkdownUtils {
                     AdmonitionExtension.create(),
                     MacrosExtension.create(),
                     AttributeExtension.create(),
+
                     EnumeratedReferenceExtension.create()
 
 
             )).set(GitLabExtension.IMAGE_SRC_TAG,"src")
             .set(HtmlRenderer.SOFT_BREAK, "<br/>")
+            .set(Parser.INDENTED_CODE_BLOCK_PARSER,false)
 //            .set(Parser.HARD_LINE_BREAK_LIMIT,true)
             .set(TocExtension.LEVELS, -1)
             .set(TocExtension.LIST_CLASS,"thisToc")

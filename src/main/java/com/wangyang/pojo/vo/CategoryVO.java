@@ -37,6 +37,6 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private String recommendTemplateName;
     private String originalContent;
     private String formatContent;
-    private Boolean useHtml;
+    private Boolean parse;
     private String cssClass;
 }
