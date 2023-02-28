@@ -179,7 +179,10 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         Components components = findById(id);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(components,componentsVO);
-        if(components.getParse()==null && !components.getParse()){
+        if(components.getParse()!=null && components.getParse()){
+            convert(componentsVO,false);
+        }else {
+
             String templateValue = components.getTemplateValue();
             String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
             File file = new File(path);
@@ -188,8 +191,6 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 componentsVO.setHtmlFile(openFile);
                 componentsVO.setOriginalContent(openFile);
             }
-        }else {
-            convert(componentsVO,false);
         }
 
         return componentsVO;
