@@ -1172,14 +1172,22 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
         List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
         Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
-        if(categoryIds.size()==0){
-            return Page.empty();
+        Set<Integer> ids = new HashSet<>();
+
+        for (Integer id : categoryIds){
+            List<CategoryVO> categoryVOS = categoryService.getAllChild(id);
+            Set<Integer> set = ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId);
+            ids.addAll(set);
         }
 
+        if(ids.size()==0){
+            return Page.empty();
+        }
+        ids.addAll(categoryIds);
         return  articleRepository.findAll(new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.in(root.get("categoryId")).value(categoryIds),criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
+                return criteriaQuery.where(criteriaBuilder.in(root.get("categoryId")).value(ids),criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
                         criteriaBuilder.equal(root.get("status"), ArticleStatus.MODIFY))).getRestriction() ;
             }
         },pageable);
