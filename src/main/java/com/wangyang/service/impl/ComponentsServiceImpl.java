@@ -142,17 +142,20 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
     private void convert(ComponentsVO componentsVO,Boolean isFile){
 
         String htmlContent = componentsVO.getOriginalContent();
-        if(componentsVO.getParse()!=null && componentsVO.getParse()){
-            htmlContent = MarkdownUtils.renderHtml(htmlContent);
-        }
-        componentsVO.setHtmlFile(htmlContent);
+        if(htmlContent!=null){
+            if(componentsVO.getParse()!=null && componentsVO.getParse()){
+                htmlContent = MarkdownUtils.renderHtml(htmlContent);
+            }
+            componentsVO.setHtmlFile(htmlContent);
 
-        if(isFile){
-            String templateValue =componentsVO.getTemplateValue();
-            String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
-            File file = new File(path);
-            FileUtils.saveFile(file,htmlContent);
+            if(isFile){
+                String templateValue =componentsVO.getTemplateValue();
+                String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
+                File file = new File(path);
+                FileUtils.saveFile(file,htmlContent);
+            }
         }
+
 
     }
 
@@ -184,7 +187,6 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 String openFile = FileUtils.openFile(file);
                 componentsVO.setHtmlFile(openFile);
                 componentsVO.setOriginalContent(openFile);
-
             }
         }else {
             convert(componentsVO,false);
@@ -291,7 +293,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 }else {
                     sort = Sort.by(Sort.Order.desc("id"));
                 }
-                Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, 5, sort));
+                Page<Article> articles = articleService.pagePublishBy(components.getId(),PageRequest.of(0, 5, sort));
                 Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
 //                Map<String,Object> map = new HashMap<>();
                 map.put("view",articleVOS);
@@ -349,7 +351,9 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 String orderSort = sortStr.stream()
                         .collect(Collectors.joining(","))+","+direction.name();
 
-                Page<Article> articles = articleService.pagePublishBy(PageRequest.of(0, size, sort));
+
+
+                Page<Article> articles = articleService.pagePublishBy(components.getId(),PageRequest.of(0, size, sort));
                 Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
 //                Map<String,Object> map = new HashMap<>();
                 map.put("view",articleVOS);

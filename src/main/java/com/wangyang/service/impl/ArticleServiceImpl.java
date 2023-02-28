@@ -72,6 +72,8 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     @Autowired
     IComponentsArticleService componentsArticleService;
 
+    @Autowired
+    ComponentsCategoryRepository componentsCategoryRepository;
 
     private  ArticleRepository articleRepository;
     public ArticleServiceImpl(ArticleRepository articleRepository) {
@@ -1166,12 +1168,19 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         return  articleRepository.findAll(buildPublishByQuery(articleQuery),pageable);
     }
     @Override
-    public Page<Article>  pagePublishBy(Pageable pageable){
+    public Page<Article>  pagePublishBy(Integer componentsId,Pageable pageable){
+
+        List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
+        Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
+        if(categoryIds.size()==0){
+            return Page.empty();
+        }
+
         return  articleRepository.findAll(new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
-                        criteriaBuilder.equal(root.get("status"), ArticleStatus.MODIFY));
+                return criteriaQuery.where(criteriaBuilder.in(root.get("categoryId")).value(categoryIds),criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
+                        criteriaBuilder.equal(root.get("status"), ArticleStatus.MODIFY))).getRestriction() ;
             }
         },pageable);
     }

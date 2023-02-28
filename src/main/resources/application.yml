@@ -1,6 +1,6 @@
 cms:
   workDir: ${user.home}/cms
-  templates: templates/enterprise
+  templates: templates/templates
   uploadPrefix: http://47.93.201.74:8080
   isDebug: true
   authorizeInit: true
@@ -86,11 +86,13 @@ server:
   tomcat:
     max-threads: 200
     max-connections: 300
-#  port: 8081
-#  ssl:
-#    key-store: classpath:keystore.p12 #配置证书路径
-#    key-store-password: 123456 #证书密
-
+  port: 8081
+  ssl:
+    key-store: classpath:server.keystore #配置证书路径
+    key-store-password: 123456 #
+    key-store-type: JKS # PKCS12 JKS
+http:
+  port: 8080
 org:
   quartz:
     scheduler:

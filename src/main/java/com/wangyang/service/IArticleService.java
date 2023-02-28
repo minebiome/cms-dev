@@ -134,7 +134,7 @@ public interface IArticleService extends IContentService<Article,Article,Article
     List<Article> listArticleBy(int categoryId);
 
 
-    Page<Article>  pagePublishBy(Pageable pageable);
+    Page<Article>  pagePublishBy(Integer componentsId,Pageable pageable);
 
     //    Page<ArticleDto> pageHtmlDtoByCategory(Category category, int page);
     Page<ArticleDto> pageDtoByCategory(Category category, Pageable pageable);

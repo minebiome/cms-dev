@@ -140,7 +140,7 @@ public class ArticleAspectJ {
             if(articleDetailVO.getOldCategory()!=null){
                 deleteTemp(articleDetailVO.getOldCategory());
             }
-            htmlService.newArticleListHtml();
+//            htmlService.newArticleListHtml();
             log.info(">>> "+articleDetailVO.getCategory().getName()+"的临时文件");
             return articleDetailVO;
         } catch (InstantiationException e) {
