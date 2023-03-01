@@ -19,13 +19,13 @@ public class CustomerController {
     @Autowired
     ICustomerService customerService;
 
-    @Autowired
-    private MailService mailService;
+
     @PostMapping
     @Anonymous
     public Customer add(@RequestBody @Valid Customer customerInput, HttpServletRequest request){
+
         Customer customer = customerService.add(customerInput);
-        mailService.sendEmail(customer);
+
         return customer;
     }
 

@@ -1,6 +1,7 @@
 package com.wangyang.service.impl;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.HtmlTemplateEngine;
 import com.wangyang.common.utils.ServiceUtil;
@@ -214,6 +215,7 @@ public class MailServiceImpl implements MailService {
 
 
     @Override
+    @Async
     public void sendEmail(Customer customer) {
 
         Context context = new Context();
@@ -230,6 +232,9 @@ public class MailServiceImpl implements MailService {
         List<User> users = userService.findAllById(userIds);
         sendSimpleMail(customer.getEmail(),"老师感谢您的咨询",emailContent);
         for (User user:users){
+            if(user.getEmail()==null){
+                throw new ObjectException("管理员"+user.getUsername()+"没有配置邮箱！！");
+            }
             sendSimpleMail(user.getEmail(),"客户["+customer.getUsername()+"]发来需求，请尽快回复！",customer.getContent());
         }
     }

@@ -19,18 +19,11 @@ public class SubscribeController {
 
     @Autowired
     ISubscribeService subscribeService;
-    @Autowired
-    private MailService mailService;
+
     @PostMapping
     @Anonymous
     public Subscribe add(@RequestBody @Valid Subscribe subscribeInput, HttpServletRequest request){
-        Subscribe serviceByEmail = subscribeService.findByEmail(subscribeInput.getEmail());
-        if(serviceByEmail==null){
-            Subscribe subscribe = subscribeService.add(subscribeInput);
-            mailService.sendEmail(subscribe);
-            return subscribe;
-        }
-        throw new ObjectException("您已经订阅了！");
+        return subscribeService.add(subscribeInput);
     }
 
     @GetMapping("/del/{id}")

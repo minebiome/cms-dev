@@ -5,4 +5,5 @@ import com.wangyang.pojo.entity.Customer;
 import com.wangyang.service.base.IAuthorizeService;
 
 public interface ICustomerService extends IAuthorizeService<Customer> {
+
 }
