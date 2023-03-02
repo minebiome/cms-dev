@@ -17,8 +17,7 @@ public class Article extends Content {
     private Integer commentNum=0;
 //    private Boolean haveHtml=true;
     private String summary;
-    private String picPath;
-    private String picThumbPath;
+
 
 
 

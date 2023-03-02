@@ -9,4 +9,6 @@ public class SheetVo extends SheetDto {
     private String jsContent;
     private Integer categoryId;
     private String cssClass;
+    private String picPath;
+    private String picThumbPath;
 }

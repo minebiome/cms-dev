@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Data
 public class Content extends BaseEntity{
 
-
+    private String picPath;
+    private String picThumbPath;
     @Column(name = "status", columnDefinition = "int default 1")
     private ArticleStatus status =ArticleStatus.PUBLISHED;
     private Integer userId;

@@ -19,4 +19,6 @@ public class SheetParam {
 //    private String jsContent;
     private Boolean isSource;
     private String cssClass; //节点的方向
+    private String picPath;
+    private String picThumbPath;
 }
