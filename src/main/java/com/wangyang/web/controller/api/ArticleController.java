@@ -112,7 +112,12 @@ public class ArticleController {
         int userId = AuthorizationUtil.getUserId(request);
         Article article = articleService.findArticleById(id);
         checkUser(userId,article);
-
+        if(article.getCss()==null){
+            article.setCss("");
+        }
+        if(article.getJs()==null){
+            article.setJs("");
+        }
         if(article.getTitle().equals(articleParams.getTitle())&&
                 article.getOriginalContent().equals(articleParams.getOriginalContent())&&
                 article.getJs().equals(articleParams.getJs())&&
