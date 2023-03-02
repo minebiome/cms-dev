@@ -15,6 +15,8 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
     private String formatContent;
     private CategoryVO category;
     private Set<Integer> tagIds;
+    private String css;
+    private String js;
     private List<Tags> tags;
     private List<CategoryVO> parentCategory;
 //    private List<CategoryVO> partnerCategory;

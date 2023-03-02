@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class SheetParam {
-
+    private String css;
+    private String js;
     private ArticleStatus status ;//=ArticleStatus.PUBLISHED;
     private int userId;
     private String title;

@@ -1173,7 +1173,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
         Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
         Set<Integer> ids = new HashSet<>();
-
+        ids.addAll(categoryIds);
         for (Integer id : categoryIds){
             List<CategoryVO> categoryVOS = categoryService.getAllChild(id);
             Set<Integer> set = ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId);
@@ -1183,7 +1183,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         if(ids.size()==0){
             return Page.empty();
         }
-        ids.addAll(categoryIds);
+
         return  articleRepository.findAll(new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {

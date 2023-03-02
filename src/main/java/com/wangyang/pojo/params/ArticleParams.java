@@ -10,7 +10,8 @@ import java.util.Set;
 
 @Data
 public class ArticleParams  implements InputConverter<Article> {
-
+    private String css;
+    private String js;
     private String templateName;
 //    private ArticleStatus status =ArticleStatus.PUBLISHED;
 //    private Boolean haveHtml;

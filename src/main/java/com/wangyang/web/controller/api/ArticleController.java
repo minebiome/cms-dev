@@ -113,7 +113,12 @@ public class ArticleController {
         Article article = articleService.findArticleById(id);
         checkUser(userId,article);
 
-        if(article.getTitle().equals(articleParams.getTitle())&&article.getOriginalContent().equals(articleParams.getOriginalContent())&&article.getCategoryId().equals(articleParams.getCategoryId())){
+        if(article.getTitle().equals(articleParams.getTitle())&&
+                article.getOriginalContent().equals(articleParams.getOriginalContent())&&
+                article.getJs().equals(articleParams.getJs())&&
+                article.getCss().equals(articleParams.getCss())&&
+                article.getSummary().equals(articleParams.getSummary())&&
+                article.getCategoryId().equals(articleParams.getCategoryId())){
             return BaseResponse.ok("没有更新的字段!!",article);
         }
 

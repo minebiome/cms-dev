@@ -25,6 +25,10 @@ public class Content extends BaseEntity{
     private String toc;
     @Column(name = "toc_json", columnDefinition = "longtext")
     private String tocJSON;
+    @Column(name = "css_", columnDefinition = "longtext")
+    private String css;
+    @Column(name = "js_", columnDefinition = "longtext")
+    private String js;
     private String templateName;
     private String commentTemplateName;
     //是否开启评论
@@ -42,7 +46,9 @@ public class Content extends BaseEntity{
     // 父亲id 0是只没有父亲 此时指向category
     private Boolean expanded; // 节点是否展开
     private String direction; //节点的方向
-    private String cssClass; //节点的方向
+    private String cssClass;
+
+
     private Integer articleInComponentOrder=0;
 }
 

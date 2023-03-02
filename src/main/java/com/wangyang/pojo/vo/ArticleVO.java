@@ -7,6 +7,7 @@ import com.wangyang.pojo.dto.TagsDto;
 import com.wangyang.pojo.enums.ArticleStatus;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
