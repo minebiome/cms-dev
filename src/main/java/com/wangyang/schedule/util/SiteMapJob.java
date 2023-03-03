@@ -9,6 +9,7 @@ import com.wangyang.repository.ArticleRepository;
 import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,9 @@ public class SiteMapJob {
     @Autowired
     ArticleRepository articleRepository;
 
+    @Value("${cms.site-map}")
+    private String siteMap;
+
     @ArticleJobAnnotation(jobName = "generateSiteMap",jobGroup = "SiteMapJob",cornExpression = "0 0 0 * * ?")
     public void generateSiteMap(){
         Specification<Article> specification = new Specification<Article>() {
@@ -38,7 +42,7 @@ public class SiteMapJob {
         List<Article> articles = articleRepository.findAll(specification);
         StringBuffer sb = new StringBuffer();
         articles.forEach(article -> {
-            sb.append( "http://www.bioinfo.online"+ FormatUtil.articleListFormat(article)+"\n");
+            sb.append( siteMap+ FormatUtil.articleListFormat(article)+"\n");
         });
 //        System.out.println(sb);
         File file = new File(CmsConst.WORK_DIR+"/html/siteMap.txt");
