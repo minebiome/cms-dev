@@ -218,7 +218,7 @@ public class TemplateUtil {
      */
     public static ITemplateEngine
     getWebEngine() {
-        TemplateEngine templateEngine = HtmlTemplateEngine.getWebInstance(workDir, ".html");
+        TemplateEngine templateEngine = HtmlTemplateEngine.getWebInstance(workDir, ".html",CMSUtils.getTemplates());
         return templateEngine;
     }
     /**
@@ -228,7 +228,8 @@ public class TemplateUtil {
      * @return
      */
     public static ITemplateEngine getFileEngine() {
-        TemplateEngine templateEngine = HtmlTemplateEngine.getFileInstance(workDir, ".html");
+        TemplateEngine templateEngine = HtmlTemplateEngine.getFileInstance(workDir, ".html",CMSUtils.getTemplates());
+
         return templateEngine;
     }
     public static String saveFile(String path,String viewName,String html) {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.interceptor.BioInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,7 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport  {
                 .addResourceLocations("file:"+workDir+"/")//file:/home/wy/.bioinfo/
                 .addResourceLocations("file:"+workDir+"/html/")
                 .addResourceLocations("file:"+workDir+"/templates/")
+                .addResourceLocations("file:"+workDir+"/"+ CMSUtils.getTemplates())
                 .addResourceLocations("classpath:/static/");
 
 

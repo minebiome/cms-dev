@@ -23,16 +23,30 @@ public class HtmlTemplateEngine {
      * @param suffix
      * @return templateEngine
      */
-    public static TemplateEngine getFileInstance(String prefix, String suffix){
+    public static TemplateEngine getFileInstance(String prefix, String suffix,String templatePath){
         if(templateEngineFile==null){
             templateEngineFile = new SpringTemplateEngine();
             templateEngineFile.addDialect(new CmsFileDialect());
+
+            FileTemplateResolver fileTemplateResolver2 = new FileTemplateResolver();
+            fileTemplateResolver2.setOrder(Integer.valueOf(1));
+            fileTemplateResolver2.setCacheable(false);
+            fileTemplateResolver2.setPrefix(prefix+File.separator+ templatePath);
+            fileTemplateResolver2.setSuffix(suffix);
+            fileTemplateResolver2.getResolvablePatternSpec().addPattern("fragment/*");
+
+
+            templateEngineFile.addTemplateResolver(fileTemplateResolver2);
+
+
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
 //            templateEngineFile.addDialect(new CmsDialect(null));
-            fileTemplateResolver.setOrder(Integer.valueOf(1));
+            fileTemplateResolver.setOrder(Integer.valueOf(2));
             fileTemplateResolver.setCacheable(false);
             fileTemplateResolver.setPrefix(prefix+ File.separator);
             fileTemplateResolver.setSuffix(suffix);
+
+
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
 //            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
@@ -46,18 +60,33 @@ public class HtmlTemplateEngine {
         return templateEngineFile;
     }
 
-    public static TemplateEngine getWebInstance(String prefix, String suffix){
+    public static TemplateEngine getWebInstance(String prefix, String suffix,String templatePath){
         if(templateWebEngine==null){
             templateWebEngine = new SpringTemplateEngine();
+            templateWebEngine.addDialect(new CmsWebDialect());
+
 //            templateWebEngine.addDialect(new CmsDialect(prefix));
 //            templateWebEngine.setDialect(new CmsWebDialect());
+
+
+
+            FileTemplateResolver fileTemplateResolver2 = new FileTemplateResolver();
+//            templateEngineFile.addDialect(new CmsDialect(null));
+            fileTemplateResolver2.setOrder(Integer.valueOf(1));
+            fileTemplateResolver2.setCacheable(false);
+            fileTemplateResolver2.setPrefix(prefix+File.separator+ templatePath);
+            fileTemplateResolver2.setSuffix(suffix);
+            fileTemplateResolver2.getResolvablePatternSpec().addPattern("fragment/*");
+
+
+
             FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
-            templateWebEngine.addDialect(new CmsWebDialect());
-            fileTemplateResolver.setOrder(Integer.valueOf(1));
+            fileTemplateResolver.setOrder(Integer.valueOf(2));
             fileTemplateResolver.setCacheable(false);
             fileTemplateResolver.setPrefix(prefix+ File.separator);
             fileTemplateResolver.setSuffix(suffix);
-//            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
+
+            templateWebEngine.addTemplateResolver(fileTemplateResolver2);
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
 //            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
 //
