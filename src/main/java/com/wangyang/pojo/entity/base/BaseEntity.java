@@ -1,5 +1,6 @@
 package com.wangyang.pojo.entity.base;
 
+import com.wangyang.pojo.enums.Lang;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,5 +28,6 @@ public class BaseEntity {
     @Column(name = "update_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate=new Date();
-
+    @Column(name = "lang_")
+    private Lang lang;
 }

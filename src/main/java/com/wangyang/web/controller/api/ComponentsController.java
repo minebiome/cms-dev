@@ -90,7 +90,7 @@ public class ComponentsController {
         List<Components> components = componentsService.listAll();
         Set<String> templateValue = ServiceUtil.fetchProperty(components, Components::getTemplateValue);
         Set<String> filterFileNames = fileNames.stream().filter(item -> {
-            return !templateValue.contains("components"+File.separator+item.replace(".html","")) && !item.endsWith("bak") && !item.contains(" ");
+            return !templateValue.contains("components"+File.separator+item.split("\\.")[0]) && !item.endsWith("bak") && !item.contains(" ");
         }).collect(Collectors.toSet());
 
         if(filterFileNames.size()==0){
@@ -104,6 +104,52 @@ public class ComponentsController {
             componentsList.add( new Components(name, CMSUtils.getComponentsPath(), viewPath,name,CmsConst.ARTICLE_DATA,"",true,false));
 
         });
+
+        List<Components> saveAll = componentsService.saveAll(componentsList);
+
+        return saveAll;
+    }
+
+
+    @GetMapping("/installLanguage")
+    public List<Components> installLanguage(@RequestParam(required = false) String path){
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir;
+        if(path!=null && !path.equals("")){
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+path;
+        }else{
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+"components";
+        }
+        List<String> fileNames = FileUtils.getFileNames(componentsDir);
+        List<Components> components = componentsService.listAll();
+
+        Set<String> templateValue = ServiceUtil.fetchProperty(components, Components::getTemplateValue);
+
+        Set<String> filterFileNames = fileNames.stream().filter(item -> {
+            return !templateValue.contains("components"+File.separator+item.replace(".html","")) && !item.endsWith("bak") && !item.contains(" ");
+        }).collect(Collectors.toSet());
+
+        List<Components> componentsList = new ArrayList<>();
+        for (Components component : components){
+            String en = component.getTemplateValue().replace("components/","") + ".en.html";
+            if(filterFileNames.contains(en)){
+                component.setId(null);
+                component.setPath(component.getPath()+File.separator+"en");
+                component.setViewName(component.getViewName());
+                component.setTemplateValue(component.getTemplateValue()+".en");
+                component.setName(component.getName()+".en");
+                component.setIsSystem(false);
+                componentsList.add(component);
+            }
+        }
+
+
+
+        if(componentsList.size()==0){
+            throw new ObjectException("模板中没有新的文件！！");
+        }
+
+
 
         List<Components> saveAll = componentsService.saveAll(componentsList);
 
