@@ -92,7 +92,7 @@ public class WebReplaceTagProcessor extends AbstractStandardFragmentInsertionTag
                     structureHandler.setAttribute("cms:if","${debug}");
                     structureHandler.setBody("components 文件["+path+"]不存在！",false);
                 }
-            }else if (path.toString().contains("sheet")){
+            } else if (path.toString().contains("sheet")){
                 String viewName = FilenameUtils.getBasename(path.getFileName().toString());
                 Sheet sheet = sheetService.findByViewName(viewName);
                 if(sheet!=null){

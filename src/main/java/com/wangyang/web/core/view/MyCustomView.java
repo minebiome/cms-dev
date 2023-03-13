@@ -8,6 +8,8 @@ import com.wangyang.config.CmsConfig;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserDetailDTO;
+import com.wangyang.pojo.entity.Components;
+import com.wangyang.service.IHtmlService;
 import com.wangyang.util.AuthorizationUtil;
 import org.apache.el.lang.EvaluationContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +39,15 @@ public class MyCustomView implements View {
     private ApplicationContext applicationContext;
 
     private ConversionService mvcConversionService;
-
+    private IHtmlService htmlService;
     private Boolean isDebug;
     private String viewName;
-    public  MyCustomView(String viewName,Boolean isDebug,ApplicationContext applicationContext,ConversionService mvcConversionService){
+    public  MyCustomView(String viewName, Boolean isDebug, ApplicationContext applicationContext, ConversionService mvcConversionService, IHtmlService htmlService){
         this.viewName = viewName;
         this.applicationContext =applicationContext;
         this.mvcConversionService =mvcConversionService;
         this.isDebug =isDebug;
+        this.htmlService = htmlService;
     }
     @Override
     public void render(Map<String, ?> mapInput, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -107,6 +110,9 @@ public class MyCustomView implements View {
             }
             response.setStatus(HttpStatus.NOT_FOUND.value());
         }
+
+
+
         templateEngine.process(viewNamePath,ctx,response.getWriter());
     }
 
@@ -116,25 +122,35 @@ public class MyCustomView implements View {
      * @param pathArgs
      */
     public boolean invokeGenerateHtml(String[] pathArgs) {
+        if(pathArgs.length==1 && pathArgs[0].contains("index")){
+            htmlService.generateHome();
+        }
+
+
         if(pathArgs.length<2){
             return false;
         }
-        pathArgs = pathArgs[1].split("-");
+        if(!pathArgs[1].contains("-")){
+            htmlService.generateHtmlByViewName(pathArgs[0],pathArgs[1]);
+        }else {
+            pathArgs = pathArgs[1].split("-");
 
-        try {
-            GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
-            Method[] methods = generateHtml.getClass().getDeclaredMethods();
-            for (Method method: methods){
-                if(method.getName().equals(pathArgs[pathArgs.length-1])){
-                    method.invoke(generateHtml,new Object[]{pathArgs});
-                    return true;
+            try {
+                GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
+                Method[] methods = generateHtml.getClass().getDeclaredMethods();
+                for (Method method: methods){
+                    if(method.getName().equals(pathArgs[pathArgs.length-1])){
+                        method.invoke(generateHtml,new Object[]{pathArgs});
+                        return true;
+                    }
                 }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
         }
+
         return false;
     }
     @Override

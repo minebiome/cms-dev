@@ -12,6 +12,8 @@ import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ISheetService;
 import com.wangyang.service.impl.ComponentsServiceImpl;
 import com.wangyang.service.impl.SheetServiceImpl;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.ITemplateContext;
@@ -27,7 +29,10 @@ import org.thymeleaf.templatemode.TemplateMode;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,6 +90,7 @@ public class CmsFileReplaceTagProcessor extends AbstractAttributeTagProcessor {
             }
 
        }else {
+
             String pathStr=attributeValue;
             if(attributeValue.contains("::")){
                 pathStr= attributeValue.split("::")[0].replace(" ","");
@@ -100,6 +106,7 @@ public class CmsFileReplaceTagProcessor extends AbstractAttributeTagProcessor {
                         Object data = componentsService.getModel(components);
                         TemplateUtil.convertHtmlAndSave(data,components);
                         structureHandler.setAttribute("cms:replace",attributeValue);
+
                     }else {
                         structureHandler.setAttribute("cms:if","${debug}");
                         structureHandler.setBody("components 文件["+path+"]不存在！",false);

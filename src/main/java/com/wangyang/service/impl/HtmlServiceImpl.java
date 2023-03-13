@@ -3,6 +3,7 @@ package com.wangyang.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ArticleException;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
@@ -523,6 +524,23 @@ public class HtmlServiceImpl implements IHtmlService {
 
     }
 
+
+    @Override
+    public void generateHtmlByViewName(String type, String viewName){
+        if(type.contains("sheet")){
+            Sheet sheet = sheetService.findByViewName(viewName);
+            if(sheet==null){
+                throw new ObjectException(viewName+"不存在！！");
+            }
+            convertArticleListBy(sheet);
+        }else if (type.contains("articleList")){
+            Category category = categoryService.findByViewName(viewName);
+            if(category==null){
+                throw new ObjectException(viewName+"不存在！！");
+            }
+            convertArticleListBy(category);
+        }
+    }
 
     @Override
     public void articleTopListByCategoryId(int id) {

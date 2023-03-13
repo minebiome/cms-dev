@@ -105,5 +105,7 @@ public interface IHtmlService {
 
     void generateCommentHtmlByArticleId(Article article);
 
+    void generateHtmlByViewName(String type, String viewName);
+
     void articleTopListByCategoryId(int id);
 }
