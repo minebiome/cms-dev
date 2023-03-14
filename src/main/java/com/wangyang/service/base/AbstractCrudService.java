@@ -7,16 +7,9 @@ import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.UserException;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.QueryField;
-import com.wangyang.pojo.dto.ArticleDto;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.base.BaseEntity;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.params.ArticleQuery;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.BaseVo;
-import com.wangyang.pojo.vo.CategoryVO;
-import com.wangyang.pojo.vo.CollectionVO;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.util.File2Tsv;
 import com.wangyang.util.ObjectToCollection;
@@ -481,4 +474,20 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
 
 
     }
+
+    @Override
+    public DOMAIN findByLang(Integer langSource, Lang lang){
+        List<DOMAIN> domains = repository.findAll(new Specification<DOMAIN>() {
+            @Override
+            public Predicate toPredicate(Root<DOMAIN> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return  query.where(criteriaBuilder.equal(root.get("langSource"),langSource),criteriaBuilder.equal(root.get("lang"),lang)).getRestriction();
+            }
+        });
+        if (domains.size()==0) return null;
+        return domains.get(0);
+
+    }
+
+
+
 }

@@ -435,6 +435,9 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
         return templatePages.get(0);
     }
+
+
+
     @Override
     public Components findByViewName(String path, String viewName){
         List<Components> components = componentsRepository.findAll(new Specification<Components>() {

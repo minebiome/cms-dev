@@ -1,5 +1,8 @@
 package com.wangyang.web.controller.api;
 
+import com.wangyang.common.exception.ObjectException;
+import com.wangyang.pojo.entity.Article;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ISheetService;
 import com.wangyang.pojo.entity.Sheet;
@@ -132,6 +135,37 @@ public class SheetController {
 //        htmlService.generateMenuListHtml();
         return sheet;
     }
+
+
+    @GetMapping("/createSheetLanguage/{id}")
+    public Sheet createSheetLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang){
+
+
+        Sheet sheet = sheetService.findById(id);
+        if(sheet.getLang()==null){
+            sheet.setLang(Lang.ZH);
+            sheetService.save(sheet);
+        }
+        if(sheet.getLang().equals(lang)){
+            throw new ObjectException(sheet.getTitle()+"该文章已经是"+lang.getSuffix()+"的了！！！");
+        }
+
+        Sheet langSheet = sheetService.findByLang(sheet.getId(), lang);
+
+        if(langSheet!=null){
+            throw new ObjectException(langSheet.getTitle()+"已经创建了英文分类！！！");
+        }
+        sheet.setLangSource(sheet.getId());
+        sheet.setId(null);
+        sheet.setLang(lang);
+        sheet.setViewName(lang.getSuffix()+sheet.getViewName());
+        sheet.setTitle(lang.getSuffix()+sheet.getTitle());
+        sheet.setPath(sheet.getPath().replace("html",lang.getSuffix()));
+        Sheet save = sheetService.save(sheet);
+        return save;
+
+    }
+
 
 //    @GetMapping("/findListByChannelId/{id}")
 //    public List<SheetDto> findListByChannelId(@PathVariable("id") Integer id){

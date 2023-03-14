@@ -9,6 +9,7 @@ import com.wangyang.pojo.entity.ComponentsArticle;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.entity.base.Content;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.ContentDetailVO;
@@ -138,6 +139,7 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
         return convertToListVo(articles);
     }
 
+
     @Override
     public ARTICLE findByViewName(String viewName) {
         List<ARTICLE> contents = contentRepository.findAll(new Specification<ARTICLE>() {
@@ -149,6 +151,20 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
         if(contents.size()==0){
             throw new ObjectException("查找的内容对象不存在");
         }
+        return contents.get(0);
+    }
+
+    @Override
+    public ARTICLE findByViewName(String path, String viewName, Lang lang) {
+        List<ARTICLE> contents = contentRepository.findAll(new Specification<ARTICLE>() {
+            @Override
+            public Predicate toPredicate(Root<ARTICLE> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("path"), path),
+                        criteriaBuilder.equal(root.get("viewName"), viewName),
+                        criteriaBuilder.equal(root.get("lang"), lang)).getRestriction();
+            }
+        });
+        if(contents.size()==0)return null;
         return contents.get(0);
     }
 

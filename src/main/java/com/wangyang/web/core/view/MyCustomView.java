@@ -66,7 +66,7 @@ public class MyCustomView implements View {
             }
 
             return;
-        }else if(!viewName.startsWith("html")){
+        }else if(viewName.startsWith("templates") ){
             viewName = CMSUtils.getTemplates()+viewName;
         }
 

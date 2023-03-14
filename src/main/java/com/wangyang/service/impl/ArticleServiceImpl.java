@@ -20,6 +20,7 @@ import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.*;
 import com.wangyang.service.IComponentsArticleService;
+import com.wangyang.service.ITemplateService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
@@ -71,6 +72,11 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
     IUserService userService;
     @Autowired
     IComponentsArticleService componentsArticleService;
+
+
+
+    @Autowired
+    ITemplateService templateService;
 
     @Autowired
     ComponentsCategoryRepository componentsCategoryRepository;
@@ -406,7 +412,10 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
     @Override
     public Article saveArticleDraft(Article article,boolean more){
-        article.setPath(CMSUtils.getArticlePath());
+
+
+
+
         if(article.getCategoryId()==null){
             throw new ArticleException("文章类别不能为空!!");
         }
@@ -500,13 +509,28 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             article.setCommentTemplateName(CmsConst.DEFAULT_COMMENT_TEMPLATE);
         }
         Category category = categoryService.findById(article.getCategoryId());
-        article.setPath(CMSUtils.getArticlePath());
+
+
 
 //        if(article.getTemplateName()==null){
 //            //由分类管理文章的模板，这样设置可以让文章去维护自己的模板
 //
 //        }
         article.setTemplateName(category.getArticleTemplateName());
+
+        if(article.getUseTemplatePath()!=null && article.getUseTemplatePath()){
+            Template template = templateService.findByEnName(category.getTemplateName());
+            article.setPath(template.getPath());
+        }
+        if(article.getPath()==null || article.getPath().equals("")){
+            article.setPath(CMSUtils.getArticlePath());
+        }
+
+//        article.setPath(CMSUtils.getArticlePath());
+//        article.setPath(CMSUtils.getArticlePath());
+
+
+
         article = super.createOrUpdate(article);
         //图片展示
         if(article.getPicPath()==null|| "".equals(article.getPicPath())){

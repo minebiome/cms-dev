@@ -2,7 +2,9 @@ package com.wangyang.web.controller.api;
 
 import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.wangyang.common.exception.ArticleException;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.service.IArticleService;
@@ -20,6 +22,7 @@ import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.util.AuthorizationUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.io.File;
 import java.util.*;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -591,6 +595,35 @@ public class ArticleController {
         Article article = articleService.findArticleById(id);
         article.setArticleInComponentOrder(order);
         return articleService.save(article);
+    }
+
+
+    @GetMapping("/createArticleLanguage/{id}")
+    public Article createArticleLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang){
+
+
+        Article article = articleService.findById(id);
+        if(article.getLang()==null){
+            article.setLang(Lang.ZH);
+            articleService.save(article);
+        }
+        if(article.getLang().equals(lang)){
+            throw new ObjectException(article.getTitle()+"该文章已经是"+lang.getSuffix()+"的了！！！");
+        }
+
+        Article langArticle = articleService.findByLang(article.getId(), lang);
+
+        if(langArticle!=null){
+            throw new ObjectException(langArticle.getTitle()+"已经创建了英文分类！！！");
+        }
+        article.setLangSource(article.getId());
+        article.setId(null);
+        article.setLang(lang);
+        article.setViewName(lang.getSuffix()+article.getViewName());
+        article.setTitle(lang.getSuffix()+article.getTitle());
+        article.setPath(article.getPath().replace("html",lang.getSuffix()));
+        Article save = articleService.save(article);
+        return save;
     }
 
 }

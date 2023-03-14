@@ -193,7 +193,7 @@ public class ArticleJob {
             map.put("showUrl","/articleList?categoryId="+category.getId()+"&sort=visits,DESC");
             map.put("name",category.getName()+"推荐");
             Template template = templateService.findByEnName(CmsConst.ARTICLE_RECENT_LIST);
-            TemplateUtil.convertHtmlAndSave(CMSUtils.getArticleRecentPath(),category.getViewName(),map,template);
+            TemplateUtil.convertHtmlAndSave(category.getPath()+CMSUtils.getArticleRecentPath(),category.getViewName(),map,template);
         });
     }
 

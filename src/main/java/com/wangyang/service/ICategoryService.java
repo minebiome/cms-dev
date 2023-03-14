@@ -4,6 +4,7 @@ import com.wangyang.pojo.dto.CategoryChild;
 import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Category;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;
@@ -76,6 +77,8 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
 
     List<CategoryDto> listAllDto();
 
+    List<Category> listAll(Lang lang);
+
     List<Category> listAll();
 
     /**
@@ -103,6 +106,8 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
     CategoryVO covertToVo(Category category);
 
     List<CategoryVO> listChildByViewName(String viewName);
+
+    Category findByViewName(String path,String viewName, Lang lang);
 
     Category findByViewName(String viewName);
 

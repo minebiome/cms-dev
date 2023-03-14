@@ -15,6 +15,7 @@ public class Content extends BaseEntity{
     @Column(name = "status", columnDefinition = "int default 1")
     private ArticleStatus status =ArticleStatus.PUBLISHED;
     private Integer userId;
+    private Boolean useTemplatePath;
     private String title;
     private String viewName;
     @Column(name = "original_content", columnDefinition = "longtext not null")

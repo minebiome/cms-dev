@@ -6,6 +6,7 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.enums.Lang;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.pojo.entity.Components;
@@ -168,6 +169,7 @@ public class ComponentsController {
 
             }
         }
+        component.setLangSource(component.getId());
         component.setId(null);
         component.setPath(component.getPath()+File.separator+Lang.EN.getSuffix());
         component.setViewName(component.getViewName());
@@ -179,7 +181,39 @@ public class ComponentsController {
 
 
 
+
     }
+
+
+
+
+    @GetMapping("/createComponentsLanguage/{id}")
+    public Components createComponentsLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang){
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir=workDir+ File.separator+CMSUtils.getTemplates();;
+
+        Components components = componentsService.findById(id);
+
+        if(components.getLang()==null){
+            components.setLang(Lang.ZH);
+            componentsService.save(components);
+        }
+        if(components.getLang().equals(lang)){
+            throw new ObjectException(components.getName()+"该组件已经是"+lang.getSuffix()+"的了！！！");
+        }
+        Components langComponents = componentsService.findByLang(components.getId(), lang);
+
+        if(langComponents!=null){
+            throw new ObjectException(langComponents.getName()+"已经创建了英文！！！");
+        }
+
+        createComponents(components,componentsDir);
+        Components save = componentsService.save(components);
+        return save;
+    }
+
+
+
     @GetMapping("/createAllLanguage")
     public List<Components> createAllLanguage(@RequestParam(required = false) String path){
 

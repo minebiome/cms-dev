@@ -9,16 +9,16 @@ import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.FileDTO;
 import com.wangyang.pojo.entity.*;
-import com.wangyang.pojo.enums.AttachmentType;
-import com.wangyang.pojo.enums.FileWriteType;
-import com.wangyang.pojo.enums.Lang;
-import com.wangyang.pojo.enums.TemplateType;
+import com.wangyang.pojo.enums.*;
 import com.wangyang.pojo.params.TemplateParam;
+import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.TemplateChildRepository;
+import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.authorize.IArticleAttachmentService;
 import com.wangyang.repository.TemplateRepository;
 import com.wangyang.service.IAttachmentService;
 import com.wangyang.service.ITemplateService;
+import com.wangyang.service.base.AbstractCrudService;
 import com.wangyang.util.ZipHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -47,10 +47,9 @@ import java.util.regex.Pattern;
 
 @Service
 @Slf4j
-public class TemplateServiceImpl implements ITemplateService {
+public class TemplateServiceImpl extends AbstractCrudService<Template, Template, BaseVo,Integer>  implements ITemplateService {
 
-    @Autowired
-    TemplateRepository templateRepository;
+
 
 
     @Autowired
@@ -71,6 +70,12 @@ public class TemplateServiceImpl implements ITemplateService {
     private final static  String INSTALL_TEMPLATE_PATH = "templates/install";
     private final static  Pattern css = Pattern.compile("href=\"(.*)\\.css");
     private final static  Pattern js = Pattern.compile("src=\"(.*)\\.js");
+    @Autowired
+    TemplateRepository templateRepository;
+    public TemplateServiceImpl(TemplateRepository templateRepository) {
+        super(templateRepository);
+        this.templateRepository =templateRepository;
+    }
 
     public List<String> getLink(Pattern pattern,String content,String suffix){
         List<String> links = new ArrayList<>();
@@ -307,6 +312,10 @@ public class TemplateServiceImpl implements ITemplateService {
         templateRepository.deleteAll();
     }
 
+    @Override
+    public boolean supportType(CrudType type) {
+        return false;
+    }
 
 
 //    @Override

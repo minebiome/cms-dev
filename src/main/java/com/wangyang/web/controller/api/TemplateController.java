@@ -235,6 +235,37 @@ public class TemplateController {
         return saveAll;
     }
 
+
+
+    @GetMapping("/createTemplateLanguage/{id}")
+    public Template createTemplateLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang){
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir=workDir+ File.separator+CMSUtils.getTemplates();;
+
+        Template template = templateService.findById(id);
+        if(template.getLang()==null){
+            template.setLang(Lang.ZH);
+            templateService.save(template);
+        }
+        if(template.getLang().equals(lang)){
+            throw new ObjectException(template.getName()+"该组件已经是"+lang.getSuffix()+"的了！！！");
+        }
+        Template langTemplate = templateService.findByLang(template.getId(), lang);
+
+        if(langTemplate!=null){
+            throw new ObjectException(langTemplate.getName()+"已经创建了英文！！！");
+        }
+
+        createTemplate(template,componentsDir);
+        Template save = templateService.save(template);
+        return save;
+    }
+
+
+
+
+
+
     private void createTemplate(Template template, String componentsDir) {
         if(componentsDir!=null){
             List<String> fileNames = FileUtils.getFileNames(componentsDir);
@@ -248,6 +279,7 @@ public class TemplateController {
 
             }
         }
+        template.setLangSource(template.getId());
         template.setId(null);
         if(template.getPath()!=""){
             template.setPath(template.getPath()+File.separator+Lang.EN.getSuffix());
@@ -260,6 +292,7 @@ public class TemplateController {
         template.setIsSystem(false);
         template.setLang(Lang.EN);
         template.setEnName(template.getEnName()+"."+Lang.EN.getSuffix());
+
     }
 
 

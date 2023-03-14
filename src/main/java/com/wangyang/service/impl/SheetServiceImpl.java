@@ -6,6 +6,7 @@ import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.entity.Menu;
 import com.wangyang.pojo.entity.Sheet;
+import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.BaseVo;
@@ -64,7 +65,16 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
         }else {
             sheet = super.createOrUpdate(sheet);
         }
-        sheet.setPath(CMSUtils.getSheetPath());
+
+        if(sheet.getUseTemplatePath()!=null && sheet.getUseTemplatePath()){
+            Template template = templateService.findByEnName(sheet.getTemplateName());
+            sheet.setPath(template.getPath());
+        }
+        if(sheet.getPath()==null || sheet.getPath().equals("")){
+            sheet.setPath(CMSUtils.getArticlePath());
+        }
+//        sheet.setPath(CMSUtils.getSheetPath());
+
 
 //        sheet.setPath(channel.getPath()+"/"+channel.getName());
         if(sheet.getViewName()==null||"".equals(sheet.getViewName())){
@@ -73,6 +83,9 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
         if(sheet.getTemplateName()==null||"".equals(sheet.getTemplateName())){
             sheet.setTemplateName(CmsConst.DEFAULT_SHEET_TEMPLATE);
         }
+
+
+
 
 //        if(channel.getFirstSheet()==null||"".equals(channel.getFirstSheet())){
 //            channel.setFirstSheet(sheet.getViewName());

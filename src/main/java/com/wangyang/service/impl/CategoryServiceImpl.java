@@ -7,12 +7,11 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryChild;
-import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.params.CategoryQuery;
-import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.repository.CategoryRepository;
@@ -169,6 +168,9 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         if(category.getTemplateName()==null||"".equals(category.getTemplateName())){
             category.setTemplateName(CmsConst.DEFAULT_CATEGORY_TEMPLATE);
         }
+
+
+
         if(category.getArticleTemplateName()==null||"".equals(category.getArticleTemplateName())){
             category.setArticleTemplateName(CmsConst.DEFAULT_ARTICLE_TEMPLATE);
         }
@@ -176,7 +178,18 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
             category.setDesc(true);
         }
 
-        category.setPath(CMSUtils.getCategoryPath());
+
+        if(category.getUseTemplatePath()!=null && category.getUseTemplatePath()){
+            Template template = templateService.findByEnName(category.getTemplateName());
+            category.setPath(template.getPath());
+        }
+        if(category.getPath()==null || category.getPath().equals("")){
+            category.setPath(CMSUtils.getCategoryPath());
+        }
+
+
+
+
         if(category.getParse()!=null && category.getParse()){
             String renderHtml = MarkdownUtils.renderHtml(category.getOriginalContent());
             category.setFormatContent(renderHtml);
@@ -359,15 +372,19 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         List<Category> categories = listAll();
         return convertTo(categories);
     }
-
     @Override
-    public List<Category> listAll(){
+    public List<Category> listAll(Lang lang){
         return categoryRepository.findAll(new Specification<Category>() {
             @Override
             public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return  criteriaQuery.where(criteriaBuilder.isTrue(root.get("haveHtml"))).getRestriction();
+                return  criteriaQuery.where(criteriaBuilder.equal(root.get("lang"),lang)).getRestriction();
             }
         });
+
+    }
+    @Override
+    public List<Category> listAll(){
+        return categoryRepository.findAll();
     }
 
     //TODO
@@ -569,9 +586,9 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         CategoryVO categoryVO = new CategoryVO();
         BeanUtils.copyProperties(category, categoryVO);
         categoryVO.setLinkPath(FormatUtil.categoryListFormat(category));
-        categoryVO.setRecommendPath(CMSUtils.getArticleRecommendPath()+ File.separator+category.getViewName());
-        categoryVO.setRecentPath(CMSUtils.getArticleRecentPath()+ File.separator+category.getViewName());
-        categoryVO.setFirstTitleList(CMSUtils.getFirstArticleTitleList()+ File.separator+category.getViewName());
+        categoryVO.setRecommendPath(category.getPath()+CMSUtils.getArticleRecommendPath()+ File.separator+category.getViewName());
+        categoryVO.setRecentPath(category.getPath()+CMSUtils.getArticleRecentPath()+ File.separator+category.getViewName());
+        categoryVO.setFirstTitleList(category.getPath()+CMSUtils.getFirstArticleTitleList()+ File.separator+category.getViewName());
         return categoryVO;
     }
             @Override
@@ -583,7 +600,17 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         List<Category> categories = findByParentId(category.getId());
         return convertToListVo(categories);
     }
-
+    @Override
+    public Category findByViewName(String path,String viewName, Lang lang){
+        List<Category> categories = categoryRepository.findAll(new Specification<Category>() {
+            @Override
+            public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return query.where(criteriaBuilder.equal(root.get("viewName"), viewName), criteriaBuilder.equal(root.get("lang"), lang), criteriaBuilder.equal(root.get("path"), path)).getRestriction();
+            }
+        });
+        if(categories.size()==0)return null;
+        return categories.get(0);
+    }
 
     @Override
     public Category findByViewName(String viewName){

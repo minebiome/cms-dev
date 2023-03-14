@@ -4,6 +4,7 @@ import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Collection;
 import com.wangyang.pojo.entity.Comment;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.CollectionVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,5 +68,9 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     void addChild(List<DOMAINVO> domainvos, Integer id);
 
     List<DOMAINVO> getAllChild(Integer id);
+
+    DOMAIN findByLang(Integer langSource, Lang lang);
+
+
     //    @Override
 }

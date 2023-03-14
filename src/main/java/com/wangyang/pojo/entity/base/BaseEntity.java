@@ -30,4 +30,5 @@ public class BaseEntity {
     private Date updateDate=new Date();
     @Column(name = "lang_")
     private Lang lang=Lang.ZH;
+    private Integer langSource;
 }

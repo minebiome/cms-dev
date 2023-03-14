@@ -47,12 +47,12 @@ public class CmsConst {
     public final static String COMMENT_PATH_JSON =COMMENT_PATH+File.separator+"json";
 
     public final static String CATEGORY_PATH = "html"+ File.separator+"articleList";
-    public final static String FIRST_ARTICLE_LIST = CATEGORY_PATH+ File.separator+"firstArticleList";
-    public final static String ARTICLE_RECOMMEND_LIST_PATH = CATEGORY_PATH+ File.separator+"articleRecommendList";
-    public final static String ARTICLE_RECENT_LIST_PATH = CATEGORY_PATH+ File.separator+"articleRecentList";
-    public final static String CATEGORY_CHILDREN = CATEGORY_PATH+ File.separator+"categoryChildren";
-    public final static String FIRST_ARTICLE_TITLE_LIST = CATEGORY_PATH+ File.separator+"firstTitleList";
-    public final static String ARTICLE_LIST_JS_PATH = CATEGORY_PATH+ File.separator+"articleListJs";
+    public final static String FIRST_ARTICLE_LIST = File.separator+"firstArticleList";
+    public final static String ARTICLE_RECOMMEND_LIST_PATH =  File.separator+"articleRecommendList";
+    public final static String ARTICLE_RECENT_LIST_PATH =  File.separator+"articleRecentList";
+    public final static String CATEGORY_CHILDREN =  File.separator+"categoryChildren";
+    public final static String FIRST_ARTICLE_TITLE_LIST =  File.separator+"firstTitleList";
+    public final static String ARTICLE_LIST_JS_PATH = File.separator+"articleListJs";
 
 
 

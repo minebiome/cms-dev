@@ -11,4 +11,5 @@ import javax.persistence.*;
 public class BaseCategory extends BaseEntity{
     private String name;
     private String cssClass; //节点的方向
+    private Boolean useTemplatePath;
 }

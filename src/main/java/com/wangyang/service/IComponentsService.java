@@ -44,6 +44,7 @@ public interface IComponentsService  extends ICrudService<Components, Components
 
     Components findByDataName(String dataName);
 
+
     Components findByViewName(String path, String viewName);
 
     Components findByViewName(String viewName);

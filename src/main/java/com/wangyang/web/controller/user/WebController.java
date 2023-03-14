@@ -69,8 +69,16 @@ public class WebController {
     public String index(HttpServletRequest request){
         return "html/index";
     }
-
-
+    @GetMapping("/html/{path}/en/{viewName}.html")
+    @Anonymous
+    public String showENArticle(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {
+        return "html" + File.separator+path+File.separator+"en"+File.separator+viewName;
+    }
+    @GetMapping("/en/{path}/{viewName}.html")
+    @Anonymous
+    public String showEnArticle3(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {
+        return "en" + File.separator+path+File.separator+viewName;
+    }
     @GetMapping("/html/{path}/{viewName}.html")
     @Anonymous
     public String showArticle(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {
@@ -85,11 +93,11 @@ public class WebController {
     public String showArticleFormat(@PathVariable("path") String path) {
         return "html" + File.separator+path;
     }
-    @GetMapping("/en/{path}.html")
-    @Anonymous
-    public String showEnArticleFormat(@PathVariable("path") String path) {
-        return "html/en" + File.separator+path;
-    }
+//    @GetMapping("/en/{path}.html")
+//    @Anonymous
+//    public String showEnArticleFormat(@PathVariable("path") String path) {
+//        return "html/en" + File.separator+path;
+//    }
 
 //    @GetMapping("/html_articleList_{path}.html")
 //    @Anonymous

@@ -5,6 +5,8 @@ import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.CategoryTags;
+import com.wangyang.pojo.entity.Components;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.repository.CategoryTagsRepository;
@@ -19,6 +21,7 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.vo.CategoryVO;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +30,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -241,6 +246,37 @@ public class CategoryController {
         Category category = categoryService.findById(id);
         category.setCategoryInComponentOrder(order);
         return categoryService.save(category);
+    }
+
+
+
+    @GetMapping("/createCategoryLanguage/{id}")
+    public Category createCategoryLanguage(@PathVariable("id") Integer id,@RequestParam(defaultValue = "EN")Lang lang){
+        Category category = categoryService.findById(id);
+
+        if(category.getLang()==null){
+            category.setLang(Lang.ZH);
+            categoryService.save(category);
+        }
+        if(category.getLang().equals(lang)){
+            throw new ObjectException(category.getName()+"该分类已经是"+lang.getSuffix()+"的了！！！");
+        }
+
+        Category langCategory = categoryService.findByLang(category.getId(), lang);
+
+        if(langCategory!=null){
+            throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
+        }
+        category.setLangSource(category.getId());
+
+        category.setId(null);
+        category.setLang(lang);
+        category.setViewName(lang.getSuffix()+category.getViewName());
+        category.setName(lang.getSuffix()+category.getName());
+        category.setPath(category.getPath().replace("html",lang.getSuffix()));
+
+        Category save = categoryService.save(category);
+        return save;
     }
 
 }

@@ -5,6 +5,7 @@ import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.entity.base.Content;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ public interface IContentService<ARTICLE extends Content,ARTICLEDTO,ARTICLEVO>  
 
     Page<ARTICLE> pageContentByCategoryIds(Set<Integer> ids, Boolean isDesc, PageRequest pageRequest);
     ARTICLE findByViewName(String viewName);
+    ARTICLE findByViewName(String path, String viewName, Lang lang);
     List<ARTICLE> listContentByCategoryIds(Set<Integer> ids, Boolean isDesc);
 
     Page<ARTICLEVO> convertToPageVo(Page<ARTICLE> contentPage);

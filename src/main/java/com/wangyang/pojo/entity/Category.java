@@ -31,6 +31,9 @@ public class Category extends BaseCategory{
     @Column(columnDefinition = "bit(1) default true")
     private Boolean haveHtml=true;
 
+
+
+
     private String viewName;
 //    @Column(columnDefinition = "bit(1) default true")
 //    private Boolean status=true;
