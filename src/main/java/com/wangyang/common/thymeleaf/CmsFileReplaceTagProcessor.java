@@ -101,7 +101,8 @@ public class CmsFileReplaceTagProcessor extends AbstractAttributeTagProcessor {
             if(!path.toFile().exists() && !pathStr.startsWith("fragment")){
                 if(path.toString().contains("components")){
                     String viewName = FilenameUtils.getBasename(path.getFileName().toString());
-                    Components components = componentsService.findByViewName(viewName);
+                    String parentPath = Paths.get(pathStr).getParent().toString().substring(1);
+                    Components components = componentsService.findByViewName(parentPath,viewName);
                     if(components!=null){
                         Object data = componentsService.getModel(components);
                         TemplateUtil.convertHtmlAndSave(data,components);
