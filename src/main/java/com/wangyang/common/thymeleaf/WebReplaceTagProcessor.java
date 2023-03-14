@@ -1,6 +1,7 @@
 package com.wangyang.common.thymeleaf;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.FilenameUtils;
 import com.wangyang.common.utils.TemplateUtil;
@@ -83,12 +84,14 @@ public class WebReplaceTagProcessor extends AbstractStandardFragmentInsertionTag
         if(!path.toFile().exists()){
             if(path.toString().contains("components")){
                 String viewName = FilenameUtils.getBasename(path.getFileName().toString());
-                Components components = componentsService.findByViewName(viewName);
+                String parentPath = Paths.get(pathStr).getParent().toString().substring(1);
+                Components components = componentsService.findByViewName(parentPath, viewName);
                 if(components!=null){
                     Object data = componentsService.getModel(components);
                     TemplateUtil.convertHtmlAndSave(data,components);
                     processHtml(context,tag,attributeName,attributeValue,structureHandler);
                 }else {
+
                     structureHandler.setAttribute("cms:if","${debug}");
                     structureHandler.setBody("components 文件["+path+"]不存在！",false);
                 }

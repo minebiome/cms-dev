@@ -1,6 +1,7 @@
 package com.wangyang.web.core.view;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
@@ -103,7 +104,11 @@ public class MyCustomView implements View {
 
         ITemplateEngine templateEngine = TemplateUtil.getWebEngine();
         String[] pathArgs = viewName.split("_");
-        if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs)){
+
+
+
+
+        if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs,viewName)){
             viewNamePath = CMSUtils.getTemplates()+"error";
             if(!Paths.get(path).toFile().exists()){
                 ctx.setVariable("message","模板不存在："+path);
@@ -121,17 +126,43 @@ public class MyCustomView implements View {
      * @see GenerateHtml
      * @param pathArgs
      */
-    public boolean invokeGenerateHtml(String[] pathArgs) {
-        if(pathArgs.length==1 && pathArgs[0].contains("index")){
-            htmlService.generateHome();
-        }
+    public boolean invokeGenerateHtml(String[] pathArgs,String viewName) {
+//        if(pathArgs.length==1 && pathArgs[0].contains("index")){
+//            htmlService.generateHome();
+//            htmlService.generateHtmlByViewName();
+//        }
+        if(pathArgs.length==1
+                && viewName.contains("/")){
+            int pos = viewName.lastIndexOf("/");
+            String args1 = viewName.substring(0,pos);
+            String args2 = viewName.substring(pos+1);
+            pathArgs = new String[]{args1,args2};
+            if(!viewName.contains("article")
+                    && !viewName.contains("articleList")
+                    && !viewName.contains("sheet")){
 
+                try{
+                    htmlService.generateComponentsByViewName(args1, args2);
+                    return true;
+                }catch (ObjectException e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        }
 
         if(pathArgs.length<2){
             return false;
         }
         if(!pathArgs[1].contains("-")){
-            htmlService.generateHtmlByViewName(pathArgs[0],pathArgs[1]);
+            try{
+                htmlService.generateHtmlByViewName(pathArgs[0],pathArgs[1]);
+                return true;
+            }catch (ObjectException e){
+                e.printStackTrace();
+                return false;
+            }
+
         }else {
             pathArgs = pathArgs[1].split("-");
 

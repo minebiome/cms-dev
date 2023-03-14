@@ -523,7 +523,17 @@ public class HtmlServiceImpl implements IHtmlService {
         }
 
     }
+    @Override
+    public void generateComponentsByViewName(String path, String viewName) {
+        Components components = componentsService.findByViewName(path, viewName);
+        if(components!=null){
+            Object data = componentsService.getModel(components);
+            TemplateUtil.convertHtmlAndSave(data,components);
+        }else {
+            throw new ObjectException("组件 path:"+path+","+"viewName:"+viewName+"不存在！");
+        }
 
+    }
 
     @Override
     public void generateHtmlByViewName(String type, String viewName){
@@ -539,7 +549,18 @@ public class HtmlServiceImpl implements IHtmlService {
                 throw new ObjectException(viewName+"不存在！！");
             }
             convertArticleListBy(category);
+        } else if (type.contains("article")) {
+            Article article = articleService.findByViewName(viewName);
+            if(article==null){
+                throw new ObjectException(viewName+"不存在！！");
+            }
+            ArticleDetailVO articleDetailVO = articleService.convert(article);
+            conventHtml(articleDetailVO);
+
+        }else {
+            throw new ObjectException("type:"+type+","+"viewName:"+viewName+"不存在！");
         }
+
     }
 
     @Override

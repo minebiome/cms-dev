@@ -435,7 +435,17 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
         return templatePages.get(0);
     }
-
+    @Override
+    public Components findByViewName(String path, String viewName){
+        List<Components> components = componentsRepository.findAll(new Specification<Components>() {
+            @Override
+            public Predicate toPredicate(Root<Components> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("viewName"),viewName),criteriaBuilder.equal(root.get("path"),path)).getRestriction();
+            }
+        });
+        if(components.size()==0)return null;
+        return components.get(0);
+    }
     @Override
     public Components findByViewName(String viewName){
         List<Components> components = componentsRepository.findAll(new Specification<Components>() {
