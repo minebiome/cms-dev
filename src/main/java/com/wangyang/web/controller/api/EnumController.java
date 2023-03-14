@@ -4,6 +4,7 @@ import com.wangyang.common.exception.CmsException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.enums.ValueEnum;
@@ -28,6 +29,8 @@ public class EnumController {
             return TemplateType.values();
         }else if (name.equals("TemplateData")){
             return TemplateData.values();
+        } else if (name.equals("Lang")) {
+            return Lang.values();
         }
         throw new ObjectException("enum 不存在！");
     }

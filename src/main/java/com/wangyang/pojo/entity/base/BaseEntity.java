@@ -29,5 +29,5 @@ public class BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate=new Date();
     @Column(name = "lang_")
-    private Lang lang;
+    private Lang lang=Lang.ZH;
 }

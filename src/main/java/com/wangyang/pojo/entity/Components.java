@@ -14,7 +14,7 @@ public class Components extends BaseTemplate {
 
     private String viewName;
     private String dataName;
-    private String path;
+
     @Column(name = "template_event")
     private String event;
 
@@ -26,7 +26,7 @@ public class Components extends BaseTemplate {
     }
 
     public Components(String name, String path , String templateValue, String viewName, String dataName, String event, Boolean status){
-        this.path=path;
+        super.setPath(path);
 
         super.setName(name);
         super.setTemplateValue(templateValue);
@@ -37,7 +37,7 @@ public class Components extends BaseTemplate {
         super.setIsSystem(true);
     }
     public Components(String name, String path , String templateValue, String viewName, String dataName, String event, Boolean status,Boolean isSystem){
-        this.path=path;
+       super.setPath(path);
 
         super.setName(name);
         super.setTemplateValue(templateValue);

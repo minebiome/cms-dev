@@ -31,6 +31,7 @@ public class Template extends BaseTemplate implements Serializable {
         this.setStatus(false);
         this.setOrder(order);
         this.setIsSystem(true);
+        this.setTemplateData(TemplateData.OTHER);
     }
     public Template(String name,String enName,String templateValue,TemplateType templateType,Boolean isSystem){
         super.setName(name);
@@ -50,6 +51,7 @@ public class Template extends BaseTemplate implements Serializable {
         this.setOrder(order);
         super.setTree(tree);
         this.setIsSystem(true);
+        this.setTemplateData(TemplateData.OTHER);
     }
     public Template(String templateValue) {
         super.setTemplateValue(templateValue);

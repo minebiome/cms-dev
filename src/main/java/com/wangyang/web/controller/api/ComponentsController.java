@@ -6,6 +6,7 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.params.ComponentsParam;
@@ -17,6 +18,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,8 +36,8 @@ public class ComponentsController {
     IComponentsService componentsService;
 
     @GetMapping
-    public Page<Components> list(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
-        return  componentsService.list(pageable);
+    public Page<Components> list(@PageableDefault(sort = {"name"},direction = DESC) Pageable pageable,@RequestParam(required = false) Lang lang){
+        return  componentsService.list(pageable, lang);
     }
 
     @RequestMapping("/find/{id}")
@@ -131,14 +135,9 @@ public class ComponentsController {
 
         List<Components> componentsList = new ArrayList<>();
         for (Components component : components){
-            String en = component.getTemplateValue().replace("components/","") + ".en.html";
+            String en = component.getTemplateValue().replace("components/","") + "."+Lang.EN.getSuffix()+".html";
             if(filterFileNames.contains(en)){
-                component.setId(null);
-                component.setPath(component.getPath()+File.separator+"en");
-                component.setViewName(component.getViewName());
-                component.setTemplateValue(component.getTemplateValue()+".en");
-                component.setName(component.getName()+".en");
-                component.setIsSystem(false);
+                createComponents(component,null);
                 componentsList.add(component);
             }
         }
@@ -156,7 +155,73 @@ public class ComponentsController {
         return saveAll;
     }
 
+    public void createComponents(Components component,String componentsDir){
+        if(componentsDir!=null){
+            List<String> fileNames = FileUtils.getFileNames(componentsDir);
+            Path path = Paths.get(componentsDir, component.getTemplateValue() + ".html");
+            if(path.toFile().exists()){
+                try {
+                    FileUtils.copyFolder(path,Paths.get(componentsDir,component.getTemplateValue() + "."+Lang.EN.getSuffix()+".html"));
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
 
+            }
+        }
+        component.setId(null);
+        component.setPath(component.getPath()+File.separator+Lang.EN.getSuffix());
+        component.setViewName(component.getViewName());
+        component.setTemplateValue(component.getTemplateValue()+"."+Lang.EN.getSuffix());
+        component.setName(component.getName()+"."+Lang.EN.getSuffix());
+        component.setIsSystem(false);
+        component.setLang(Lang.EN);
+
+
+
+
+    }
+    @GetMapping("/createAllLanguage")
+    public List<Components> createAllLanguage(@RequestParam(required = false) String path){
+
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir;
+        if(path!=null && !path.equals("")){
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+path;
+        }else{
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates();
+        }
+
+        componentsService.listAll().forEach(comp -> {
+            if(comp.getLang()==null){
+                comp.setLang(Lang.ZH);
+                componentsService.save(comp);
+            }
+        });
+
+
+        List<Components> componentsZH = componentsService.listAll(Lang.ZH);
+        List<Components> componentsEN = componentsService.listAll(Lang.EN);
+        Set<String> templateValue = ServiceUtil.fetchProperty(componentsEN, Components::getTemplateValue);
+
+        List<Components> componentsSet = componentsZH.stream().filter(item -> {
+            return !templateValue.contains(item.getTemplateValue()+"."+Lang.EN.getSuffix());
+        }).collect(Collectors.toList());
+
+        if(componentsSet.size()==0){
+            throw new ObjectException(componentsZH.size()+"个中文模板创建了"+componentsEN.size()+"个英文模板");
+        }
+
+        List<Components> componentsList = new ArrayList<>();
+        for (Components comp : componentsSet){
+            createComponents(comp,componentsDir);
+            componentsList.add(comp);
+        }
+
+
+        List<Components> saveAll = componentsService.saveAll(componentsList);
+
+        return saveAll;
+    }
 
     @GetMapping("/listNeedArticle")
     public List<Components> listNeedArticle(){

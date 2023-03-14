@@ -7,14 +7,11 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
-import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.dto.ArticleDto;
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.ArticleTags;
-import com.wangyang.pojo.entity.Components;
-import com.wangyang.pojo.entity.Tags;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.config.ApplicationBean;
@@ -24,7 +21,6 @@ import com.wangyang.pojo.vo.ComponentsVO;
 import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.ArticleTagsRepository;
 import com.wangyang.repository.ComponentsRepository;
-import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IComponentsService;
@@ -80,8 +76,17 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
 
     @Override
-    public Page<Components> list(Pageable pageable){
-        return componentsRepository.findAll(pageable);
+    public Page<Components> list(Pageable pageable,Lang lang){
+        if(lang!=null && !lang.equals("")){
+            return componentsRepository.findAll(new Specification<Components>() {
+                @Override
+                public Predicate toPredicate(Root<Components> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                    return query.where(criteriaBuilder.equal(root.get("lang"),lang)).getRestriction();
+                }
+            }, pageable);
+        }else {
+            return componentsRepository.findAll(pageable);
+        }
     }
 
     @Override
@@ -98,6 +103,17 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
     @Override
     public List<Components> listAll() {
         return componentsRepository.findAll();
+    }
+
+    @Override
+    public List<Components> listAll(Lang lang){
+        List<Components> components = componentsRepository.findAll(new Specification<Components>() {
+            @Override
+            public Predicate toPredicate(Root<Components> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return query.where(criteriaBuilder.equal(root.get("lang"),lang)).getRestriction();
+            }
+        });
+        return components;
     }
 
     @Override

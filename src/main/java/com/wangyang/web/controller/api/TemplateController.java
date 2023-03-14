@@ -8,6 +8,7 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.TemplateChild;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ITemplateService;
@@ -23,7 +24,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -74,8 +79,8 @@ public class TemplateController {
 
 
     @GetMapping
-    public Page<Template> list(@PageableDefault(sort = {"id"},direction = DESC)Pageable pageable){
-        Page<Template> templatePage = templateService.list(pageable);
+    public Page<Template> list(@PageableDefault(sort = {"enName"},direction = DESC)Pageable pageable,@RequestParam(required = false) Lang lang){
+        Page<Template> templatePage = templateService.list(pageable,lang);
 
         return templatePage;
     }
@@ -158,7 +163,7 @@ public class TemplateController {
         List<Template> components = templateService.findAll();
         Set<String> templateValue = ServiceUtil.fetchProperty(components, Template::getTemplateValue);
         Set<String> filterFileNames = fileNames.stream().filter(item -> {
-            return !templateValue.contains("templates"+File.separator+item.replace(".html","")) && !item.endsWith("bak") && !item.contains(" ");
+            return !templateValue.contains("templates"+File.separator+item.split("\\.")[0]) && !item.endsWith("bak") && !item.contains(" ") && !item.endsWith(".en.html");
         }).collect(Collectors.toSet());
 
         if(filterFileNames.size()==0){
@@ -176,6 +181,85 @@ public class TemplateController {
         List<Template> saveAll = templateService.saveAll(templateList);
 
         return saveAll;
+    }
+
+    @GetMapping("/createAllLanguage")
+    public List<Template> createAllLanguage(@RequestParam(required = false) String path){
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir;
+        if(path!=null && !path.equals("")){
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+path;
+        }else{
+            componentsDir=workDir+ File.separator+CMSUtils.getTemplates();
+        }
+
+
+        templateService.listAll().forEach(template -> {
+            if(template.getLang()==null){
+                template.setLang(Lang.ZH);
+                templateService.save(template);
+            }
+            if(template.getPath()==null){
+                template.setPath("");
+                templateService.save(template);
+            }
+        });
+        List<Template> templatesZH = templateService.listAll(Lang.ZH);
+        List<Template> templatesEN = templateService.listAll(Lang.EN);
+        Set<String> templateValue = ServiceUtil.fetchProperty(templatesEN, Template::getTemplateValue);
+
+
+//        List<Template> templateSet =  new ArrayList<>();
+//        for (Template template : templatesZH){
+//            if(!templateValue.contains(template.getTemplateValue()+"."+Lang.EN.getSuffix())){
+//                templateSet.add(template);
+//            }
+//        }
+        List<Template> templateSet =  templatesZH.stream().filter(item -> {
+            return !templateValue.contains(item.getTemplateValue()+"."+Lang.EN.getSuffix());
+        }).collect(Collectors.toList());
+
+        if(templateSet.size()==0){
+            throw new ObjectException(templatesZH.size()+"个中文模板创建了"+templatesEN.size()+"个英文模板");
+        }
+
+        List<Template> templateList = new ArrayList<>();
+        for (Template template : templateSet){
+            createTemplate(template,componentsDir);
+            templateList.add(template);
+        }
+
+//
+        List<Template> saveAll = templateService.saveAll(templateList);
+
+        return saveAll;
+    }
+
+    private void createTemplate(Template template, String componentsDir) {
+        if(componentsDir!=null){
+            List<String> fileNames = FileUtils.getFileNames(componentsDir);
+            Path path = Paths.get(componentsDir, template.getTemplateValue() + ".html");
+            if(path.toFile().exists()){
+                try {
+                    FileUtils.copyFolder(path,Paths.get(componentsDir,template.getTemplateValue() + "."+Lang.EN.getSuffix()+".html"));
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        template.setId(null);
+        if(template.getPath()!=""){
+            template.setPath(template.getPath()+File.separator+Lang.EN.getSuffix());
+        }else {
+            template.setPath(Lang.EN.getSuffix());
+        }
+
+        template.setTemplateValue(template.getTemplateValue()+"."+Lang.EN.getSuffix());
+        template.setName(template.getName()+"."+Lang.EN.getSuffix());
+        template.setIsSystem(false);
+        template.setLang(Lang.EN);
+        template.setEnName(template.getEnName()+"."+Lang.EN.getSuffix());
     }
 
 

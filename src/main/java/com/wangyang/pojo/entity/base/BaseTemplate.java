@@ -20,7 +20,7 @@ public class BaseTemplate extends  BaseEntity{
     private String templateValue;
     @Column(columnDefinition = "longtext ")
     private String templateContent;
-
+    private String path;
 //    @Column(name = "template_order",columnDefinition = "int default 0")
 //    private Integer order;
 

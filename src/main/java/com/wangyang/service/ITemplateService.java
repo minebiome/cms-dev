@@ -2,6 +2,7 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.entity.TemplateChild;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.params.TemplateParam;
 import org.springframework.data.domain.Page;
@@ -16,16 +17,23 @@ public interface ITemplateService {
     Optional<Template> findOptionalById(int id);
 
     List<Template> saveAll(List<Template> templates);
+
+    Template save(Template template);
+
     Template add(Template template);
     Template update(int id, TemplateParam templateParam);
 
     Template findDetailsById(int id);
 
+    List<Template> listAll();
+
+    List<Template> listAll(Lang lang);
+
     List<Template> findAll();
 
     Template deleteById(int id);
     Template findById(int id);
-    Page<Template> list(Pageable pageable);
+    Page<Template> list(Pageable pageable,Lang lang);
 
     List<Template> listByAndStatusTrue(TemplateType templateType);
 

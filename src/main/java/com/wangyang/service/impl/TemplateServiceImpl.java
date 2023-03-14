@@ -5,24 +5,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.ObjectException;
-import com.wangyang.common.exception.OptionException;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
-import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.FileDTO;
-import com.wangyang.pojo.entity.ArticleAttachment;
-import com.wangyang.pojo.entity.Attachment;
-import com.wangyang.pojo.entity.Template;
-import com.wangyang.pojo.entity.TemplateChild;
+import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.AttachmentType;
 import com.wangyang.pojo.enums.FileWriteType;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.params.TemplateParam;
 import com.wangyang.repository.TemplateChildRepository;
 import com.wangyang.service.authorize.IArticleAttachmentService;
 import com.wangyang.repository.TemplateRepository;
 import com.wangyang.service.IAttachmentService;
-import com.wangyang.service.ICategoryService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.util.ZipHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +101,7 @@ public class TemplateServiceImpl implements ITemplateService {
         return template;
     }
 
+    @Override
     public Template save(Template template){
         addCssAndJs(template);
         return templateRepository.save(template);
@@ -180,7 +176,21 @@ public class TemplateServiceImpl implements ITemplateService {
     }
 
 
+    @Override
+    public List<Template> listAll() {
+        return templateRepository.findAll();
+    }
 
+    @Override
+    public List<Template> listAll(Lang lang){
+        List<Template> components = templateRepository.findAll(new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return query.where(criteriaBuilder.equal(root.get("lang"),lang)).getRestriction();
+            }
+        });
+        return components;
+    }
     @Override
     public List<Template> findAll(){
         return templateRepository.findAll();
@@ -212,8 +222,19 @@ public class TemplateServiceImpl implements ITemplateService {
     }
 
     @Override
-    public Page<Template> list(Pageable pageable) {
-        return templateRepository.findAll(pageable);
+    public Page<Template> list(Pageable pageable,Lang lang) {
+        if(lang!=null && !lang.equals("")){
+            return templateRepository.findAll(new Specification<Template>() {
+                @Override
+                public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                    return query.where(criteriaBuilder.equal(root.get("lang"),lang)).getRestriction();
+                }
+            }, pageable);
+        }else {
+            return templateRepository.findAll(pageable);
+        }
+
+
     }
 
 
