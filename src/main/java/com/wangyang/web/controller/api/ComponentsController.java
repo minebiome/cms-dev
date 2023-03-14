@@ -94,7 +94,7 @@ public class ComponentsController {
         List<Components> components = componentsService.listAll();
         Set<String> templateValue = ServiceUtil.fetchProperty(components, Components::getTemplateValue);
         Set<String> filterFileNames = fileNames.stream().filter(item -> {
-            return !templateValue.contains("components"+File.separator+item.split("\\.")[0]) && !item.endsWith("bak") && !item.contains(" ");
+            return !templateValue.contains("components"+File.separator+item.split("\\.")[0]) && !item.endsWith("bak") && !item.contains(" ") && !item.endsWith(".en.html");
         }).collect(Collectors.toSet());
 
         if(filterFileNames.size()==0){
