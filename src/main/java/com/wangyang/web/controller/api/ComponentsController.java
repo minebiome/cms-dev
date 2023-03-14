@@ -171,7 +171,7 @@ public class ComponentsController {
         }
         component.setLangSource(component.getId());
         component.setId(null);
-        component.setPath(component.getPath()+File.separator+Lang.EN.getSuffix());
+        component.setPath(component.getPath().replace("html",Lang.EN.getSuffix()));
         component.setViewName(component.getViewName());
         component.setTemplateValue(component.getTemplateValue()+"."+Lang.EN.getSuffix());
         component.setName(component.getName()+"."+Lang.EN.getSuffix());
