@@ -4,16 +4,18 @@ package com.wangyang.service.impl;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.common.utils.DocumentUtil;
+import com.wangyang.pojo.dto.ContentTab;
 import com.wangyang.pojo.entity.Menu;
 import com.wangyang.pojo.entity.Sheet;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.SheetDetailVO;
 import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.repository.MenuRepository;
 import com.wangyang.repository.SheetRepository;
-import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.ISheetService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.service.base.AbstractContentServiceImpl;
@@ -215,6 +217,21 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
         });
         if(sheets.size()==0)return null;
         return sheets.get(0);
+    }
+
+
+    public SheetDetailVO convertDetailVO(Sheet sheet){
+        SheetDetailVO sheetDetailVO = new SheetDetailVO();
+        List<ContentTab> contentTabs =  DocumentUtil.getContentTab(sheet.getFormatContent());
+        sheetDetailVO.setContentTab(contentTabs);
+        return sheetDetailVO;
+    }
+
+
+    @Override
+    public SheetDetailVO findDetailVOByViewName(String viewName){
+        Sheet sheet = findByViewName(viewName);
+        return convertDetailVO(sheet);
     }
 
     @Override

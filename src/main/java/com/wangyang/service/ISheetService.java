@@ -2,6 +2,7 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.entity.Sheet;
 import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.SheetDetailVO;
 import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.service.base.IContentService;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,8 @@ public interface ISheetService extends IContentService<Sheet,Sheet, BaseVo> {
     Page<SheetVo> conventTo(Page<Sheet> sheetPage);
 
     Sheet addOrRemoveToMenu(int id);
+
+    SheetDetailVO findDetailVOByViewName(String viewName);
 
 //    Page<SheetVo> conventTo(Page<Sheet> sheetPage);
 }
