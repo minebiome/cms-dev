@@ -12,6 +12,7 @@ import com.wangyang.service.IComponentsService;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.params.ComponentsParam;
 import com.wangyang.common.BaseResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -138,8 +139,8 @@ public class ComponentsController {
         for (Components component : components){
             String en = component.getTemplateValue().replace("components/","") + "."+Lang.EN.getSuffix()+".html";
             if(filterFileNames.contains(en)){
-                createComponents(component,null);
-                componentsList.add(component);
+                Components components1 = createComponents(component, null);
+                componentsList.add(components1);
             }
         }
 
@@ -156,7 +157,7 @@ public class ComponentsController {
         return saveAll;
     }
 
-    public void createComponents(Components component,String componentsDir){
+    public Components createComponents(Components component,String componentsDir){
         if(componentsDir!=null){
 //            List<String> fileNames = FileUtils.getFileNames(componentsDir);
             Path path = Paths.get(componentsDir, component.getTemplateValue() + ".html");
@@ -170,14 +171,19 @@ public class ComponentsController {
 
             }
         }
-        component.setLangSource(component.getId());
-        component.setId(null);
-        component.setPath(component.getPath().replace("html",Lang.EN.getSuffix()));
-        component.setViewName(component.getViewName());
-        component.setTemplateValue(component.getTemplateValue()+"."+Lang.EN.getSuffix());
-        component.setName(component.getName()+"."+Lang.EN.getSuffix());
-        component.setIsSystem(false);
-        component.setLang(Lang.EN);
+
+        Components newComponents = new Components();
+        BeanUtils.copyProperties(component,newComponents,"id");
+
+        newComponents.setLangSource(component.getId());
+        newComponents.setId(null);
+        newComponents.setPath(component.getPath().replace("html",Lang.EN.getSuffix()));
+        newComponents.setViewName(component.getViewName());
+        newComponents.setTemplateValue(component.getTemplateValue()+"."+Lang.EN.getSuffix());
+        newComponents.setName(component.getName()+"."+Lang.EN.getSuffix());
+        newComponents.setIsSystem(false);
+        newComponents.setLang(Lang.EN);
+        return newComponents;
 
     }
 
@@ -204,8 +210,8 @@ public class ComponentsController {
             throw new ObjectException(langComponents.getName()+"已经创建了英文！！！");
         }
 
-        createComponents(components,componentsDir);
-        Components save = componentsService.save(components);
+        Components newComponents = createComponents(components, componentsDir);
+        Components save = componentsService.save(newComponents);
         return save;
     }
 
@@ -244,8 +250,8 @@ public class ComponentsController {
 
         List<Components> componentsList = new ArrayList<>();
         for (Components comp : componentsSet){
-            createComponents(comp,componentsDir);
-            componentsList.add(comp);
+            Components components = createComponents(comp, componentsDir);
+            componentsList.add(components);
         }
 
 

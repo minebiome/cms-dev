@@ -680,14 +680,15 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
             throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
         }
 
-        category.setLangSource(category.getId());
-        category.setId(null);
-        category.setLang(lang);
-        category.setViewName(lang.getSuffix()+category.getViewName());
-        category.setName(lang.getSuffix()+category.getName());
-        category.setPath(category.getPath().replace("html",lang.getSuffix()));
-        category.setParentId(0);
-        Category save = save(category);
+        Category newCategory = new Category();
+        BeanUtils.copyProperties(category, newCategory,"id");
+        newCategory.setLangSource(category.getId());
+         newCategory.setLang(lang);
+         newCategory.setViewName(lang.getSuffix()+category.getViewName());
+         newCategory.setName(lang.getSuffix()+category.getName());
+         newCategory.setPath(category.getPath().replace("html",lang.getSuffix()));
+         newCategory.setParentId(0);
+        Category save = save(newCategory);
         return save;
     }
     @Override

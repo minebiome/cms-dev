@@ -616,26 +616,29 @@ public class ArticleController {
         if(langArticle!=null){
             throw new ObjectException(langArticle.getTitle()+"已经创建了英文分类！！！");
         }
-        article.setLangSource(article.getId());
-        article.setId(null);
-        article.setLang(lang);
-        article.setViewName(lang.getSuffix()+article.getViewName());
-        article.setTitle(lang.getSuffix()+article.getTitle());
-        article.setPath(article.getPath().replace("html",lang.getSuffix()));
-        article.setParentId(0);
+
+        Article newArticle = new Article();
+        BeanUtils.copyProperties(article,newArticle,"id");
+        newArticle.setLangSource(article.getId());
+        newArticle.setId(null);
+        newArticle.setLang(lang);
+        newArticle.setViewName(lang.getSuffix()+article.getViewName());
+        newArticle.setTitle(lang.getSuffix()+article.getTitle());
+        newArticle.setPath(article.getPath().replace("html",lang.getSuffix()));
+        newArticle.setParentId(0);
 
         Category category = categoryService.findById(article.getCategoryId());
         Category langCategory = categoryService.findByLang(category.getId(), lang);
         if(langCategory==null){
             Category category2 = categoryService.createCategoryLanguage(category, lang);
-            article.setCategoryId(category2.getId());
+            newArticle.setCategoryId(category2.getId());
         }else {
-            article.setCategoryId(langCategory.getId());
+            newArticle.setCategoryId(langCategory.getId());
         }
 
 
 
-        Article save = articleService.save(article);
+        Article save = articleService.save(newArticle);
         return save;
     }
 

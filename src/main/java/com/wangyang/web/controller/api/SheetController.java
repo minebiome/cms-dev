@@ -155,13 +155,17 @@ public class SheetController {
         if(langSheet!=null){
             throw new ObjectException(langSheet.getTitle()+"已经创建了英文分类！！！");
         }
-        sheet.setLangSource(sheet.getId());
-        sheet.setId(null);
-        sheet.setLang(lang);
-        sheet.setViewName(lang.getSuffix()+sheet.getViewName());
-        sheet.setTitle(lang.getSuffix()+sheet.getTitle());
-        sheet.setPath(sheet.getPath().replace("html",lang.getSuffix()));
-        Sheet save = sheetService.save(sheet);
+
+        Sheet newSheet = new Sheet();
+        BeanUtils.copyProperties(sheet,newSheet,"id" );
+
+        newSheet.setLangSource(sheet.getId());
+        newSheet.setId(null);
+        newSheet.setLang(lang);
+        newSheet.setViewName(lang.getSuffix()+sheet.getViewName());
+        newSheet.setTitle(lang.getSuffix()+sheet.getTitle());
+        newSheet.setPath(sheet.getPath().replace("html",lang.getSuffix()));
+        Sheet save = sheetService.save(newSheet);
         return save;
 
     }

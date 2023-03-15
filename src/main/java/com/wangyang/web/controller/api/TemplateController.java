@@ -15,6 +15,8 @@ import com.wangyang.service.ITemplateService;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.params.TemplateParam;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -225,8 +227,8 @@ public class TemplateController {
 
         List<Template> templateList = new ArrayList<>();
         for (Template template : templateSet){
-            createTemplate(template,componentsDir);
-            templateList.add(template);
+            Template template1 = createTemplate(template, componentsDir);
+            templateList.add(template1);
         }
 
 //
@@ -256,8 +258,8 @@ public class TemplateController {
             throw new ObjectException(langTemplate.getName()+"已经创建了英文！！！");
         }
 
-        createTemplate(template,componentsDir);
-        Template save = templateService.save(template);
+        Template template1 = createTemplate(template, componentsDir);
+        Template save = templateService.save(template1);
         return save;
     }
 
@@ -266,7 +268,7 @@ public class TemplateController {
 
 
 
-    private void createTemplate(Template template, String componentsDir) {
+    private Template createTemplate(Template template, String componentsDir) {
         if(componentsDir!=null){
 //            List<String> fileNames = FileUtils.getFileNames(componentsDir);
             Path path = Paths.get(componentsDir, template.getTemplateValue() + ".html");
@@ -280,20 +282,24 @@ public class TemplateController {
 
             }
         }
-        template.setLangSource(template.getId());
-        template.setId(null);
+
+        Template newTemplate = new Template();
+        BeanUtils.copyProperties(template,newTemplate,"id");
+
+        newTemplate.setLangSource(template.getId());
+        newTemplate.setId(null);
         if(template.getPath()!=""){
-            template.setPath(template.getPath()+File.separator+Lang.EN.getSuffix());
+            newTemplate.setPath(template.getPath()+File.separator+Lang.EN.getSuffix());
         }else {
-            template.setPath(Lang.EN.getSuffix());
+            newTemplate.setPath(Lang.EN.getSuffix());
         }
 
-        template.setTemplateValue(template.getTemplateValue()+"."+Lang.EN.getSuffix());
-        template.setName(template.getName()+"."+Lang.EN.getSuffix());
-        template.setIsSystem(false);
-        template.setLang(Lang.EN);
-        template.setEnName(template.getEnName()+"."+Lang.EN.getSuffix());
-
+        newTemplate.setTemplateValue(template.getTemplateValue()+"."+Lang.EN.getSuffix());
+        newTemplate.setName(template.getName()+"."+Lang.EN.getSuffix());
+        newTemplate.setIsSystem(false);
+        newTemplate.setLang(Lang.EN);
+        newTemplate.setEnName(template.getEnName()+"."+Lang.EN.getSuffix());
+        return newTemplate;
     }
 
 
