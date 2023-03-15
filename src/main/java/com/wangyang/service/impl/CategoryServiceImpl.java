@@ -606,11 +606,11 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
         return convertToListVo(categories);
     }
     @Override
-    public Category findByViewName(String path,String viewName, Lang lang){
+    public Category findByViewName(String viewName, Lang lang){
         List<Category> categories = categoryRepository.findAll(new Specification<Category>() {
             @Override
             public Predicate toPredicate(Root<Category> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return query.where(criteriaBuilder.equal(root.get("viewName"), viewName), criteriaBuilder.equal(root.get("lang"), lang), criteriaBuilder.equal(root.get("path"), path)).getRestriction();
+                return query.where(criteriaBuilder.equal(root.get("viewName"), viewName), criteriaBuilder.equal(root.get("lang"), lang)).getRestriction();
             }
         });
         if(categories.size()==0)return null;

@@ -116,6 +116,9 @@ public class MyCustomView implements View {
             response.setStatus(HttpStatus.NOT_FOUND.value());
         }
 
+        if(!Paths.get(path).toFile().exists()){
+            ctx.setVariable("message","模板不存在："+path);
+        }
 
 
         templateEngine.process(viewNamePath,ctx,response.getWriter());

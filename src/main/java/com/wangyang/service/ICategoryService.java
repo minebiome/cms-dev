@@ -107,7 +107,7 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
 
     List<CategoryVO> listChildByViewName(String viewName);
 
-    Category findByViewName(String path,String viewName, Lang lang);
+    Category findByViewName(String viewName, Lang lang);
 
     Category findByViewName(String viewName);
 

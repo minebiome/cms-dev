@@ -155,12 +155,11 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
     }
 
     @Override
-    public ARTICLE findByViewName(String path, String viewName, Lang lang) {
+    public ARTICLE findByViewName(String viewName, Lang lang) {
         List<ARTICLE> contents = contentRepository.findAll(new Specification<ARTICLE>() {
             @Override
             public Predicate toPredicate(Root<ARTICLE> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.equal(root.get("path"), path),
-                        criteriaBuilder.equal(root.get("viewName"), viewName),
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("viewName"), viewName),
                         criteriaBuilder.equal(root.get("lang"), lang)).getRestriction();
             }
         });

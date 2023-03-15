@@ -11,6 +11,7 @@ import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
+import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.*;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.repository.ArticleRepository;
@@ -538,20 +539,26 @@ public class HtmlServiceImpl implements IHtmlService {
 
     @Override
     public void generateHtmlByViewName(String type, String viewName){
+        Lang lang;
+        if(type.startsWith("en")){
+            lang=Lang.EN;
+        }else {
+            lang = Lang.ZH;
+        }
         if(type.contains("sheet")){
-            Sheet sheet = sheetService.findByViewName(viewName);
+            Sheet sheet = sheetService.findByViewName(viewName, lang);
             if(sheet==null){
                 throw new ObjectException(viewName+"不存在！！");
             }
             convertArticleListBy(sheet);
         }else if (type.contains("articleList")){
-            Category category = categoryService.findByViewName(viewName);
+            Category category = categoryService.findByViewName(viewName,lang);
             if(category==null){
                 throw new ObjectException(viewName+"不存在！！");
             }
             convertArticleListBy(category);
         } else if (type.contains("article")) {
-            Article article = articleService.findByViewName(viewName);
+            Article article = articleService.findByViewName(viewName, lang);
             if(article==null){
                 throw new ObjectException(viewName+"不存在！！");
             }

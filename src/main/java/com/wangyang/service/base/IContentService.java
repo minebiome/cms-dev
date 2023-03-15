@@ -19,7 +19,7 @@ public interface IContentService<ARTICLE extends Content,ARTICLEDTO,ARTICLEVO>  
 
     Page<ARTICLE> pageContentByCategoryIds(Set<Integer> ids, Boolean isDesc, PageRequest pageRequest);
     ARTICLE findByViewName(String viewName);
-    ARTICLE findByViewName(String path, String viewName, Lang lang);
+    ARTICLE findByViewName(String viewName, Lang lang);
     List<ARTICLE> listContentByCategoryIds(Set<Integer> ids, Boolean isDesc);
 
     Page<ARTICLEVO> convertToPageVo(Page<ARTICLE> contentPage);
