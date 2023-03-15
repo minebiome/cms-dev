@@ -71,7 +71,7 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
             sheet.setPath(template.getPath());
         }
         if(sheet.getPath()==null || sheet.getPath().equals("")){
-            sheet.setPath(CMSUtils.getArticlePath());
+            sheet.setPath(CMSUtils.getSheetPath());
         }
 //        sheet.setPath(CMSUtils.getSheetPath());
 
