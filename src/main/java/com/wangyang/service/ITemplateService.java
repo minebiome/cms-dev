@@ -10,6 +10,7 @@ import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,4 +61,6 @@ public interface ITemplateService extends ICrudService<Template, Template, BaseV
     List<Template> findByChild(Integer id);
 
     TemplateChild removeChildTemplate(Integer templateId,Integer templateChildId);
+
+    Template createTemplateLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang);
 }

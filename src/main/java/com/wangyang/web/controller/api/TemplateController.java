@@ -185,82 +185,64 @@ public class TemplateController {
         return saveAll;
     }
 
-    @GetMapping("/createAllLanguage")
-    public List<Template> createAllLanguage(@RequestParam(required = false) String path){
-        String workDir = CMSUtils.getWorkDir();
-        String componentsDir;
-        if(path!=null && !path.equals("")){
-            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+path;
-        }else{
-            componentsDir=workDir+ File.separator+CMSUtils.getTemplates();
-        }
-
-
-        templateService.listAll().forEach(template -> {
-            if(template.getLang()==null){
-                template.setLang(Lang.ZH);
-                templateService.save(template);
-            }
-            if(template.getPath()==null){
-                template.setPath("");
-                templateService.save(template);
-            }
-        });
-        List<Template> templatesZH = templateService.listAll(Lang.ZH);
-        List<Template> templatesEN = templateService.listAll(Lang.EN);
-        Set<String> templateValue = ServiceUtil.fetchProperty(templatesEN, Template::getTemplateValue);
-
-
-//        List<Template> templateSet =  new ArrayList<>();
-//        for (Template template : templatesZH){
-//            if(!templateValue.contains(template.getTemplateValue()+"."+Lang.EN.getSuffix())){
-//                templateSet.add(template);
-//            }
+//    @GetMapping("/createAllLanguage")
+//    public List<Template> createAllLanguage(@RequestParam(required = false) String path){
+//        String workDir = CMSUtils.getWorkDir();
+//        String componentsDir;
+//        if(path!=null && !path.equals("")){
+//            componentsDir=workDir+ File.separator+CMSUtils.getTemplates()+path;
+//        }else{
+//            componentsDir=workDir+ File.separator+CMSUtils.getTemplates();
 //        }
-        List<Template> templateSet =  templatesZH.stream().filter(item -> {
-            return !templateValue.contains(item.getTemplateValue()+"."+Lang.EN.getSuffix());
-        }).collect(Collectors.toList());
-
-        if(templateSet.size()==0){
-            throw new ObjectException(templatesZH.size()+"个中文模板创建了"+templatesEN.size()+"个英文模板");
-        }
-
-        List<Template> templateList = new ArrayList<>();
-        for (Template template : templateSet){
-            Template template1 = createTemplate(template, componentsDir);
-            templateList.add(template1);
-        }
-
 //
-        List<Template> saveAll = templateService.saveAll(templateList);
-
-        return saveAll;
-    }
+//
+//        templateService.listAll().forEach(template -> {
+//            if(template.getLang()==null){
+//                template.setLang(Lang.ZH);
+//                templateService.save(template);
+//            }
+//            if(template.getPath()==null){
+//                template.setPath("");
+//                templateService.save(template);
+//            }
+//        });
+//        List<Template> templatesZH = templateService.listAll(Lang.ZH);
+//        List<Template> templatesEN = templateService.listAll(Lang.EN);
+//        Set<String> templateValue = ServiceUtil.fetchProperty(templatesEN, Template::getTemplateValue);
+//
+//
+////        List<Template> templateSet =  new ArrayList<>();
+////        for (Template template : templatesZH){
+////            if(!templateValue.contains(template.getTemplateValue()+"."+Lang.EN.getSuffix())){
+////                templateSet.add(template);
+////            }
+////        }
+//        List<Template> templateSet =  templatesZH.stream().filter(item -> {
+//            return !templateValue.contains(item.getTemplateValue()+"."+Lang.EN.getSuffix());
+//        }).collect(Collectors.toList());
+//
+//        if(templateSet.size()==0){
+//            throw new ObjectException(templatesZH.size()+"个中文模板创建了"+templatesEN.size()+"个英文模板");
+//        }
+//
+//        List<Template> templateList = new ArrayList<>();
+//        for (Template template : templateSet){
+//            Template template1 = createTemplate(template, componentsDir);
+//            templateList.add(template1);
+//        }
+//
+////
+//        List<Template> saveAll = templateService.saveAll(templateList);
+//
+//        return saveAll;
+//    }
 
 
 
     @GetMapping("/createTemplateLanguage/{id}")
     public Template createTemplateLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang){
-        String workDir = CMSUtils.getWorkDir();
-        String componentsDir=workDir+ File.separator+CMSUtils.getTemplates();;
-
-        Template template = templateService.findById(id);
-        if(template.getLang()==null){
-            template.setLang(Lang.ZH);
-            templateService.save(template);
-        }
-        if(template.getLang().equals(lang)){
-            throw new ObjectException(template.getName()+"该组件已经是"+lang.getSuffix()+"的了！！！");
-        }
-        Template langTemplate = templateService.findByLang(template.getId(), lang);
-
-        if(langTemplate!=null){
-            throw new ObjectException(langTemplate.getName()+"已经创建了英文！！！");
-        }
-
-        Template template1 = createTemplate(template, componentsDir);
-        Template save = templateService.save(template1);
-        return save;
+        Template templateLanguage = templateService.createTemplateLanguage(id, lang);
+        return templateLanguage;
     }
 
 
@@ -268,39 +250,7 @@ public class TemplateController {
 
 
 
-    private Template createTemplate(Template template, String componentsDir) {
-        if(componentsDir!=null){
-//            List<String> fileNames = FileUtils.getFileNames(componentsDir);
-            Path path = Paths.get(componentsDir, template.getTemplateValue() + ".html");
-            Path targetPath = Paths.get(componentsDir, template.getTemplateValue() + "." + Lang.EN.getSuffix() + ".html");
-            if(path.toFile().exists() && !targetPath.toFile().exists()){
-                try {
-                    FileUtils.copyFolder(path,targetPath);
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
 
-            }
-        }
-
-        Template newTemplate = new Template();
-        BeanUtils.copyProperties(template,newTemplate,"id");
-
-        newTemplate.setLangSource(template.getId());
-        newTemplate.setId(null);
-        if(template.getPath()!=""){
-            newTemplate.setPath(template.getPath()+File.separator+Lang.EN.getSuffix());
-        }else {
-            newTemplate.setPath(Lang.EN.getSuffix());
-        }
-
-        newTemplate.setTemplateValue(template.getTemplateValue()+"."+Lang.EN.getSuffix());
-        newTemplate.setName(template.getName()+"."+Lang.EN.getSuffix());
-        newTemplate.setIsSystem(false);
-        newTemplate.setLang(Lang.EN);
-        newTemplate.setEnName(template.getEnName()+"."+Lang.EN.getSuffix());
-        return newTemplate;
-    }
 
 
 //    public void deleteById(Integer id){

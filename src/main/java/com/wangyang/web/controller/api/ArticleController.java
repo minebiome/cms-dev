@@ -4,6 +4,7 @@ import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
+import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryVO;
@@ -20,6 +21,7 @@ import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.params.ArticleParams;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
+import com.wangyang.service.ITemplateService;
 import com.wangyang.util.AuthorizationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
@@ -59,6 +61,9 @@ public class ArticleController {
     ICategoryService categoryService;
 
 
+
+    @Autowired
+    ITemplateService templateService;
 
 
     @PostMapping
@@ -636,6 +641,14 @@ public class ArticleController {
             newArticle.setCategoryId(langCategory.getId());
         }
 
+        Template template = templateService.findByEnName(article.getTemplateName());
+        Template langTemplate = templateService.findByLang(template.getId(), lang);
+        if(langTemplate==null){
+            Template templateLanguage = templateService.createTemplateLanguage(template.getId(), lang);
+            newArticle.setTemplateName(templateLanguage.getEnName());
+        }else {
+            newArticle.setTemplateName(langTemplate.getEnName());
+        }
 
 
         Article save = articleService.save(newArticle);

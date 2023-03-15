@@ -215,7 +215,7 @@ public class ArticleAspectJ {
 
 
         log.info(">>>>>>>>>>>>>>>>>####删除分类分页文件-"+title);
-        File dir = new File(CmsConst.WORK_DIR+File.separator+ path+CMSUtils.getCategoryPathList());
+        File dir = new File(CmsConst.WORK_DIR+File.separator+ path);
         File[] files = dir.listFiles();
         for(File file : files){
             String name = file.getName();

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.FileDTO;
@@ -13,7 +14,6 @@ import com.wangyang.pojo.enums.*;
 import com.wangyang.pojo.params.TemplateParam;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.TemplateChildRepository;
-import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.authorize.IArticleAttachmentService;
 import com.wangyang.repository.TemplateRepository;
 import com.wangyang.service.IAttachmentService;
@@ -32,6 +32,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -41,6 +43,8 @@ import javax.persistence.criteria.Root;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -110,8 +114,13 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
     public Template save(Template template){
         addCssAndJs(template);
         return templateRepository.save(template);
-
     }
+
+
+
+
+
+
     @Override
     public Template add(Template template) {
 //        convert(template,template);
@@ -468,4 +477,63 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
         templateChildRepository.delete(templateChild);
         return templateChild;
     }
+
+    private Template createTemplate(Template template, String componentsDir) {
+        if(componentsDir!=null){
+//            List<String> fileNames = FileUtils.getFileNames(componentsDir);
+            Path path = Paths.get(componentsDir, template.getTemplateValue() + ".html");
+            Path targetPath = Paths.get(componentsDir, template.getTemplateValue() + "." + Lang.EN.getSuffix() + ".html");
+            if(path.toFile().exists() && !targetPath.toFile().exists()){
+                try {
+                    FileUtils.copyFolder(path,targetPath);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        Template newTemplate = new Template();
+        BeanUtils.copyProperties(template,newTemplate,"id");
+
+        newTemplate.setLangSource(template.getId());
+        newTemplate.setId(null);
+        if(template.getPath()!=""){
+            newTemplate.setPath(template.getPath()+File.separator+Lang.EN.getSuffix());
+        }else {
+            newTemplate.setPath(Lang.EN.getSuffix());
+        }
+
+        newTemplate.setTemplateValue(template.getTemplateValue()+"."+Lang.EN.getSuffix());
+        newTemplate.setName(template.getName()+"."+Lang.EN.getSuffix());
+        newTemplate.setIsSystem(false);
+        newTemplate.setLang(Lang.EN);
+        newTemplate.setEnName(template.getEnName()+"."+Lang.EN.getSuffix());
+        return newTemplate;
+    }
+
+    @Override
+    public Template createTemplateLanguage(@PathVariable("id") Integer id, @RequestParam(defaultValue = "EN") Lang lang){
+        String workDir = CMSUtils.getWorkDir();
+        String componentsDir=workDir+ File.separator+CMSUtils.getTemplates();;
+
+        Template template = findById(id);
+        if(template.getLang()==null){
+            template.setLang(Lang.ZH);
+            save(template);
+        }
+        if(template.getLang().equals(lang)){
+            throw new ObjectException(template.getName()+"该组件已经是"+lang.getSuffix()+"的了！！！");
+        }
+        Template langTemplate = findByLang(template.getId(), lang);
+
+        if(langTemplate!=null){
+            throw new ObjectException(langTemplate.getName()+"已经创建了英文！！！");
+        }
+
+        Template template1 = createTemplate(template, componentsDir);
+        Template save = save(template1);
+        return save;
+    }
+
 }
