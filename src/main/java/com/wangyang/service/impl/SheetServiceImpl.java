@@ -222,7 +222,7 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
 
     public SheetDetailVO convertDetailVO(Sheet sheet){
         SheetDetailVO sheetDetailVO = new SheetDetailVO();
-        List<ContentTab> contentTabs =  DocumentUtil.getContentTab(sheet.getFormatContent());
+        List<ContentTab> contentTabs =  DocumentUtil.getContentTab(sheet);
         sheetDetailVO.setContentTab(contentTabs);
         return sheetDetailVO;
     }

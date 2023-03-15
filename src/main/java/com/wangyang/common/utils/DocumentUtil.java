@@ -1,6 +1,7 @@
 package com.wangyang.common.utils;
 
 import com.wangyang.pojo.dto.ContentTab;
+import com.wangyang.pojo.entity.Sheet;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.C;
 import org.jsoup.Jsoup;
@@ -36,15 +37,18 @@ public class DocumentUtil {
 
 
 
-    public static List<ContentTab> getContentTab(String html){
-        Document doc = Jsoup.parse(html);
+    public static List<ContentTab> getContentTab(Sheet sheet){
+        Document doc = Jsoup.parse(sheet.getFormatContent());
         Elements elements = doc.select("div[id^=cms]");
         List<ContentTab> contentTabs = new ArrayList<>();
+
         for (Element element : elements){
             String id = element.attr("id");
             String name = element.attr("data-name");
             ContentTab contentTab = new ContentTab();
-            contentTab.setId(id);
+            String path = sheet.getPath().replace("/", "_");
+
+            contentTab.setId("/"+path+"_"+sheet.getViewName()+".html#"+id);
             contentTab.setName(name);
             contentTabs.add(contentTab);
         }
