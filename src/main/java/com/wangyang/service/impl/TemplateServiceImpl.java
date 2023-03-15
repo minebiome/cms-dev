@@ -112,10 +112,7 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
 
     @Override
     public Template save(Template template){
-        Template byEnName = findByEnNameNull(template.getEnName());
-        if(byEnName!=null){
-            throw new ObjectException(byEnName.getName()+"已经使用了enName"+byEnName.getEnName());
-        }
+
         addCssAndJs(template);
         return templateRepository.save(template);
     }
@@ -552,7 +549,14 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
             throw new ObjectException(langTemplate.getName()+"已经创建了英文！！！");
         }
 
+        Template byEnName = findByEnNameNull(template.getEnName());
+        if(byEnName!=null){
+            throw new ObjectException(byEnName.getName()+"已经使用了enName"+byEnName.getEnName());
+        }
         Template template1 = createTemplate(template, componentsDir);
+
+
+
         Template save = save(template1);
         return save;
     }
