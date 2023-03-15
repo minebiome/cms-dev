@@ -179,7 +179,7 @@ public class PreviewController {
         List<Template> templates = templateService.findByChild(template.getId());
         for (Template templateChild : templates){
 //            TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName(),articleListVo.getViewName(),articleListVo, templateChild);
-            model.addAttribute(templateChild.getEnName(),CMSUtils.getCategoryPath()+File.separator+templateChild.getEnName()+File.separator+articleListVo.getViewName());
+            model.addAttribute(templateChild.getEnName(),category.getPath()+CMSUtils.getCategoryPathList()+File.separator+templateChild.getEnName()+File.separator+articleListVo.getViewName());
         }
 //        String html = TemplateUtil.convertHtmlAndPreview(articleListVo, template);
 //        String convertHtml = FileUtils.convertByString(html);

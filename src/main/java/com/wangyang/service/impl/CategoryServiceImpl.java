@@ -124,6 +124,11 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
     public Category save(Category category){
         return categoryRepository.save(category);
     }
+
+
+
+
+
     @Override
     public Category create(Category categoryParam,Set<Integer> tagIds) {
 
@@ -658,7 +663,60 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
 //        }
 //    }
 
+     @Override
+    public Category createCategoryLanguage(Integer id, Lang lang){
+        Category category = findById(id);
+        if(category.getLang()==null){
+            category.setLang(Lang.ZH);
+            save(category);
+        }
+        if(category.getLang().equals(lang)){
+            throw new ObjectException(category.getName()+"该分类已经是"+lang.getSuffix()+"的了！！！");
+        }
 
+        Category langCategory = findByLang(category.getId(), lang);
+
+        if(langCategory!=null){
+            throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
+        }
+
+        category.setLangSource(category.getId());
+        category.setId(null);
+        category.setLang(lang);
+        category.setViewName(lang.getSuffix()+category.getViewName());
+        category.setName(lang.getSuffix()+category.getName());
+        category.setPath(category.getPath().replace("html",lang.getSuffix()));
+        category.setParentId(0);
+        Category save = save(category);
+        return save;
+    }
+    @Override
+    public Category createCategoryLanguage(Category category, Lang lang){
+
+        if(category.getLang()==null){
+            category.setLang(Lang.ZH);
+            save(category);
+        }
+        if(category.getLang().equals(lang)){
+            throw new ObjectException(category.getName()+"该分类已经是"+lang.getSuffix()+"的了！！！");
+        }
+
+        Category langCategory = findByLang(category.getId(), lang);
+
+        if(langCategory!=null){
+            throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
+        }
+
+        category.setLangSource(category.getId());
+        category.setId(null);
+        category.setLang(lang);
+        category.setViewName(lang.getSuffix()+category.getViewName());
+        category.setName(lang.getSuffix()+category.getName());
+        category.setPath(category.getPath().replace("html",lang.getSuffix()));
+        category.setParentId(0);
+        Category save = save(category);
+        return save;
+    }
     @Override
     public boolean supportType(CrudType type) {
         return false;

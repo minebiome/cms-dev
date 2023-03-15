@@ -316,7 +316,7 @@ public class HtmlServiceImpl implements IHtmlService {
         log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
         String viewName =   category.getViewName()+"-"+String.valueOf(page)+"-page";
 //            String viewName = String.valueOf(page);
-        return TemplateUtil.convertHtmlAndSave(CMSUtils.getCategoryPath(),viewName,categoryArticle,template);
+        return TemplateUtil.convertHtmlAndSave(category.getPath()+CMSUtils.getCategoryPathList(),viewName,categoryArticle,template);
 
 
     }
@@ -384,7 +384,7 @@ public class HtmlServiceImpl implements IHtmlService {
     private String covertHtml(ArticleDetailVO articleDetailVO) {
         Template template = templateService.findByEnName(articleDetailVO.getTemplateName());
 
-        CategoryVO category = articleDetailVO.getCategory();
+//        CategoryVO category = articleDetailVO.getCategory();
 //        Template categoryTemplate = templateService.findOptionalByEnName(category.getTemplateName());
 //        List<Template> templates = templateService.findByChild(categoryTemplate.getId());
 //        Map<String,Object> map = new HashMap<>();
@@ -516,10 +516,10 @@ public class HtmlServiceImpl implements IHtmlService {
             map.put("comments",commentVos);
             map.put("viewName",article.getViewName());
             map.put("articleId",article.getId());
-            TemplateUtil.convertHtmlAndSave(CMSUtils.getComment(),article.getViewName(),map,template);
+            TemplateUtil.convertHtmlAndSave(article.getPath()+CMSUtils.getComment(),article.getViewName(),map,template);
 
             String json = JSON.toJSON(commentVos).toString();
-            TemplateUtil.saveFile(CMSUtils.getCommentJSON(),article.getViewName(),json,"json");
+            TemplateUtil.saveFile(article.getPath()+CMSUtils.getCommentJSON(),article.getViewName(),json,"json");
         }
 
     }

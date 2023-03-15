@@ -268,11 +268,12 @@ public class TemplateController {
 
     private void createTemplate(Template template, String componentsDir) {
         if(componentsDir!=null){
-            List<String> fileNames = FileUtils.getFileNames(componentsDir);
+//            List<String> fileNames = FileUtils.getFileNames(componentsDir);
             Path path = Paths.get(componentsDir, template.getTemplateValue() + ".html");
-            if(path.toFile().exists()){
+            Path targetPath = Paths.get(componentsDir, template.getTemplateValue() + "." + Lang.EN.getSuffix() + ".html");
+            if(path.toFile().exists() && !targetPath.toFile().exists()){
                 try {
-                    FileUtils.copyFolder(path,Paths.get(componentsDir,template.getTemplateValue() + "."+Lang.EN.getSuffix()+".html"));
+                    FileUtils.copyFolder(path,targetPath);
                 }catch (IOException e){
                     e.printStackTrace();
                 }

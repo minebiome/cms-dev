@@ -136,7 +136,7 @@ public class ArticleAspectJ {
 
 
 
-            deleteTemp(articleDetailVO.getCategory().getName(),articleDetailVO.getCategory().getViewName(),articleDetailVO.getCategory().getParentId());
+            deleteTemp(articleDetailVO.getCategory().getName(),articleDetailVO.getCategory().getPath(),articleDetailVO.getCategory().getViewName(),articleDetailVO.getCategory().getParentId());
             if(articleDetailVO.getOldCategory()!=null){
                 deleteTemp(articleDetailVO.getOldCategory());
             }
@@ -206,16 +206,16 @@ public class ArticleAspectJ {
 
     @Async
     public void deleteTemp(Category category){
-        deleteTemp(category.getName(),category.getViewName(),category.getParentId());
+        deleteTemp(category.getName(),category.getPath(),category.getViewName(),category.getParentId());
     }
 
     @Async
-    public void deleteTemp(String title,String viewName,Integer parentId){
+    public void deleteTemp(String title,String path,String viewName,Integer parentId){
 
 
 
         log.info(">>>>>>>>>>>>>>>>>####删除分类分页文件-"+title);
-        File dir = new File(CmsConst.WORK_DIR+File.separator+ CMSUtils.getCategoryPath());
+        File dir = new File(CmsConst.WORK_DIR+File.separator+ path+CMSUtils.getCategoryPathList());
         File[] files = dir.listFiles();
         for(File file : files){
             String name = file.getName();

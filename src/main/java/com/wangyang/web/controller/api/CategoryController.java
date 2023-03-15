@@ -248,35 +248,44 @@ public class CategoryController {
         return categoryService.save(category);
     }
 
-
+//    public void createCategoryLanguage(Category category,Lang lang, List<Category>  categories){
+//        if(category.getLang()==null){
+//            category.setLang(Lang.ZH);
+//            categoryService.save(category);
+//        }
+//        if(category.getLang().equals(lang)){
+//            throw new ObjectException(category.getName()+"该分类已经是"+lang.getSuffix()+"的了！！！");
+//        }
+//
+//        Category langCategory = categoryService.findByLang(category.getId(), lang);
+//
+//        if(langCategory!=null){
+//            throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
+//        }
+//
+//        category.setLangSource(category.getId());
+//        category.setId(null);
+//        category.setLang(lang);
+//        category.setViewName(lang.getSuffix()+category.getViewName());
+//        category.setName(lang.getSuffix()+category.getName());
+//        category.setPath(category.getPath().replace("html",lang.getSuffix()));
+//        categories.add(category);
+//        if( category.getParentId()!=0){
+//            Category parentCategory = categoryService.findById(category.getParentId());
+//            if(parentCategory.getLang()!=null &&  !parentCategory.getLang().equals(lang) ){
+//                Category langCategory2 = categoryService.findByLang(parentCategory.getId(), lang);
+//                if(langCategory2==null){
+//                    createCategoryLanguage(parentCategory,lang,categories);
+//                }
+//            }
+//
+//        }
+//    }
 
     @GetMapping("/createCategoryLanguage/{id}")
-    public Category createCategoryLanguage(@PathVariable("id") Integer id,@RequestParam(defaultValue = "EN")Lang lang){
-        Category category = categoryService.findById(id);
-
-        if(category.getLang()==null){
-            category.setLang(Lang.ZH);
-            categoryService.save(category);
-        }
-        if(category.getLang().equals(lang)){
-            throw new ObjectException(category.getName()+"该分类已经是"+lang.getSuffix()+"的了！！！");
-        }
-
-        Category langCategory = categoryService.findByLang(category.getId(), lang);
-
-        if(langCategory!=null){
-            throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
-        }
-        category.setLangSource(category.getId());
-
-        category.setId(null);
-        category.setLang(lang);
-        category.setViewName(lang.getSuffix()+category.getViewName());
-        category.setName(lang.getSuffix()+category.getName());
-        category.setPath(category.getPath().replace("html",lang.getSuffix()));
-
-        Category save = categoryService.save(category);
-        return save;
+    public BaseResponse createCategoryLanguage(@PathVariable("id") Integer id,@RequestParam(defaultValue = "EN")Lang lang){
+        Category category = categoryService.createCategoryLanguage(id, lang);
+        return BaseResponse.ok(category.getName()+"成功创建"+lang.getSuffix());
     }
 
 }

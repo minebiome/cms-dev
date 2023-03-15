@@ -62,6 +62,9 @@ public class CMSUtils {
     public static String getCategoryPath(){
         return CmsConst.CATEGORY_PATH;
     }
+    public static String getCategoryPathList(){
+        return CmsConst.CATEGORY_PATH_LIST;
+    }
     public static String getArticleRecommendPath(){
         return CmsConst.ARTICLE_RECOMMEND_LIST_PATH;
     }

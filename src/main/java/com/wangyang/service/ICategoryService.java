@@ -115,4 +115,8 @@ public interface ICategoryService  extends IBaseCategoryService<Category,Categor
 
 
     CategoryDetailVO covertToDetailVO(Category category);
+
+    Category createCategoryLanguage(Integer id, Lang lang);
+
+    Category createCategoryLanguage(Category category, Lang lang);
 }

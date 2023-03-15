@@ -43,10 +43,11 @@ public class CmsConst {
     public static final String CONFIGURATION= "application.yml";
     public final static String UPLOAD_SUB_DIR = "upload/";
     public final static String INIT_STATUS = "INIT_STATUS";
-    public final static String COMMENT_PATH = "html"+ File.separator+"comment";
+    public final static String COMMENT_PATH =  File.separator+"comment";
     public final static String COMMENT_PATH_JSON =COMMENT_PATH+File.separator+"json";
 
     public final static String CATEGORY_PATH = "html"+ File.separator+"articleList";
+    public final static String CATEGORY_PATH_LIST = File.separator+"articleList";
     public final static String FIRST_ARTICLE_LIST = File.separator+"firstArticleList";
     public final static String ARTICLE_RECOMMEND_LIST_PATH =  File.separator+"articleRecommendList";
     public final static String ARTICLE_RECENT_LIST_PATH =  File.separator+"articleRecentList";

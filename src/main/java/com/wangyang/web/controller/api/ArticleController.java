@@ -622,6 +622,19 @@ public class ArticleController {
         article.setViewName(lang.getSuffix()+article.getViewName());
         article.setTitle(lang.getSuffix()+article.getTitle());
         article.setPath(article.getPath().replace("html",lang.getSuffix()));
+        article.setParentId(0);
+
+        Category category = categoryService.findById(article.getCategoryId());
+        Category langCategory = categoryService.findByLang(category.getId(), lang);
+        if(langCategory==null){
+            Category category2 = categoryService.createCategoryLanguage(category, lang);
+            article.setCategoryId(category2.getId());
+        }else {
+            article.setCategoryId(langCategory.getId());
+        }
+
+
+
         Article save = articleService.save(article);
         return save;
     }
