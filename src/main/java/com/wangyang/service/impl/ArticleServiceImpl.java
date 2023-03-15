@@ -495,7 +495,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         if(article.getStatus()!=ArticleStatus.INTIMATE){
             article.setStatus(ArticleStatus.PUBLISHED);
         }
-        ArticleDetailVO articleDetailVO = new ArticleDetailVO();
+
 
         String viewName = article.getViewName();
         if(viewName==null||"".equals(viewName)){
@@ -541,29 +541,30 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 
 //        保存文章
         Article saveArticle = articleRepository.save(article);
-        articleDetailVO.setCategory(categoryService.covertToVo(category));
-//        articleDetailVO.setUpdateChannelFirstName(true);
-        BeanUtils.copyProperties(saveArticle,articleDetailVO);
-        // 添加标签
-        if (!CollectionUtils.isEmpty(tagsIds)) {
-            // Get Article tags
-            List<ArticleTags> articleTagsList = tagsIds.stream().map(tagId -> {
-                ArticleTags articleTags = new ArticleTags();
-                articleTags.setTagsId(tagId);
-                articleTags.setArticleId(saveArticle.getId());
-                return articleTags;
-            }).collect(Collectors.toList());
-            //save article tags
-            articleTagsRepository.saveAll(articleTagsList);
-            articleDetailVO.setTagIds(tagsIds);
-            List<Tags> tags = tagsRepository.findAllById(tagsIds);
-            articleDetailVO.setTags(tags);
-
-        }
-        //添加用户
-        User user = userService.findById(article.getUserId());
-        articleDetailVO.setUser(user);
-        articleDetailVO.setCommentPath( article.getPath()+ CMSUtils.getComment()+ File.separator +article.getViewName());
+        ArticleDetailVO articleDetailVO = convert(saveArticle, category, tagsIds);
+//        articleDetailVO.setCategory(categoryService.covertToVo(category));
+////        articleDetailVO.setUpdateChannelFirstName(true);
+//        BeanUtils.copyProperties(saveArticle,articleDetailVO);
+//        // 添加标签
+//        if (!CollectionUtils.isEmpty(tagsIds)) {
+//            // Get Article tags
+//            List<ArticleTags> articleTagsList = tagsIds.stream().map(tagId -> {
+//                ArticleTags articleTags = new ArticleTags();
+//                articleTags.setTagsId(tagId);
+//                articleTags.setArticleId(saveArticle.getId());
+//                return articleTags;
+//            }).collect(Collectors.toList());
+//            //save article tags
+//            articleTagsRepository.saveAll(articleTagsList);
+//            articleDetailVO.setTagIds(tagsIds);
+//            List<Tags> tags = tagsRepository.findAllById(tagsIds);
+//            articleDetailVO.setTags(tags);
+//
+//        }
+//        //添加用户
+//        User user = userService.findById(article.getUserId());
+//        articleDetailVO.setUser(user);
+//        articleDetailVO.setCommentPath( article.getPath()+ CMSUtils.getComment()+ File.separator +article.getViewName());
         return articleDetailVO;
     }
 
@@ -616,32 +617,63 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
      */
     @Override
     public ArticleDetailVO convert(Article article) {
-        ArticleDetailVO articleDetailVo = new ArticleDetailVO();
-        BeanUtils.copyProperties(article,articleDetailVo);
+        Category category = categoryService.findById(article.getCategoryId());
+        return convert(article,category,null);
+    }
+    public ArticleDetailVO convert(Article article,Category category,Set<Integer> tagsIds) {
+//        ArticleDetailVO articleDetailVo = new ArticleDetailVO();
+//        BeanUtils.copyProperties(article,articleDetailVo);
+//
+//        //find tags
 
-        //find tags
-        List<Tags> tags = tagsRepository.findTagsByArticleId(article.getId());
-        if(!CollectionUtils.isEmpty(tags)){
-            articleDetailVo.setTags(tags);
-            articleDetailVo.setTagIds( ServiceUtil.fetchProperty(tags, Tags::getId));
-        }
         if(article.getCategoryId()==null){
             throw  new ArticleException("文章["+article.getTitle()+"]的没有指定类别!!");
         }
+//
+//        User user = userService.findById(article.getUserId());
+//        articleDetailVo.setUser(user);
+//        Optional<Category> optionalCategory = categoryService.findOptionalById(article.getCategoryId());
+//        if(optionalCategory.isPresent()){
+////            throw new ObjectException("文章为名称："+article.getTitle()+" 文章为Id："+article.getId()+"分类没有找到！");
+//            if(articleDetailVo.getTemplateName()==null){
+//                articleDetailVo.setTemplateName(optionalCategory.get().getArticleTemplateName());
+//            }
+//            articleDetailVo.setCategory(categoryService.covertToVo(optionalCategory.get()));
+//        }
+        ArticleDetailVO articleDetailVO = new ArticleDetailVO();
+        articleDetailVO.setCategory(categoryService.covertToVo(category));
+//        articleDetailVO.setUpdateChannelFirstName(true);
+        BeanUtils.copyProperties(article,articleDetailVO);
+        // 添加标签
+        if (tagsIds!=null && !CollectionUtils.isEmpty(tagsIds)) {
+            // Get Article tags
+            List<ArticleTags> articleTagsList = tagsIds.stream().map(tagId -> {
+                ArticleTags articleTags = new ArticleTags();
+                articleTags.setTagsId(tagId);
+                articleTags.setArticleId(article.getId());
+                return articleTags;
+            }).collect(Collectors.toList());
+            //save article tags
+            articleTagsRepository.saveAll(articleTagsList);
+            articleDetailVO.setTagIds(tagsIds);
+            List<Tags> tags = tagsRepository.findAllById(tagsIds);
+            articleDetailVO.setTags(tags);
 
-        User user = userService.findById(article.getUserId());
-        articleDetailVo.setUser(user);
-        Optional<Category> optionalCategory = categoryService.findOptionalById(article.getCategoryId());
-        if(optionalCategory.isPresent()){
-//            throw new ObjectException("文章为名称："+article.getTitle()+" 文章为Id："+article.getId()+"分类没有找到！");
-            if(articleDetailVo.getTemplateName()==null){
-                articleDetailVo.setTemplateName(optionalCategory.get().getArticleTemplateName());
+        }else {
+            List<Tags> tags = tagsRepository.findTagsByArticleId(article.getId());
+            if(!CollectionUtils.isEmpty(tags)){
+                articleDetailVO.setTags(tags);
+                articleDetailVO.setTagIds( ServiceUtil.fetchProperty(tags, Tags::getId));
             }
-            articleDetailVo.setCategory(categoryService.covertToVo(optionalCategory.get()));
         }
 
 
-        return articleDetailVo;
+
+        //添加用户
+        User user = userService.findById(article.getUserId());
+        articleDetailVO.setUser(user);
+        articleDetailVO.setCommentPath( article.getPath()+ CMSUtils.getComment()+ File.separator +article.getViewName());
+        return articleDetailVO;
     }
 
 

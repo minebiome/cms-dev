@@ -410,7 +410,7 @@ public class ArticleController {
 
 //        TestStatic.test();
         Article article = articleService.findArticleById(id);
-        ArticleDetailVO articleDetailVO = articleService.updateArticleDetailVo(article);
+        ArticleDetailVO articleDetailVO = articleService.convert(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         htmlService.conventHtml(articleDetailVO);
         return articleDetailVO;
