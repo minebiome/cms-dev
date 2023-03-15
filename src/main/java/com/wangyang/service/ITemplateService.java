@@ -43,6 +43,8 @@ public interface ITemplateService extends ICrudService<Template, Template, BaseV
 
     Template findByEnNameReturnNUll(String enName);
 
+    Template findByEnNameNull(String enName);
+
     Template findByEnName(String enName);
 
     Template findOptionalByEnName(String enName);

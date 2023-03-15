@@ -196,6 +196,7 @@ public class HtmlServiceImpl implements IHtmlService {
     }
 
     @Override
+    @Async
     public void generateComponentsByCategory(Integer categoryId, Integer categoryParentId){
         Set<Integer> ids = new HashSet<>();
         ids.add(categoryId);

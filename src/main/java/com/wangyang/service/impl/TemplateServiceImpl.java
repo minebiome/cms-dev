@@ -112,6 +112,10 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
 
     @Override
     public Template save(Template template){
+        Template byEnName = findByEnNameNull(template.getEnName());
+        if(byEnName!=null){
+            throw new ObjectException(byEnName.getName()+"已经使用了enName"+byEnName.getEnName());
+        }
         addCssAndJs(template);
         return templateRepository.save(template);
     }
@@ -291,6 +295,18 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
         return templates.get(0);
     }
     @Override
+    public Template findByEnNameNull(String enName) {
+
+        List<Template> templates = templateRepository.findAll(new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("enName"),enName)).getRestriction();
+            }
+        });
+        if(templates.size()==0)return null;
+        return templates.get(0);
+    }
+    @Override
     public Template findByEnName(String enName){
 
         List<Template> templates = templateRepository.findAll(new Specification<Template>() {
@@ -307,11 +323,16 @@ public class TemplateServiceImpl extends AbstractCrudService<Template, Template,
 
     @Override
     public Template findOptionalByEnName(String enName){
-        Template template = templateRepository.findByEnName(enName);
-        if(template==null){
+        List<Template> templates = templateRepository.findAll(new Specification<Template>() {
+            @Override
+            public Predicate toPredicate(Root<Template> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return query.where(criteriaBuilder.equal(root.get("enName"),enName)).getRestriction();
+            }
+        });
+        if(templates.size()==0){
             throw new ObjectException(enName+"不存在！！！");
         }
-        return template;
+        return templates.get(0);
     }
 
 

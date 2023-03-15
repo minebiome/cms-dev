@@ -635,8 +635,8 @@ public class ArticleController {
         Category category = categoryService.findById(article.getCategoryId());
         Category langCategory = categoryService.findByLang(category.getId(), lang);
         if(langCategory==null){
-            Category category2 = categoryService.createCategoryLanguage(category, lang);
-            newArticle.setCategoryId(category2.getId());
+            langCategory = categoryService.createCategoryLanguage(category, lang);
+            newArticle.setCategoryId(langCategory.getId());
         }else {
             newArticle.setCategoryId(langCategory.getId());
         }
@@ -644,6 +644,7 @@ public class ArticleController {
 
 
         Article save = articleService.save(newArticle);
+        htmlService.generateComponentsByCategory(langCategory.getId(),langCategory.getParentId());
         return save;
     }
 
