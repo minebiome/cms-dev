@@ -98,6 +98,12 @@ public class WebController {
     public String showArticleFormat(@PathVariable("path") String path) {
         return "html" + File.separator+path;
     }
+
+    @GetMapping("/en_{path}.html")
+    @Anonymous
+    public String showEnArticleFormat(@PathVariable("path") String path) {
+        return "en" + File.separator+path;
+    }
 //    @GetMapping("/en/{path}.html")
 //    @Anonymous
 //    public String showEnArticleFormat(@PathVariable("path") String path) {

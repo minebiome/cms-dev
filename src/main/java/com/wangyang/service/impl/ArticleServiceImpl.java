@@ -36,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -517,7 +518,6 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
 //
 //        }
         article.setTemplateName(category.getArticleTemplateName());
-
         if(article.getUseTemplatePath()!=null && article.getUseTemplatePath()){
             Template template = templateService.findByEnName(category.getTemplateName());
             article.setPath(template.getPath());
@@ -563,6 +563,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         //添加用户
         User user = userService.findById(article.getUserId());
         articleDetailVO.setUser(user);
+        articleDetailVO.setCommentPath( article.getPath()+ CMSUtils.getComment()+ File.separator +article.getViewName());
         return articleDetailVO;
     }
 

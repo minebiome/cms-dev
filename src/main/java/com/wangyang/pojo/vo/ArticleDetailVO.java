@@ -1,10 +1,12 @@
 package com.wangyang.pojo.vo;
 
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.dto.ArticleDto;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Tags;
 import lombok.Data;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -25,8 +27,13 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
 //    private Boolean isUpdateChannelFirstName=false;
     private Category oldCategory;
     private String cssClass;
+    private String commentPath;
 
-//    public Category getOldCategory() {
+//    public String getCommentPath() {
+//        return this.getPath()+ CMSUtils.getCommentJSON()+ File.separator +this.getViewName();
+//    }
+
+    //    public Category getOldCategory() {
 //        return oldCategory;
 //    }
 //
