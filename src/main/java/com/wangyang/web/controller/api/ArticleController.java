@@ -641,14 +641,6 @@ public class ArticleController {
             newArticle.setCategoryId(langCategory.getId());
         }
 
-        Template template = templateService.findByEnName(article.getTemplateName());
-        Template langTemplate = templateService.findByLang(template.getId(), lang);
-        if(langTemplate==null){
-            Template templateLanguage = templateService.createTemplateLanguage(template.getId(), lang);
-            newArticle.setTemplateName(templateLanguage.getEnName());
-        }else {
-            newArticle.setTemplateName(langTemplate.getEnName());
-        }
 
 
         Article save = articleService.save(newArticle);

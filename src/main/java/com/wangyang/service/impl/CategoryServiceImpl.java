@@ -666,30 +666,7 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
      @Override
     public Category createCategoryLanguage(Integer id, Lang lang){
         Category category = findById(id);
-        if(category.getLang()==null){
-            category.setLang(Lang.ZH);
-            save(category);
-        }
-        if(category.getLang().equals(lang)){
-            throw new ObjectException(category.getName()+"该分类已经是"+lang.getSuffix()+"的了！！！");
-        }
-
-        Category langCategory = findByLang(category.getId(), lang);
-
-        if(langCategory!=null){
-            throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
-        }
-
-        Category newCategory = new Category();
-        BeanUtils.copyProperties(category, newCategory,"id");
-        newCategory.setLangSource(category.getId());
-         newCategory.setLang(lang);
-         newCategory.setViewName(lang.getSuffix()+category.getViewName());
-         newCategory.setName(lang.getSuffix()+category.getName());
-         newCategory.setPath(category.getPath().replace("html",lang.getSuffix()));
-         newCategory.setParentId(0);
-        Category save = save(newCategory);
-        return save;
+         return createCategoryLanguage(category,lang);
     }
     @Override
     public Category createCategoryLanguage(Category category, Lang lang){
@@ -708,14 +685,37 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
             throw new ObjectException(category.getName()+"已经创建了英文分类！！！");
         }
 
-        category.setLangSource(category.getId());
-        category.setId(null);
-        category.setLang(lang);
-        category.setViewName(lang.getSuffix()+category.getViewName());
-        category.setName(lang.getSuffix()+category.getName());
-        category.setPath(category.getPath().replace("html",lang.getSuffix()));
-        category.setParentId(0);
-        Category save = save(category);
+        Category newCategory = new Category();
+        BeanUtils.copyProperties(category, newCategory,"id");
+        newCategory.setLangSource(category.getId());
+        newCategory.setLang(lang);
+        newCategory.setViewName(lang.getSuffix()+category.getViewName());
+        newCategory.setName(lang.getSuffix()+category.getName());
+        newCategory.setPath(category.getPath().replace("html",lang.getSuffix()));
+        newCategory.setParentId(0);
+
+        Template template = templateService.findByEnName(category.getTemplateName());
+        Template langTemplate = templateService.findByLang(template.getId(), lang);
+        if(langTemplate==null){
+            Template templateLanguage = templateService.createTemplateLanguage(template.getId(), lang);
+            newCategory.setTemplateName(templateLanguage.getEnName());
+        }else {
+            newCategory.setTemplateName(langTemplate.getEnName());
+        }
+
+
+        Template articleTemplate = templateService.findByEnName(category.getArticleTemplateName());
+        Template articleLangTemplate = templateService.findByLang(articleTemplate.getId(), lang);
+        if(articleLangTemplate==null){
+            Template templateLanguage = templateService.createTemplateLanguage(articleTemplate.getId(), lang);
+            newCategory.setArticleTemplateName(templateLanguage.getEnName());
+        }else {
+            newCategory.setArticleTemplateName(articleLangTemplate.getEnName());
+        }
+
+
+
+        Category save = save(newCategory);
         return save;
     }
     @Override
