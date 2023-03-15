@@ -231,6 +231,9 @@ public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, Ba
     @Override
     public SheetDetailVO findDetailVOByViewName(String viewName){
         Sheet sheet = findByViewName(viewName);
+        if(sheet==null){
+            throw new ObjectException(viewName+"没有找到！！");
+        }
         return convertDetailVO(sheet);
     }
 
