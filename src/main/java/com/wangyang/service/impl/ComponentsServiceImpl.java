@@ -195,7 +195,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         Components components = findById(id);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(components,componentsVO);
-        if(components.getParse()!=null && components.getParse()){
+        if(components.getParse()!=null && components.getParse() && components.getOriginalContent()!=null && components.getOriginalContent()!=""){
             convert(componentsVO,false);
         }else {
 
