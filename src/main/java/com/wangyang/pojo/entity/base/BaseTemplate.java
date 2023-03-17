@@ -37,4 +37,6 @@ public class BaseTemplate extends  BaseEntity{
     @Column(name = "original_content", columnDefinition = "longtext")
     private String originalContent;
 
+    private Integer articleSize=0;
+
   }

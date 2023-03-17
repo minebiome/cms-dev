@@ -251,7 +251,22 @@ public class HtmlServiceImpl implements IHtmlService {
         Map<String,Object> map = new HashMap<>();
         List<Template> templates = templateService.findByChild(template.getId());
         for (Template templateChild : templates){
-            TemplateUtil.convertHtmlAndSave(category.getPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
+            if(templateChild.getArticleSize()!=null && templateChild.getArticleSize()!=0){
+                List<ContentVO> contents = categoryArticle.getContents();
+                int size= templateChild.getArticleSize();
+                if(contents.size()>size){
+                    List<ContentVO> newContents = new ArrayList<>();
+                    for (int i = 0;i<size;i++){
+                        newContents.add(contents.get(i));
+                    }
+                    categoryArticle.setContents(newContents);
+                }
+
+                TemplateUtil.convertHtmlAndSave(category.getPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
+            }else {
+                TemplateUtil.convertHtmlAndSave(category.getPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
+            }
+
             map.put(templateChild.getEnName(),category.getPath()+File.separator+templateChild.getEnName()+File.separator+categoryArticle.getViewName());
         }
 

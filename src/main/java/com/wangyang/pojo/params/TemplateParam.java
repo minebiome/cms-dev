@@ -17,5 +17,6 @@ public class TemplateParam {
     private Boolean isSystem;
     private String templateContent;
     private TemplateData templateData;
+    private Integer articleSize;
 
 }
