@@ -1,6 +1,7 @@
 package com.wangyang.web.controller.api;
 
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.pojo.annotation.CommentRole;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.entity.Article;
@@ -59,6 +60,9 @@ public class CommentController {
         if(comment.getParentId()==null){
             comment.setParentId(0);
         }
+
+        String originalContent = MarkdownUtils.renderHtml(comment.getOriginalContent());
+        comment.setFormatContent(originalContent);
         Comment saveComment = commentService.add(comment);
 
 
@@ -81,6 +85,7 @@ public class CommentController {
     @PostMapping("/addByLoginUser")
     public Comment addByLoginUser(@RequestBody @Valid CommentLoginUserParam commentLoginUserParam){
         Comment comment = new Comment();
+
         BeanUtils.copyProperties(commentLoginUserParam,comment);
         Comment saveComment = commentService.add(comment);
         /**

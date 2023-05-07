@@ -18,8 +18,10 @@ public class CommentParam {
     private String username;
 //    @NotBlank(message = "用户电子邮件不能为空")
     private String email;
-    @NotBlank(message = "评论内容不能为空!")
+
     private String content;
     private Integer parentId;
+    @NotBlank(message = "评论内容不能为空!")
+    private String originalContent;
 
 }

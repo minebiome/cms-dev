@@ -5,6 +5,7 @@ import com.wangyang.pojo.dto.CommentDto;
 import com.wangyang.pojo.entity.Comment;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 @Data
@@ -19,7 +20,8 @@ public class CommentVo extends BaseVo<Comment> {
     private String content;
     private User user;
     private User replyUser;
-
+    private String originalContent;
+    private String formatContent;
     public CommentVo() {
     }
 

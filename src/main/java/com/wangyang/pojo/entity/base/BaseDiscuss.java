@@ -15,7 +15,12 @@ public class BaseDiscuss extends BaseEntity {
     private Integer userId;
     private String username;
     private String email;
-    @Column( columnDefinition = "longtext not null")
+    @Column(name = "content", columnDefinition = "longtext")
     private String content;
 
+
+    @Column(name = "original_content", columnDefinition = "longtext")
+    private String originalContent;
+    @Column(name = "format_content", columnDefinition = "longtext")
+    private String formatContent;
 }

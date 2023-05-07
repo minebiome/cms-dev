@@ -43,7 +43,7 @@ public abstract class AbstractServiceTest {
         Comment comment = new Comment();
         comment.setUserId(user.getId());
 //        comment.setCommentType(CommentType.ARTICLE);
-        comment.setContent("Test Comment");
+//        comment.setContent("Test Comment");
         return comment;
     }
 
