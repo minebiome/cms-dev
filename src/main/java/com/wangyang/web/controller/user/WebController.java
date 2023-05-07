@@ -12,6 +12,7 @@ import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
+import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Template;
@@ -28,7 +29,9 @@ import com.wangyang.handle.CrudHandlers;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.*;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -44,6 +47,8 @@ public class WebController {
     CrudHandlers crudHandlers;
     @Autowired
     ICategoryService categoryService;
+    @Autowired
+    IHtmlService htmlService;
 
     @GetMapping("/registry")
     @Anonymous
@@ -187,6 +192,36 @@ public class WebController {
     public BaseResponse getVisitsCount(@PathVariable("id") int id) {
         Integer visitsNumber = articleService.getVisitsNumber(id);
         return BaseResponse.ok("操作成功",visitsNumber);
+    }
+
+
+    @GetMapping(value = "/component_{id},category_{ids},sort_{sort},order_{order},page_{page},size_{size}",produces={"text/html;charset=UTF-8;","application/json;"})
+    @Anonymous
+    @ResponseBody
+    public String articlePageCondition(@PathVariable("id") Integer componentId,
+                                    @PathVariable("ids") String categoryIds,
+                                    @PathVariable("sort") String sort,
+                                    @PathVariable("order") String order,
+                                    @PathVariable("page") Integer page,
+                                    @PathVariable("size") Integer size){
+//        response.setContentType("");
+        Set<Integer> ids= new HashSet<>();
+        String[] idsSplit = categoryIds.split(",");
+        for(String i : idsSplit){
+            ids.add(Integer.parseInt(i));
+        }
+        String[] sortSplit = sort.split(",");
+        Set<String>  sortStr= new HashSet<>();
+        sortStr.addAll(Arrays.asList(sortSplit));
+
+        String html = htmlService.articlePageCondition(componentId, ids, sortStr, order, page, size);
+//        TemplateUtil.saveFile(path,viewName,html);
+//        Map<String,String> map = new HashMap<>();
+//        map.put("html",html);
+//        map.put("url",html);
+
+        return html;
+
     }
 
     @RequestMapping("/admin")

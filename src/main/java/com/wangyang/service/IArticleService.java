@@ -2,6 +2,7 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
 import com.wangyang.pojo.dto.ArticleDto;
+import com.wangyang.pojo.dto.ArticlePageCondition;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
@@ -134,7 +135,11 @@ public interface IArticleService extends IContentService<Article,Article,Article
     List<Article> listArticleBy(int categoryId);
 
 
-    Page<Article>  pagePublishBy(Integer componentsId,Pageable pageable);
+//    ArticlePageCondition pagePublishBy(Integer componentsId, Pageable pageable);
+
+    ArticlePageCondition pagePublishBy(Integer componentsId, Set<String> sortStr, String order, Integer page, Integer size);
+
+    ArticlePageCondition pagePublishBy(Set<Integer> ids, Set<String> sortStr, String order, Integer page, Integer size);
 
     //    Page<ArticleDto> pageHtmlDtoByCategory(Category category, int page);
     Page<ArticleDto> pageDtoByCategory(Category category, Pageable pageable);

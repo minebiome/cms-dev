@@ -235,6 +235,18 @@ public class TemplateUtil {
     public static String saveFile(String path,String viewName,String html) {
         return saveFile(path,viewName,html,"html");
     }
+    public static Boolean checkFileExist(String path,String viewName) {
+        path = workDir+File.separator+path+File.separator+viewName+".html";
+        return Paths.get(path).toFile().exists();
+    }
+    public static String openFile(String path,String viewName) {
+        path = workDir+File.separator+path+File.separator+viewName+".html";
+        return FileUtils.openFile(path);
+    }
+    public static void deleteFile(String path) {
+        path = workDir+File.separator+path;
+        FileUtils.remove(path);
+    }
     public static String saveFile(String path,String viewName,String html,String suffix) {
         // 路径 + 视图名称
         path = workDir+File.separator+path;

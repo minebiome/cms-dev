@@ -1,13 +1,12 @@
 package com.wangyang.service.impl;
 
+import com.google.common.base.Joiner;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.exception.TemplateException;
-import com.wangyang.common.utils.CMSUtils;
-import com.wangyang.common.utils.FileUtils;
-import com.wangyang.common.utils.MarkdownUtils;
-import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.common.utils.*;
 import com.wangyang.pojo.dto.ArticleDto;
+import com.wangyang.pojo.dto.ArticlePageCondition;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.CrudType;
@@ -232,7 +231,52 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         return false;
     }
 
+    @Override
+    public Map<String ,Object> getModelPageSize(Components components, Integer page, Integer size,String order) {
+        TemplateUtil.deleteFile("html/components/"+components.getId());
+        Map<String,Object> map = new HashMap<>();
+        String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT_SIZE.length());
+        if(args==null||"".equals(args)){
+            throw new ObjectException("数据参数不能为空！！");
+        }
+        String[] argsArray = args.split(",");
+        List<String> argLists = Arrays.asList(argsArray);
+//        int size=5;
+        Set<String> sortStr = new HashSet<>();
+        for (String arg : argLists){
+            if(arg.startsWith("size_")){
+                size = Integer.parseInt(arg.replace("size_", ""));
+            }else  if(arg.startsWith("order_")){
+                order = arg.replace("order_", "");
 
+            }else if(arg.startsWith("sort_")){
+                String sort_ = arg.replace("sort_", "");
+                sortStr.add(sort_);
+            }
+        }
+//        String orderSort = sortStr.stream()
+//                .collect(Collectors.joining(","))+","+direction.name();
+
+
+
+        ArticlePageCondition articlePageCondition= articleService.pagePublishBy(components.getId(),sortStr,order,page, size);
+        Page<Article> articles =articlePageCondition.getArticles();
+        Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
+//                Map<String,Object> map = new HashMap<>();
+        map.put("view",articleVOS);
+        map.put("info",articlePageCondition);
+//        map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
+        map.put("name",components.getName());
+        map.put("componentIds",components.getId());
+        map.put("url","component_"+components.getId()+",category_"+
+                Joiner.on(",").join(articlePageCondition.getIds())+
+                ",sort_"+Joiner.on(",").join(articlePageCondition.getSortStr())+
+                ",order_"+articlePageCondition.getOrder()+
+                ",page_"+(articlePageCondition.getPage()+ 1)+
+                ",size_"+articlePageCondition.getSize());
+
+        return map;
+    }
     @Override
     public Map<String ,Object> getModel(Components components) {
         Map<String,Object> map = new HashMap<>();
@@ -295,31 +339,34 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 map.putAll((Map<String,Object>)o);
                 return map;
 
-            }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){
-                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT.length());
-                Sort sort;
-                if(args!=null||!"".equals(args)){
-                    String[] argsArray = args.split(",");
-                    String directionStr = argsArray[argsArray.length-1];
-                    if(directionStr.equals("DESC")||directionStr.equals("ASC")){
-                        Sort.Direction direction = Sort.Direction.valueOf(directionStr);
-                        sort = Sort.by(direction, Arrays.copyOf(argsArray,argsArray.length-1));
-                    }else {
-                        sort = Sort.by( argsArray);
-                    }
-                }else {
-                    sort = Sort.by(Sort.Order.desc("id"));
-                }
-                Page<Article> articles = articleService.pagePublishBy(components.getId(),PageRequest.of(0, 5, sort));
-                Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
-//                Map<String,Object> map = new HashMap<>();
-                map.put("view",articleVOS);
-                map.put("showUrl","/articleList?sort="+args); //likes,DESC
-                map.put("name",components.getName());
-                return map;
-//                Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
-//                TemplateUtil.convertHtmlAndSave();
-            }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_KEYWORD)){
+            }
+//            else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT)){
+//                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT.length());
+//                Sort sort;
+//                if(args!=null||!"".equals(args)){
+//                    String[] argsArray = args.split(",");
+//                    String directionStr = argsArray[argsArray.length-1];
+//                    if(directionStr.equals("DESC")||directionStr.equals("ASC")){
+//                        Sort.Direction direction = Sort.Direction.valueOf(directionStr);
+//                        sort = Sort.by(direction, Arrays.copyOf(argsArray,argsArray.length-1));
+//                    }else {
+//                        sort = Sort.by( argsArray);
+//                    }
+//                }else {
+//                    sort = Sort.by(Sort.Order.desc("id"));
+//                }
+//                ArticlePageCondition articlePageCategoryIds = articleService.pagePublishBy(components.getId(),0, 5, "DESC");
+//                Page<Article> articles =articlePageCategoryIds.getArticles();
+//                Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
+////                Map<String,Object> map = new HashMap<>();
+//                map.put("view",articleVOS);
+//                map.put("showUrl","/articleList?sort="+args); //likes,DESC
+//                map.put("name",components.getName());
+//                return map;
+////                Template template = templateService.findByEnName(CmsConst.ARTICLE_LIST);
+////                TemplateUtil.convertHtmlAndSave();
+//            }
+            else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_KEYWORD)){
 
                 String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_KEYWORD.length());
                 ArticleQuery articleQuery = new ArticleQuery();
@@ -344,38 +391,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                     return map;
                 }
             }else if(components.getDataName().startsWith(CmsConst.ARTICLE_DATA_SORT_SIZE)){
-                String args = components.getDataName().substring(CmsConst.ARTICLE_DATA_SORT_SIZE.length());
-                if(args==null||"".equals(args)){
-                    throw new ObjectException("数据参数不能为空！！");
-                }
-                String[] argsArray = args.split(",");
-                List<String> argLists = Arrays.asList(argsArray);
-                int size=5;
-                Set<String> sortStr = new HashSet<>();
-                Sort.Direction direction = Sort.Direction.DESC;
-                for (String arg : argLists){
-                    if(arg.startsWith("size_")){
-                        size = Integer.parseInt(arg.replace("size_", ""));
-                    }else  if(arg.startsWith("order_")){
-                        String order = arg.replace("order_", "");
-                        direction = Sort.Direction.valueOf(order);
-                    }else if(arg.startsWith("sort_")){
-                        String sort_ = arg.replace("sort_", "");
-                        sortStr.add(sort_);
-                    }
-                }
-                Sort sort= Sort.by(direction,sortStr.toArray(new String[]{}));
-                String orderSort = sortStr.stream()
-                        .collect(Collectors.joining(","))+","+direction.name();
-
-
-
-                Page<Article> articles = articleService.pagePublishBy(components.getId(),PageRequest.of(0, size, sort));
-                Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
-//                Map<String,Object> map = new HashMap<>();
-                map.put("view",articleVOS);
-                map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
-                map.put("name",components.getName());
+                map = getModelPageSize(components,0,5,"DESC");
                 return map;
             } else if (components.getDataName().startsWith(CmsConst.TAG_DATA)) {
                 List<Tags> tags = tagsService.listAll();

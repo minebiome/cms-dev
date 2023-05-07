@@ -55,6 +55,10 @@ public interface IHtmlService {
     @Async
     void generateRecommendArticle(List<Category> categories);
 
+    String articlePageCondition(Integer componentsId, Set<String> sortStr, String order, Integer page, Integer size);
+
+    String articlePageCondition(Integer componentId, Set<Integer> ids, Set<String> sortStr, String order, Integer page, Integer size);
+
     @Async
         //异步执行
     void conventHtmlNoCategoryList(ArticleDetailVO articleVO);

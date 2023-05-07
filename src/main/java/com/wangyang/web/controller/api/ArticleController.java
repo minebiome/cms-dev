@@ -4,6 +4,8 @@ import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
+import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.dto.ArticlePageCondition;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.ArticleVO;
@@ -35,6 +37,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import java.io.File;
@@ -647,5 +650,7 @@ public class ArticleController {
         htmlService.generateComponentsByCategory(langCategory.getId(),langCategory.getParentId());
         return save;
     }
+//    Set<Integer> ids,  Set<String> sortStr,String order, Integer page, Integer size
+
 
 }

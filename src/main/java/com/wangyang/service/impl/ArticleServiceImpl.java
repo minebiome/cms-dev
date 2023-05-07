@@ -1225,8 +1225,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         return  articleRepository.findAll(buildPublishByQuery(articleQuery),pageable);
     }
     @Override
-    public Page<Article>  pagePublishBy(Integer componentsId,Pageable pageable){
-
+    public ArticlePageCondition pagePublishBy(Integer componentsId, Set<String> sortStr, String order, Integer page, Integer size){
         List<ComponentsCategory> componentsCategories = componentsCategoryRepository.findByComponentId(componentsId);
         Set<Integer> categoryIds = ServiceUtil.fetchProperty(componentsCategories, ComponentsCategory::getCategoryId);
         Set<Integer> ids = new HashSet<>();
@@ -1236,18 +1235,38 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             Set<Integer> set = ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId);
             ids.addAll(set);
         }
+        return pagePublishBy(ids,sortStr,order,page,size);
 
+
+    }
+    @Override
+    public ArticlePageCondition pagePublishBy(Set<Integer> ids,  Set<String> sortStr,String order, Integer page, Integer size){
+        ArticlePageCondition articlePageCategoryIds = new ArticlePageCondition();
         if(ids.size()==0){
-            return Page.empty();
+            return articlePageCategoryIds;
         }
 
-        return  articleRepository.findAll(new Specification<Article>() {
+
+        Sort.Direction direction = Sort.Direction.valueOf(order);
+        Sort sort= Sort.by(direction,sortStr.toArray(new String[]{}));
+
+        Page<Article> articlePage = articleRepository.findAll(new Specification<Article>() {
             @Override
             public Predicate toPredicate(Root<Article> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                return criteriaQuery.where(criteriaBuilder.in(root.get("categoryId")).value(ids),criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
-                        criteriaBuilder.equal(root.get("status"), ArticleStatus.MODIFY))).getRestriction() ;
+                return criteriaQuery.where(criteriaBuilder.in(root.get("categoryId")).value(ids), criteriaBuilder.or(criteriaBuilder.equal(root.get("status"), ArticleStatus.PUBLISHED),
+                        criteriaBuilder.equal(root.get("status"), ArticleStatus.MODIFY))).getRestriction();
             }
-        },pageable);
+        }, PageRequest.of(page, size, sort));
+        articlePageCategoryIds.setArticles(articlePage);
+        articlePageCategoryIds.setIds(ids);
+        articlePageCategoryIds.setSortStr(sortStr);
+        articlePageCategoryIds.setOrder(order);
+        articlePageCategoryIds.setPage(page);
+        articlePageCategoryIds.setSize(size);
+        articlePageCategoryIds.setTotalPage(articlePage.getTotalPages());
+
+        return articlePageCategoryIds;
+
     }
 
 

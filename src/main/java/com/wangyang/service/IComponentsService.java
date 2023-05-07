@@ -40,6 +40,8 @@ public interface IComponentsService  extends ICrudService<Components, Components
     void deleteAll();
 
 
+    Map<String ,Object> getModelPageSize(Components components, Integer page, Integer size,String order);
+
     Map<String ,Object> getModel(Components components);
 
     Components findByDataName(String dataName);

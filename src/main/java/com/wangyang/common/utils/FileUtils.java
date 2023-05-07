@@ -142,7 +142,7 @@ public class FileUtils {
             }
         }
     }
-    private static String openFile(String path){
+    public static String openFile(String path){
         File file = new File(path);
         return openFile(file);
     }

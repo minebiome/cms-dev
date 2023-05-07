@@ -1,11 +1,13 @@
 package com.wangyang.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.base.Joiner;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
 import com.wangyang.pojo.dto.ArticleDto;
+import com.wangyang.pojo.dto.ArticlePageCondition;
 import com.wangyang.pojo.dto.CategoryArticleListDao;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.*;
@@ -29,12 +31,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -136,8 +140,53 @@ public class HtmlServiceImpl implements IHtmlService {
 
         }
     }
+    @Override
+    public String articlePageCondition(Integer componentsId, Set<String> sortStr, String order, Integer page, Integer size){
+        Components components = componentsService.findById(componentsId);
+        Map<String,Object> map = new HashMap<>();
+        ArticlePageCondition articlePageCondition = articleService.pagePublishBy(componentsId, sortStr, order, page, size);
+        Page<Article> articles =articlePageCondition.getArticles();
+        Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
+//                Map<String,Object> map = new HashMap<>();
+        map.put("view",articleVOS);
+        map.put("info",articlePageCondition);
+//        map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
+//        TemplateUtil.convertHtmlAndSave(category.getPath()+CMSUtils.getArticleRecommendPath(),category.getViewName(),map,template);
+        Context context = new Context();
+        context.setVariables(map);
+        String html = TemplateUtil.getHtml(components.getTemplateValue(),context);
+//        TemplateUtil.saveFile(path,viewName,html);
+        return html;
+    }
+    @Override
+    public String articlePageCondition(Integer componentId, Set<Integer> ids, Set<String> sortStr, String order, Integer page, Integer size){
+        String url = "component_"+componentId+",category_"+Joiner.on(",").join(ids)+",sort_"+Joiner.on(",").join(sortStr)+",order_"+order+",page_"+(page+1)+",size_"+size;
+        if(TemplateUtil.checkFileExist("html/components/"+componentId,url)){
+            return TemplateUtil.openFile("html/components/"+componentId,url);
+        }
 
+        Components components = componentsService.findById(componentId);
+        Map<String,Object> map = new HashMap<>();
+        ArticlePageCondition articlePageCondition = articleService.pagePublishBy(ids, sortStr, order, page, size);
+        Page<Article> articles =articlePageCondition.getArticles();
+        Page<ArticleVO> articleVOS = articleService.convertToPageVo(articles);
+        if(articleVOS.getContent().size()==0){
+            throw new ObjectException("没有数据！！");
+        }
+//                Map<String,Object> map = new HashMap<>();
 
+        map.put("view",articleVOS);
+        map.put("info",articlePageCondition);
+
+        map.put("url",url);
+//        map.put("showUrl","/articleList?sort="+orderSort); //likes,DESC
+//        TemplateUtil.convertHtmlAndSave(category.getPath()+CMSUtils.getArticleRecommendPath(),category.getViewName(),map,template);
+        Context context = new Context();
+        context.setVariables(map);
+        String html = TemplateUtil.getHtml(components.getTemplateValue(),context);
+        TemplateUtil.saveFile("html/components/"+componentId,url,html);
+        return html;
+    }
     /**
      * 从思维导图创建文章生成静态页面，之后统一生成文章首页列表
      * @param articleVO
