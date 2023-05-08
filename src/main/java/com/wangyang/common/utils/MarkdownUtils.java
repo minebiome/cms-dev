@@ -7,6 +7,7 @@ package com.wangyang.common.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
+import com.vladsch.flexmark.ext.attributes.AttributesExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiImageType;
 import com.vladsch.flexmark.ext.emoji.EmojiShortcutType;
@@ -25,7 +26,7 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import com.wangyang.common.flexmark.footnotes.FootnoteExtension;
 import com.wangyang.common.flexmark.gitlab.GitLabExtension;
-import com.wangyang.common.flexmark.imgattr.AttributeExtension;
+//import com.wangyang.common.flexmark.imgattr.AttributeExtension;
 import com.wangyang.pojo.entity.base.Content;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -55,7 +56,7 @@ public class MarkdownUtils {
                     FootnoteExtension.create(),
                     AdmonitionExtension.create(),
                     MacrosExtension.create(),
-                    AttributeExtension.create(),
+                    AttributesExtension.create(),
                     EnumeratedReferenceExtension.create()
 
 
@@ -149,7 +150,7 @@ public class MarkdownUtils {
                     FootnoteExtension.create(),
                     AdmonitionExtension.create(),
                     MacrosExtension.create(),
-                    AttributeExtension.create(),
+                    AttributesExtension.create(),
 
                     EnumeratedReferenceExtension.create()
 

@@ -122,11 +122,14 @@ public class GitLabNodeRenderer implements NodeRenderer
             html = html.tag("div");
             html.withAttr().attr("href","javascript:;").attr(Attribute.CLASS_ATTR,"markdown-btn").withAttr().tag("a").text(sequence).tag("/a");
             html.srcPosWithTrailingEOL(node.getChars()).attr(Attribute.CLASS_ATTR, "markdown-btn-content").withAttr().tag("div").line().openPre();
-            if (codeContentBlock) {
-                context.renderChildren(node);
-            } else {
-                html.text(node.getContentChars().normalizeEOL());
-            }
+            html.tag("pre");
+            context.renderChildren(node);
+//            if (codeContentBlock) {
+//
+//            } else {
+//                html.text(node.getContentChars().normalizeEOL());
+//            }
+            html.tag("/pre");
             html.closePre().tag("/div");
             html.tag("/div");
             html.lineIf(htmlOptions.htmlBlockCloseTagEol);
