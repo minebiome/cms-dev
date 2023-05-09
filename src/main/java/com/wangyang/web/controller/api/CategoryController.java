@@ -162,7 +162,9 @@ public class CategoryController {
                 if(category.getArticleListSize()==null){
                     category.setArticleListSize(10);
                 }
-                category.setPath(CMSUtils.getCategoryPath());
+                if(category.getPath()==null || category.getPath()==""){
+                    category.setPath(CMSUtils.getCategoryPath());
+                }
                 categoryService.save(category);
             }
             htmlService.convertArticleListBy(category);
