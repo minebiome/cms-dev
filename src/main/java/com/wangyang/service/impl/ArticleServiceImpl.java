@@ -886,6 +886,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
                     })
                     .collect(Collectors.toList()));
 //            articleVO.setTags(tagsListMap.get(article.getId()));
+            articleVO.setLinkPath(FormatUtil.articleListFormat(article));
             return articleVO;
         }).collect(Collectors.toList());
         return articleVOS;
