@@ -12,6 +12,7 @@ import com.wangyang.pojo.enums.TaskStatus;
 import com.wangyang.pojo.enums.TaskType;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.repository.LiteratureRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.*;
@@ -28,7 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class LiteratureServiceImpl  extends AbstractContentServiceImpl<Literature, Literature, BaseVo> implements ILiteratureService {
+public class LiteratureServiceImpl  extends AbstractContentServiceImpl<Literature, Literature, ContentVO> implements ILiteratureService {
 
     private LiteratureRepository literatureRepository;
     private ITaskService taskService;

@@ -12,6 +12,7 @@ import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.CrudType;
 import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.pojo.vo.SheetDetailVO;
 import com.wangyang.pojo.vo.SheetVo;
 import com.wangyang.repository.MenuRepository;
@@ -37,7 +38,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, BaseVo> implements ISheetService {
+public class SheetServiceImpl extends AbstractContentServiceImpl<Sheet,Sheet, ContentVO> implements ISheetService {
 
 
 

@@ -382,7 +382,7 @@ public class HtmlServiceImpl implements IHtmlService {
         log.debug("生成"+category.getName()+"分类下的第["+page+"]个页面缓存!");
         String viewName =   category.getViewName()+"-"+String.valueOf(page)+"-page";
 //            String viewName = String.valueOf(page);
-        return TemplateUtil.convertHtmlAndSave(category.getPath()+CMSUtils.getCategoryPathList(),viewName,categoryArticle,template);
+        return TemplateUtil.convertHtmlAndSave(category.getPath(),viewName,categoryArticle,template);
 
 
     }

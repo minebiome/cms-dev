@@ -8,13 +8,14 @@ import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.pojo.vo.CategoryVO;
+import com.wangyang.pojo.vo.ContentVO;
 import com.wangyang.service.base.IContentService;
 import com.wangyang.service.base.ICrudService;
 
 import java.util.List;
 import java.util.Set;
 
-public interface ILiteratureService  extends IContentService<Literature,Literature, BaseVo> {
+public interface ILiteratureService  extends IContentService<Literature,Literature, ContentVO> {
     List<Literature> listByKeys(Set<String> literatureStrIds);
 
     List<Literature> listByCollectionId(Integer collectionId);

@@ -19,6 +19,8 @@ import com.wangyang.repository.ComponentsArticleRepository;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.repository.base.ContentRepository;
 import com.wangyang.service.IOptionService;
+import com.wangyang.util.FormatUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,9 +35,10 @@ import javax.persistence.criteria.Root;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 //@Component
-public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLEDTO extends BaseEntity,ARTICLEVO extends BaseVo>  extends AbstractCrudService<ARTICLE,ARTICLEDTO,ARTICLEVO,Integer>
+public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLEDTO extends BaseEntity,ARTICLEVO extends ContentVO>  extends AbstractCrudService<ARTICLE,ARTICLEDTO,ARTICLEVO,Integer>
         implements IContentService<ARTICLE,ARTICLEDTO,ARTICLEVO> {
 
 //    @Autowired
@@ -153,7 +156,16 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
         }
         return contents.get(0);
     }
+    @Override
+    public List<ARTICLEVO> convertToListVo(List<ARTICLE> domains) {
+        return domains.stream().map(domain -> {
+            ARTICLEVO domainvo = getVOInstance();
+            BeanUtils.copyProperties(domain,domainvo);
+            domainvo.setLinkPath(FormatUtil.articleListFormat(domain));
+            return domainvo;
 
+        }).collect(Collectors.toList());
+    }
     @Override
     public ARTICLE findByViewName(String viewName, Lang lang) {
         List<ARTICLE> contents = contentRepository.findAll(new Specification<ARTICLE>() {
@@ -176,6 +188,7 @@ public abstract class AbstractContentServiceImpl<ARTICLE extends Content,ARTICLE
     public List<CategoryContentList> listCategoryContentByComponentsId(int componentsId, Integer page) {
         return null;
     }
+
 
     @Override
     public List<CategoryContentList> listCategoryContentByComponentsIdSize(int componentsId, Integer size) {
