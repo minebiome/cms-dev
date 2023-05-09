@@ -33,4 +33,5 @@ public class CategoryParam implements InputConverter<Category> {
     private String originalContent;
     private Boolean parse;
     private String cssClass; //节点的方向
+    private Boolean articleUseViewName;
 }

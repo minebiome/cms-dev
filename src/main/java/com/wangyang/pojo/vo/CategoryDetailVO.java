@@ -33,4 +33,5 @@ public class CategoryDetailVO {
     private List<Tags> tags;
     private String recommendTemplateName;
     private Boolean parse;
+    private Boolean articleUseViewName;
 }

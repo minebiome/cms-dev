@@ -14,6 +14,6 @@ public class ComponentsParam {
     private String path;
     private String originalContent;
 
-    private Boolean parse;
+    private Boolean parse=false;
 
 }

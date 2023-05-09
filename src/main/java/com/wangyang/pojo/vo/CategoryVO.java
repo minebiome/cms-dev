@@ -39,4 +39,6 @@ public class CategoryVO extends BaseVo<CategoryVO> {
     private String formatContent;
     private Boolean parse;
     private String cssClass;
+
+    private Boolean articleUseViewName;
 }

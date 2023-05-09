@@ -364,8 +364,14 @@ public class ArticleController {
                     article.setTop(false);
                 }
 
+
                 Category category = categoryService.findById(article.getCategoryId());
-                article.setPath(CMSUtils.getArticlePath());
+                if(category.getArticleUseViewName()){
+                    article.setPath(category.getPath()+File.separator+category.getViewName());
+                }else {
+                    article.setPath(category.getPath());
+                }
+//                article.setPath(CMSUtils.getArticlePath());
                 article.setTemplateName(category.getArticleTemplateName());
 
                 articleService.save(article);

@@ -522,9 +522,16 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
             Template template = templateService.findByEnName(category.getTemplateName());
             article.setPath(template.getPath());
         }
-        if(article.getPath()==null || article.getPath().equals("")){
-            article.setPath(CMSUtils.getArticlePath());
+
+        if(category.getArticleUseViewName()){
+            article.setPath(category.getPath()+File.separator+category.getViewName());
+        }else {
+            article.setPath(category.getPath());
         }
+
+//        if(article.getPath()==null || article.getPath().equals("")){
+//            article.setPath(CMSUtils.getArticlePath());
+//        }
 
 //        article.setPath(CMSUtils.getArticlePath());
 //        article.setPath(CMSUtils.getArticlePath());
@@ -821,6 +828,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
                     })
                     .collect(Collectors.toList()));
 //            articleVO.setTags(tagsListMap.get(article.getId()));
+            articleVO.setLinkPath(FormatUtil.articleListFormat(article));
             return articleVO;
         });
         return articleVOS;

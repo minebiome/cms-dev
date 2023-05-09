@@ -89,6 +89,20 @@ public class WebController {
     public String showEnArticle3(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {
         return "en" + File.separator+path+File.separator+viewName;
     }
+
+    @GetMapping("{path}/{path2}/{viewName}.html")
+    @Anonymous
+    public String showArticle3(@PathVariable("path") String path,@PathVariable("path2") String path2, @PathVariable("viewName") String viewName) {
+        return "html" + File.separator+path+File.separator+path2+File.separator+viewName;
+    }
+
+    @GetMapping("{path}/{viewName}.html")
+    @Anonymous
+    public String showArticle2(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {
+        return "html" + File.separator+path+File.separator+viewName;
+    }
+
+
     @GetMapping("/html/{path}/{viewName}.html")
     @Anonymous
     public String showArticle(@PathVariable("path") String path, @PathVariable("viewName") String viewName) {

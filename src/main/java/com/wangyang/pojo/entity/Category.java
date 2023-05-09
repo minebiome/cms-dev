@@ -46,6 +46,8 @@ public class Category extends BaseCategory{
     private Boolean recommend=false;
     @Column(columnDefinition = "bit(1) default false")
     private Boolean existNav=false;
+    @Column(columnDefinition = "bit(1) default false")
+    private Boolean articleUseViewName=false;
     private String articleTemplateName;
     private String recommendTemplateName;
     private String icon;

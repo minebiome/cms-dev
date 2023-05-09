@@ -158,9 +158,9 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
 
         String htmlContent = componentsVO.getOriginalContent();
         if(htmlContent!=null){
-            if(componentsVO.getParse()!=null && componentsVO.getParse()){
-                htmlContent = MarkdownUtils.renderHtml(htmlContent);
-            }
+//            if(componentsVO.getParse()!=null && componentsVO.getParse()){
+//                htmlContent = MarkdownUtils.renderHtml(htmlContent);
+//            }
             componentsVO.setHtmlFile(htmlContent);
 
             if(isFile){
@@ -194,9 +194,9 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
         Components components = findById(id);
         ComponentsVO componentsVO = new ComponentsVO();
         BeanUtils.copyProperties(components,componentsVO);
-        if(components.getParse()!=null && components.getParse() && components.getOriginalContent()!=null && components.getOriginalContent()!=""){
-            convert(componentsVO,false);
-        }else {
+//        if(components.getParse()!=null && components.getParse() && components.getOriginalContent()!=null && components.getOriginalContent()!=""){
+//            convert(componentsVO,false);
+//        }else {
 
             String templateValue = components.getTemplateValue();
             String path = CmsConst.WORK_DIR+File.separator+CMSUtils.getTemplates()+File.separator+templateValue+".html";
@@ -206,7 +206,7 @@ public class ComponentsServiceImpl extends AbstractCrudService<Components, Compo
                 componentsVO.setHtmlFile(openFile);
                 componentsVO.setOriginalContent(openFile);
             }
-        }
+//        }
 
         return componentsVO;
     }
