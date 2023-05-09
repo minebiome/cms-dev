@@ -21,7 +21,7 @@ public class ArticleParams  implements InputConverter<Article> {
     @NotBlank(message = "文章内容不能为空!!")
     private String originalContent;
     private String summary;
-//    private String viewName;
+    private String viewName;
     private Set<Integer> tagIds;
     @NotNull(message = "文章类别不能为空!!")
     private Integer categoryId;
