@@ -7,6 +7,7 @@ import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.CategoryTags;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.enums.Lang;
+import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.repository.CategoryTagsRepository;
@@ -92,6 +93,7 @@ public class CategoryController {
     public Category save(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
 
+
         BeanUtils.copyProperties(categoryParam, category,CMSUtils.getNullPropertyNames(categoryParam));
         Category updateCategory = categoryService.update(category,categoryParam.getTagIds());
 
@@ -106,10 +108,29 @@ public class CategoryController {
     @PostMapping("/update/{categoryId}")
     public Category update(@Valid @RequestBody CategoryParam categoryParam,@PathVariable("categoryId") Integer categoryId){
         Category category = categoryService.findById(categoryId);
+        String oldViewName= category.getViewName();
+        String oldPath= category.getPath();
+
 
         BeanUtils.copyProperties(categoryParam, category,CMSUtils.getNullPropertyNames(categoryParam));
         Category updateCategory = categoryService.update(category,categoryParam.getTagIds());
 
+        if(!categoryParam.getPath().equals(oldPath) ||
+                (category.getArticleUseViewName() && !categoryParam.getPath().equals(oldPath) &&
+                        !categoryParam.getViewName().equals(oldViewName))){
+            List<Article> articles = articleService.listArticleBy(category.getId());
+            articles.forEach(article -> {
+                if(category.getArticleUseViewName()){
+                    article.setPath(category.getPath()+File.separator+category.getViewName());
+                }else {
+                    article.setPath(category.getPath());
+                }
+                articleService.save(article);
+                ArticleDetailVO articleDetailVO = articleService.convert(article);
+                htmlService.conventHtml(articleDetailVO);
+            });
+//            htmlService.convertArticleListBy(category);
+        }
         //更新Category列表
         htmlService.generateCategoryListHtml();
         if(updateCategory.getHaveHtml()){

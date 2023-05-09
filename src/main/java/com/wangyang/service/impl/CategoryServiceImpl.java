@@ -192,9 +192,6 @@ public class CategoryServiceImpl extends AbstractBaseCategoryServiceImpl<Categor
             category.setPath(CMSUtils.getCategoryPath());
         }
 
-
-
-
         if(category.getParse()!=null && category.getParse()){
             String renderHtml = MarkdownUtils.renderHtml(category.getOriginalContent());
             category.setFormatContent(renderHtml);
