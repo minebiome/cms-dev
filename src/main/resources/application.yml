@@ -117,6 +117,10 @@ jwt:
 
 wx:
   mp:
+    appId: xxx
+    secret: xxx
+    token: xxx
+    aesKey: xxx
 
 
 
