@@ -56,7 +56,7 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport  {
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(bioInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/templates/**","/admin/**","/favicon.ico","/api/user/login", "/logout/**", "/loginPage/**", "/error/**",
-                        "/doc.html","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+                        "/doc.html","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/wechat/**");
     }
 //    #    static-locations: file:${cms.workDir}/html/, file:${cms.workDir}/, classpath:/static/
     @Override

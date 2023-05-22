@@ -114,6 +114,12 @@ jwt:
 
 
 
+
+wx:
+  mp:
+
+
+
 #logging:
 #  level:
 #    org:

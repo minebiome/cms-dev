@@ -90,7 +90,12 @@ public class WebController {
         return "en" + File.separator+path+File.separator+viewName;
     }
 
-    @GetMapping("{path}/{path2}/{viewName}.html")
+//    @GetMapping("templates/{path2}/{viewName}.html")
+//    @Anonymous
+//    public String showArticle4(@PathVariable("path2") String path2, @PathVariable("viewName") String viewName) {
+//        return "templates"+ File.separator+path2+File.separator+viewName;
+//    }
+    @RequestMapping(value = {"/{path:!templates}/{path2}/{viewName}.html"})
     @Anonymous
     public String showArticle3(@PathVariable("path") String path,@PathVariable("path2") String path2, @PathVariable("viewName") String viewName) {
         return "html" + File.separator+path+File.separator+path2+File.separator+viewName;

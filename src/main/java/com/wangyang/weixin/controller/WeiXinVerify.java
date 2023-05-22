@@ -1,9 +1,13 @@
 package com.wangyang.weixin.controller;
 
+import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.weixin.pojo.TextMessage;
 import com.wangyang.weixin.util.CheckUtil;
 import com.wangyang.weixin.util.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +21,16 @@ import java.util.Map;
 @RequestMapping("/wx")
 @Slf4j
 public class WeiXinVerify {
+    @Autowired
+    private WxMpService mpService;
+
+
+    @GetMapping("/test")
+    @Anonymous
+    public String test() throws WxErrorException {
+        // this.mpService.getWxMpConfigStorage().getAppId();
+        return  this.mpService.getAccessToken();
+    }
 
     @GetMapping
     public String verify(String signature,String timestamp,String  nonce,String echostr){
