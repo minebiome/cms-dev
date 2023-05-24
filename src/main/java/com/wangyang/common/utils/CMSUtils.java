@@ -85,6 +85,9 @@ public class CMSUtils {
         return CmsConst.SHEET_PATH;
     }
 
+    public static String getWxRole(){
+        return CmsConst.WX_ROLE;
+    }
 
 
     public static String randomTime(){

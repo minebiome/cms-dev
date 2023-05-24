@@ -80,6 +80,7 @@ spring:
 ############################## mysql end ##################################
 
 server:
+  servlet-path: /api
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript
@@ -113,6 +114,12 @@ jwt:
   token-refresh-validity-in-seconds-for-remember-me: 7800
 
 
+#swagger:
+#  enable: true
+#  applicationName: Swagger-Test
+#  applicationVersion: dev
+#  applicationDescription: dev
+#  groupName: Swagger-Test
 
 
 wx:

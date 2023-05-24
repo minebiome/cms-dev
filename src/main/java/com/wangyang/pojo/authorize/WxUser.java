@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 @Data
 public class WxUser extends BaseAuthorize{
     private String openId;
+    private String roleEn;
+    private Integer gender;
 
 }
 

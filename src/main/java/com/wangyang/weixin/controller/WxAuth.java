@@ -1,8 +1,10 @@
 package com.wangyang.weixin.controller;
 
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
 import com.wangyang.service.authorize.IWxUserService;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -19,24 +21,13 @@ public class WxAuth {
 
 
     private final IWxUserService wxUserService;
-    private final WxMpService wxService;
-    @GetMapping(produces = "text/plain;charset=utf-8")
+
+    @GetMapping
     @Anonymous
-    public String authGet(@RequestParam String code) {
-        try {
-            WxOAuth2AccessToken token = wxService.getOAuth2Service().getAccessToken(code);
-            String openid = token.getOpenId();
 
-
-            WxUser wxUser = new WxUser();
-
-
-
-
-            return openid;
-        } catch (WxErrorException e) {
-            throw new RuntimeException(e);
-        }
+    public LoginUser authGet(@RequestParam String code) {
+        LoginUser loginUser = wxUserService.login(code);
+        return loginUser;
 
 
 //        log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature,

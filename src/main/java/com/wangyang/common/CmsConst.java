@@ -140,4 +140,8 @@ public class CmsConst {
     public static final String MARKDOWN_REVEAL_END = "=@</p>";
     public static final String LABEL_SECTION_START = "<section>";
     public static final String LABEL_SECTION_END = "</section>";
+
+
+
+    public final static String WX_ROLE = "WX_ROLE";
 }

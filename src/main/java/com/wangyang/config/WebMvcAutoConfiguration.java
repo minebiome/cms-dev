@@ -16,6 +16,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -56,7 +57,7 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport  {
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(bioInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/templates/**","/admin/**","/favicon.ico","/api/user/login", "/logout/**", "/loginPage/**", "/error/**",
-                        "/doc.html","/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**","/wechat/**");
+                        "/doc.html","/swagger-resources/**", "/webjars/**", "/api/v2/api-docs/**", "/v2/api-docs/**","/swagger-ui/**","/**/swagger-resources/**", "/swagger-ui.html/**","/swagger-ui.html","/wechat/**");
     }
 //    #    static-locations: file:${cms.workDir}/html/, file:${cms.workDir}/, classpath:/static/
     @Override
@@ -71,13 +72,14 @@ public class WebMvcAutoConfiguration extends WebMvcConfigurationSupport  {
 
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
+
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("doc.html")
                 .addResourceLocations("classpath:/META-INF/resources/");;
         super.addResourceHandlers(registry);
     }
-
+//
 
 
     /**

@@ -10,8 +10,10 @@ import lombok.Data;
 public class LoginUser {
     private int id;
     private String username;
+    private String nickname;
     private String avatar;
     private String email;
     private Integer gender;
     private String token;
+    private long exp;
 }

@@ -3,6 +3,7 @@ package com.wangyang.util;
 
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.UserDetailDTO;
+import com.wangyang.pojo.authorize.WxUser;
 import com.wangyang.pojo.support.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -40,7 +41,22 @@ public class TokenProvider implements InitializingBean {
 
     private Key key;
 
+    public Token generateToken(WxUser user) {
+        String authorities = user.getRoleEn();
 
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + 24*60*60*1000);;
+
+
+        String token = Jwts.builder()
+                .setSubject(user.getUsername())
+                .claim("ID", user.getId())
+                .claim(AUTHORITIES_KEY, authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
+                .compact();
+        return new Token(token,validity.getTime());
+    }
 
     public Token generateToken(UserDetailDTO user) {
         String authorities = user.getRoles().stream()

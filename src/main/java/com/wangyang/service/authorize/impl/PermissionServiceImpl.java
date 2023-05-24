@@ -3,9 +3,11 @@ package com.wangyang.service.authorize.impl;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.CommentRole;
+import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.support.RoleUrl;
 import com.wangyang.service.authorize.*;
@@ -171,6 +173,14 @@ public class PermissionServiceImpl implements IPermissionService {
             commentRole.setEnName("COMMENT");
             commentRole = roleService.save(commentRole);
         }
+
+        Role wxRole = roleService.findByEnName(CMSUtils.getWxRole());
+        if (wxRole == null) {
+            wxRole = new Role();
+            wxRole.setName(CMSUtils.getWxRole());
+            wxRole.setEnName(CMSUtils.getWxRole());
+            wxRole = roleService.save(commentRole);
+        }
 //        User commentUser = userService.findUserByUsername("test");
 //        if (commentUser == null) {
 //            commentUser = new User();
@@ -214,6 +224,10 @@ public class PermissionServiceImpl implements IPermissionService {
 
             if(method.isAnnotationPresent(CommentRole.class)){
                 RoleUrl roleUrl = new RoleUrl(commentRole.getId(), url, methodName);
+                roleResourceName.add(roleUrl);
+            }
+            if(method.isAnnotationPresent(WxRole.class)){
+                RoleUrl roleUrl = new RoleUrl(wxRole.getId(), url, methodName);
                 roleResourceName.add(roleUrl);
             }
 
