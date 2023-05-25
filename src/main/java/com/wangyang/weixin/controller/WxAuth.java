@@ -5,14 +5,20 @@ import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
 import com.wangyang.service.authorize.IWxUserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -20,11 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class WxAuth {
 
 
+    private final  WxMpService wxService;
     private final IWxUserService wxUserService;
 
     @GetMapping
     @Anonymous
-
     public LoginUser authGet(@RequestParam String code) {
         LoginUser loginUser = wxUserService.login(code);
         return loginUser;
@@ -46,4 +52,52 @@ public class WxAuth {
 
 //        return "非法请求";
     }
+
+
+    @PostMapping("/createJsapiSignature")
+    @Anonymous
+    public WxJsapiSignature createJsapiSignature(String url){
+        try {
+            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(url);
+            System.out.println();
+
+            return jsapiSignature;
+        } catch (WxErrorException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+//    @GetMapping("/getShareSignature")
+//    @ApiOperation(value = "获取微信分享的签名配置",notes = "微信公众号添加了js安全域名的网站才能加载微信分享")
+//    public R getShareSignature(HttpServletRequest request, HttpServletResponse response) throws WxErrorException {
+////        wxService.switchoverTo(appid);
+//        // 1.拼接url（当前网页的URL，不包含#及其后面部分）
+//        String wxShareUrl = request.getHeader(Constant.WX_CLIENT_HREF_HEADER);
+//        if (!StringUtils.hasText(wxShareUrl)) {
+//            return R.error("header中缺少"+Constant.WX_CLIENT_HREF_HEADER+"参数，微信分享加载失败");
+//        }
+//        wxShareUrl = wxShareUrl.split("#")[0];
+//        Map<String, String> wxMap = new TreeMap<>();
+//        String wxNoncestr = UUID.randomUUID().toString();
+//        String wxTimestamp = (System.currentTimeMillis() / 1000) + "";
+//        wxMap.put("noncestr", wxNoncestr);
+//        wxMap.put("timestamp", wxTimestamp);
+//        wxMap.put("jsapi_ticket", wxService.getJsapiTicket());
+//        wxMap.put("url", wxShareUrl);
+//
+//        // 加密获取signature
+//        StringBuilder wxBaseString = new StringBuilder();
+//        wxMap.forEach((key, value) -> wxBaseString.append(key).append("=").append(value).append("&"));
+//        String wxSignString = wxBaseString.substring(0, wxBaseString.length() - 1);
+//        // signature
+//        String wxSignature = SHA1Util.sha1(wxSignString);
+//        Map<String, String> resMap = new TreeMap<>();
+//        resMap.put("appId", appid);
+//        resMap.put("wxTimestamp", wxTimestamp);
+//        resMap.put("wxNoncestr", wxNoncestr);
+//        resMap.put("wxSignature", wxSignature);
+//        return R.ok().put(resMap);
+//    }
 }

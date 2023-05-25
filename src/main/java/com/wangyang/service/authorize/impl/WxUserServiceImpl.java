@@ -84,7 +84,7 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
                 return query.where(criteriaBuilder.equal(root.get("openId"),openId)).getRestriction();
             }
         });
-        if(wxUsers.size()==1){
+        if(wxUsers.size()>0){
             return wxUsers.get(0);
         }
         return null;

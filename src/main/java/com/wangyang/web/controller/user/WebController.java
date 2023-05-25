@@ -69,6 +69,12 @@ public class WebController {
         return "user/login";
     }
 
+    @GetMapping("/wxsaoyisao")
+    @Anonymous
+    public String wxSaoYiSao(){
+        return "wxsaoyisao";
+    }
+
     @GetMapping("/")
     @Anonymous
     public String index(HttpServletRequest request){
