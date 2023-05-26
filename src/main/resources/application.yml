@@ -128,6 +128,13 @@ wx:
     secret: xxx
     token: xxx
     aesKey: xxx
+  miniapp:
+    configs:
+      - appid: xxx
+        secret: xxx
+        token: #微信小程序消息服务器配置的token
+        aesKey: #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
 
 
 

@@ -20,7 +20,7 @@ public class SampleController {
 
 
 
-    public Page<Sample> page(){
-
-    }
+//    public Page<Sample> page(){
+//
+//    }
 }
