@@ -57,7 +57,7 @@ public class WebController {
         if(user!=null&& ((User)user).getId()!=-1){
             return "redirect:/";
         }
-        return "user/registry";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/registry";
     }
     @GetMapping("/login")
     @Anonymous
@@ -66,7 +66,7 @@ public class WebController {
         if(user!=null&& ((User)user).getId()!=-1){
             return "redirect:/";
         }
-        return "user/login";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/login";
     }
 
     @GetMapping("/wxsaoyisao")
@@ -163,7 +163,7 @@ public class WebController {
         Page<ArticleDto> articleDtoPage = articleService.convertToSimple(articlePage);
         model.addAttribute("view",articleDtoPage);
         Template template = templateService.findOptionalByEnName(CmsConst.ARTICLE_PAGE);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
     /**

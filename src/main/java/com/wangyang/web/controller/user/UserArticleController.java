@@ -77,28 +77,28 @@ public class UserArticleController {
 //        Page<Article> articlePage = articleService.pageByUserId(userId, pageable);
 //        model.addAttribute("view",articlePage);
 //        System.out.println(userId);
-        return "user/write";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/write";
     }
     @GetMapping("/customer")
     public String customer(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,Model model){
         Page<Customer> customers = customerService.pageBy(pageable);
         model.addAttribute("view",customers);
-        return "user/customer";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/customer";
     }
 
     @GetMapping("/subscribe")
     public String subscribe(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,Model model){
         Page<Subscribe> subscribes = subscribeService.pageBy(pageable);
         model.addAttribute("view",subscribes);
-        return "user/subscribe";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/subscribe";
     }
     @GetMapping("/mailList")
     public String mailList(Model model){
-        return "user/mailList";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/mailList";
     }
     @GetMapping("/pushMail")
     public String pushMail(Model model){
-        return "user/pushMail";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/pushMail";
     }
     @GetMapping("/edit/{id}")
     public String editArticle(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
@@ -107,7 +107,7 @@ public class UserArticleController {
         ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",articleDetailVO);
-        return "user/write";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/write";
     }
     @GetMapping("/editComponents/{id}")
     public String editComponents(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
@@ -117,7 +117,7 @@ public class UserArticleController {
 //        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",components);
-        return "user/editComponents";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/editComponents";
     }
     @GetMapping("/editCategory/{id}")
     public String editCategory(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
@@ -127,7 +127,7 @@ public class UserArticleController {
 //        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",categoryVO);
-        return "user/editCategory";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/editCategory";
     }
     @GetMapping("/editSheet/{id}")
     public String editSheet(HttpServletRequest request,Model model,@PathVariable("id") Integer id){
@@ -137,7 +137,7 @@ public class UserArticleController {
 //        ArticleDetailVO articleDetailVO = articleService.conventToAddTags(article);
 //        ArticleDetailVO articleDetailVO = articleService.convert(article);
         model.addAttribute("view",sheet);
-        return "user/writeSheet";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/writeSheet";
     }
 
     @GetMapping("/literature")
@@ -148,7 +148,7 @@ public class UserArticleController {
         filed.add("title");
         Page<Literature> literature = literatureService.pageBy(pageable, keywords,filed);
         model.addAttribute("view",literature);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
     /**
@@ -218,7 +218,7 @@ public class UserArticleController {
         int userId = AuthorizationUtil.getUserId(request);
         UserDto userDto = userService.findUserDaoById(userId);
         model.addAttribute("view",userDto);
-        return "user/info";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/info";
     }
 
 
@@ -229,7 +229,7 @@ public class UserArticleController {
         String mindFormat = articleService.jsMindFormat(articleAndCategoryMindDto);
         model.addAttribute("mind",mindFormat);
         model.addAttribute("category",category);
-        return "user/mindJs";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/mindJs";
     }
 
 
@@ -262,7 +262,7 @@ public class UserArticleController {
 
 
 //        System.out.println(userId);
-        return "user/articleList";
+        return CmsConst.TEMPLATE_FILE_PREFIX+"user/articleList";
     }
 
 }
