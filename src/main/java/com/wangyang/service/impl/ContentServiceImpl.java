@@ -418,8 +418,8 @@ public class ContentServiceImpl extends AbstractContentServiceImpl<Content,Conte
         categoryService.addChild(categoryVOS,category.getId());
 
 
-        List<Category> categoryPartner = categoryService.findByParentId(category.getParentId());
-        articleListVo.setPartner(categoryService.convertToListVo(categoryPartner));
+//        List<Category> categoryPartner = categoryService.findByParentId(category.getParentId());
+//        articleListVo.setPartner(categoryService.convertToListVo(categoryPartner));
 
         if(categoryVOS.size()!=0){
             ids.addAll(ServiceUtil.fetchProperty(categoryVOS, CategoryVO::getId));

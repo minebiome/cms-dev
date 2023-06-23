@@ -109,6 +109,7 @@ public class CmsConst {
     public final static String ARTICLE_LIST = "ARTICLE_LIST";//分类列表
     public final static String ARTICLE_RECOMMEND_LIST = "ARTICLE_RECOMMEND_LIST";//分类列表
     public final static String ARTICLE_RECENT_LIST = "ARTICLE_RECENT_LIST";//分类列表
+    public final static String ARTICLE_TOP = "ARTICLE_TOP";//分类列表
     public final static String TAGS = "TAGS";//分类列表
 
 

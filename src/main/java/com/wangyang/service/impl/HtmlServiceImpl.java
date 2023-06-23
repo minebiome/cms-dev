@@ -14,6 +14,7 @@ import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
 import com.wangyang.pojo.enums.Lang;
+import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.vo.*;
 import com.wangyang.config.ApplicationBean;
 import com.wangyang.repository.ArticleRepository;
@@ -300,7 +301,7 @@ public class HtmlServiceImpl implements IHtmlService {
         Map<String,Object> map = new HashMap<>();
         List<Template> templates = templateService.findByChild(template.getId());
         for (Template templateChild : templates){
-            if(templateChild.getArticleSize()!=null && templateChild.getArticleSize()!=0){
+            if(templateChild.getTemplateType().equals(TemplateType.ARTICLE_LIST)  && templateChild.getArticleSize()!=null && templateChild.getArticleSize()!=0){
                 List<ContentVO> contents = categoryArticle.getContents();
                 int size= templateChild.getArticleSize();
                 if(contents.size()>size){
@@ -320,9 +321,9 @@ public class HtmlServiceImpl implements IHtmlService {
         }
 
 
-        log.debug("生成"+category.getName()+"分类下的第一个页面!");
-        String json = JSON.toJSON(categoryArticle).toString();
-        TemplateUtil.saveFile(category.getPath()+CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
+//        log.debug("生成"+category.getName()+"分类下的第一个页面!");
+//        String json = JSON.toJSON(categoryArticle).toString();
+//        TemplateUtil.saveFile(category.getPath()+CMSUtils.getArticleListJs(),category.getViewName(),json,"json");
 
 
 
@@ -331,16 +332,16 @@ public class HtmlServiceImpl implements IHtmlService {
 
         String html = TemplateUtil.convertHtmlAndSave(category.getPath(),categoryArticle.getViewName(),map, template);
         //生成文章列表组件,用于首页嵌入
-        String content = DocumentUtil.getDivContent(html, "#components");
-        if(StringUtils.isNotEmpty(content)){
-            TemplateUtil.saveFile(category.getPath()+CMSUtils.getFirstArticleList(),category.getViewName(),content);
-        }
-        if(categoryArticle.getChildren()!=null && categoryArticle.getChildren().size()!=0){
-            String categoryChildren = DocumentUtil.getDivContent(html, "#categoryChildren");
-            if(StringUtils.isNotEmpty(categoryChildren)){
-                TemplateUtil.saveFile(category.getPath()+CMSUtils.getCategoryChildren(),category.getViewName(),categoryChildren);
-            }
-        }
+//        String content = DocumentUtil.getDivContent(html, "#components");
+//        if(StringUtils.isNotEmpty(content)){
+//            TemplateUtil.saveFile(category.getPath()+CMSUtils.getFirstArticleList(),category.getViewName(),content);
+//        }
+//        if(categoryArticle.getChildren()!=null && categoryArticle.getChildren().size()!=0){
+//            String categoryChildren = DocumentUtil.getDivContent(html, "#categoryChildren");
+//            if(StringUtils.isNotEmpty(categoryChildren)){
+//                TemplateUtil.saveFile(category.getPath()+CMSUtils.getCategoryChildren(),category.getViewName(),categoryChildren);
+//            }
+//        }
 
 
 
