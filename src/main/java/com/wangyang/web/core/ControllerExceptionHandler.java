@@ -16,7 +16,9 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Slf4j
@@ -71,8 +73,20 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(AuthorizationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ModelAndView authorizationException(HttpServletRequest request,AuthorizationException e) {
-
+    public ModelAndView authorizationException(HttpServletRequest request, HttpServletResponse response, AuthorizationException e) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("Authorization")){
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);// 立即销毁cookie
+                    cookie.setPath("/");
+//                    System.out.println("被删除的cookie名字为:"+cookie.getName());
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
         return mvException(e,request,HttpStatus.UNAUTHORIZED.value());
     }
     // TODO 针对动态页面错误的处理；

@@ -4,6 +4,7 @@ import com.wangyang.common.thymeleaf.CmsFileDialect;
 import com.wangyang.common.thymeleaf.CmsWebDialect;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
@@ -46,6 +47,17 @@ public class HtmlTemplateEngine {
             fileTemplateResolver.setPrefix(prefix+ File.separator);
             fileTemplateResolver.setSuffix(suffix);
 
+            ClassLoaderTemplateResolver classLoaderTemplateResolver = new ClassLoaderTemplateResolver();
+//            classLoaderTemplateResolver.setPrefix("mytemplates/");
+            classLoaderTemplateResolver.setCacheable(false);
+            classLoaderTemplateResolver.setSuffix(".html");
+//            classLoaderTemplateResolver.setTemplateMode("HTML5");
+            classLoaderTemplateResolver.setCharacterEncoding("UTF-8");
+            classLoaderTemplateResolver.setOrder(Integer.valueOf(1));
+            classLoaderTemplateResolver.setCacheable(false);
+            classLoaderTemplateResolver.getResolvablePatternSpec().addPattern("internal_template/*");
+            templateEngineFile.addTemplateResolver(classLoaderTemplateResolver);
+
 
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("templates/*");
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
@@ -87,6 +99,22 @@ public class HtmlTemplateEngine {
             fileTemplateResolver.setSuffix(suffix);
 
             templateWebEngine.addTemplateResolver(fileTemplateResolver2);
+
+            ClassLoaderTemplateResolver classLoaderTemplateResolver = new ClassLoaderTemplateResolver();
+//            classLoaderTemplateResolver.setPrefix("mytemplates/");
+            classLoaderTemplateResolver.setCacheable(false);
+            classLoaderTemplateResolver.setSuffix(".html");
+//            classLoaderTemplateResolver.setTemplateMode("HTML5");
+            classLoaderTemplateResolver.setCharacterEncoding("UTF-8");
+            classLoaderTemplateResolver.setOrder(Integer.valueOf(1));
+            classLoaderTemplateResolver.setCacheable(false);
+            classLoaderTemplateResolver.getResolvablePatternSpec().addPattern("internal_template/*");
+            templateWebEngine.addTemplateResolver(classLoaderTemplateResolver);
+
+
+
+
+
 //            fileTemplateResolver.getResolvablePatternSpec().addPattern("html/*");
 //            StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
 //

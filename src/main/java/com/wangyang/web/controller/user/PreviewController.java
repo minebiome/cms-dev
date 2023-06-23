@@ -61,11 +61,11 @@ public class PreviewController {
     @PostMapping("/templates/update/{id}")
     public String update(@PathVariable("id") Integer id,TemplateParam templateParam){
         Template template = templateService.update(id, templateParam);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
     @PostMapping("/templates/add")
     public String add(Template inputTemplate){
-        return inputTemplate.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+inputTemplate.getTemplateValue();
     }
 
     @GetMapping("/literatureList/{collectionId}")
@@ -73,7 +73,7 @@ public class PreviewController {
         List<Literature> literatures = literatureService.listByCollectionId(collectionId);
         Template template = templateService.findByEnName(CmsConst.DEFAULT_LITERATURE_TEMPLATE);
         model.addAttribute("view",literatures);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
 
@@ -124,7 +124,7 @@ public class PreviewController {
 //        modelAndView.setViewName(template.getTemplateValue());
 //        String html = TemplateUtil.convertHtmlAndPreview(articleDetailVo, template);
 //        String convertHtml = FileUtils.convertByString(html);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
     @GetMapping("/sheet/{id}")
@@ -147,7 +147,7 @@ public class PreviewController {
         model.addAttribute("view",sheet);
 //        String html = TemplateUtil.convertHtmlAndPreview(sheet, template);
 //        String convertHtml = FileUtils.convertByString(html);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
     @GetMapping("/save/{articleId}")
@@ -185,7 +185,7 @@ public class PreviewController {
 //        String convertHtml = FileUtils.convertByString(html);
         model.addAttribute("view", articleListVo);
 //        modelAndView.setViewName(template.getTemplateValue());
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 //    @GetMapping("/sheet/{id}")
 //    public ModelAndView previewSheet(@PathVariable("id") Integer id){
@@ -207,7 +207,7 @@ public class PreviewController {
 //        String html = TemplateUtil.convertHtmlAndPreview(o, components);
 ////        String convertHtml = FileUtils.convertByString(html);
         model.addAllAttributes(o);
-        return  components.getTemplateValue();
+        return  CmsConst.TEMPLATE_FILE_PREFIX+components.getTemplateValue();
     }
 
     @GetMapping("/template/{id}")
@@ -242,7 +242,7 @@ public class PreviewController {
         model.addAttribute("articleVOS", articleVOS);
 
 
-        return  template.getTemplateValue();
+        return  CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
     @GetMapping("/pdf/{articleId}")
@@ -252,7 +252,7 @@ public class PreviewController {
         article.setFormatContent(MarkdownUtils.renderHtmlOutput(article.getOriginalContent()));
         Template template = templateService.findByEnName(CmsConst.DEFAULT_ARTICLE_PDF_TEMPLATE);
         model.addAttribute("view",article);
-        return template.getTemplateValue();
+        return CmsConst.TEMPLATE_FILE_PREFIX+template.getTemplateValue();
     }
 
 

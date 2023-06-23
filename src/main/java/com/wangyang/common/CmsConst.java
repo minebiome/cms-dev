@@ -37,6 +37,7 @@ public class CmsConst {
     public static  String PROXY_URL ;
 
     public static final String SYSTEM_TEMPLATE_PATH="templates";
+    public static final String SYSTEM_INTERNAL_TEMPLATE_PATH="internal_template"+File.separator+"default";
     public static final String SYSTEM_HTML_PATH="html";
     public static final String TEMPLATE_PATH="templates";
     public static final String STATIC_HTML_PATH="html";
@@ -144,4 +145,5 @@ public class CmsConst {
 
 
     public final static String WX_ROLE = "WX_ROLE";
+    public final static String TEMPLATE_FILE_PREFIX = "tf:";
 }

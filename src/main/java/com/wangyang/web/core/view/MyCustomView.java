@@ -40,7 +40,7 @@ public class MyCustomView implements View {
     private ApplicationContext applicationContext;
 
     private ConversionService mvcConversionService;
-    private IHtmlService htmlService;
+
     private Boolean isDebug;
     private String viewName;
     public  MyCustomView(String viewName, Boolean isDebug, ApplicationContext applicationContext, ConversionService mvcConversionService, IHtmlService htmlService){
@@ -48,33 +48,19 @@ public class MyCustomView implements View {
         this.applicationContext =applicationContext;
         this.mvcConversionService =mvcConversionService;
         this.isDebug =isDebug;
-        this.htmlService = htmlService;
     }
     @Override
     public void render(Map<String, ?> mapInput, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String,Object> map=(Map<String, Object>) mapInput;
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
-        if(viewName.startsWith("redirect:")){
-            String redirectPath = viewName.substring("redirect:".length());
-            String servername =request.getServerName();
 
-            if(request.getRequestURL().toString().toLowerCase().startsWith(CMSUtils.getProxyUrl())){
-                response.sendRedirect("https://"+servername+"/"+redirectPath);
-            }else {
-                response.sendRedirect(redirectPath);
-            }
 
-            return;
-        }else if(!viewName.startsWith("html") && !viewName.startsWith("en") ){
-            viewName = CMSUtils.getTemplates()+viewName;
-        }
-
-        String viewNamePath = viewName.replace("_", File.separator);
-        if(viewName.equals("error")){
-            viewNamePath =CMSUtils.getTemplates()+"error";
-        }
-        String path = CmsConst.WORK_DIR+ File.separator+viewNamePath+".html";
+//        String viewNamePath = viewName.replace("_", File.separator);
+//        if(viewName.equals("error")){
+//            viewNamePath =CMSUtils.getTemplates()+"error";
+//        }
+//        String path = CmsConst.WORK_DIR+ File.separator+viewNamePath+".html";
         UserDetailDTO user = AuthorizationUtil.getUser(request);
         if(user!=null){
             map.put("username",user.getUsername());
@@ -102,91 +88,24 @@ public class MyCustomView implements View {
 //        ctx.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME,
 //                applicationContext);
 
-        ITemplateEngine templateEngine = TemplateUtil.getWebEngine();
-        String[] pathArgs = viewName.split("_");
-
-
-
-
-        if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs,viewName)){
-            viewNamePath = CMSUtils.getTemplates()+"error";
-            if(!Paths.get(path).toFile().exists()){
-                ctx.setVariable("message","模板不存在："+path);
-            }
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-        }
-
-        if(!Paths.get(path).toFile().exists()){
-            ctx.setVariable("message","模板不存在："+path);
-        }
-
-
-        templateEngine.process(viewNamePath,ctx,response.getWriter());
-    }
-
-    /**
-     * 文件不存在，查看GenerateHtml存是否存在生成html的方法，生成之后再用视图名称渲染
-     * @see GenerateHtml
-     * @param pathArgs
-     */
-    public boolean invokeGenerateHtml(String[] pathArgs,String viewName) {
-//        if(pathArgs.length==1 && pathArgs[0].contains("index")){
-//            htmlService.generateHome();
-//            htmlService.generateHtmlByViewName();
+//        ITemplateEngine templateEngine = TemplateUtil.getWebEngine();
+//        String[] pathArgs = viewName.split("_");
+//        if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs,viewName)){
+//            viewNamePath = CMSUtils.getTemplates()+"error";
+//            if(!Paths.get(path).toFile().exists()){
+//                ctx.setVariable("message","模板不存在："+path);
+//            }
+//            response.setStatus(HttpStatus.NOT_FOUND.value());
 //        }
-        if(pathArgs.length==1
-                && viewName.contains("/")){
-            int pos = viewName.lastIndexOf("/");
-            String args1 = viewName.substring(0,pos);
-            String args2 = viewName.substring(pos+1);
-            pathArgs = new String[]{args1,args2};
-            if(!viewName.contains("article")
-                    && !viewName.contains("articleList")
-                    && !viewName.contains("sheet")){
-
-                try{
-                    htmlService.generateComponentsByViewName(args1, args2);
-                    return true;
-                }catch (ObjectException e){
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-        }
-
-        if(pathArgs.length<2){
-            return false;
-        }
-        if(!pathArgs[1].contains("-")){
-            try{
-                htmlService.generateHtmlByViewName(pathArgs[0],pathArgs[1]);
-                return true;
-            }catch (ObjectException e){
-                e.printStackTrace();
-                return false;
-            }
-
-        }else {
-            pathArgs = pathArgs[1].split("-");
-
-            try {
-                GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
-                Method[] methods = generateHtml.getClass().getDeclaredMethods();
-                for (Method method: methods){
-                    if(method.getName().equals(pathArgs[pathArgs.length-1])){
-                        method.invoke(generateHtml,new Object[]{pathArgs});
-                        return true;
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return false;
+//
+//        if(!Paths.get(path).toFile().exists()){
+//            ctx.setVariable("message","模板不存在："+path);
+//        }
+//        templateEngine.process(viewNamePath,ctx,response.getWriter());
+        TemplateUtil.getHtml(viewName,ctx,request,response);
     }
+
+
     @Override
     public String getContentType() {
         //相当于response.setContextType()
