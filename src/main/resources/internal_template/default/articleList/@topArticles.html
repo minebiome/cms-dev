@@ -1,3 +1,4 @@
 <ul th:each="item:${view.contents}">
     <li th:text="${item.title}"></li>
 </ul>
+<a  th:href="${view.linkPath}" >更多</a>
