@@ -226,15 +226,31 @@ public class TemplateUtil {
             context.setVariable("errorMsg","路径["+componentsPath+"]不存在！");
             Set<String> systemViewName = ServiceUtil.fetchProperty(SystemTemplates.components(), Components::getTemplateValue);
             systemViewName.addAll(ServiceUtil.fetchProperty(SystemTemplates.templates(), Template::getTemplateValue));
-            String jarViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+viewName;
-            Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
-            if(systemViewName.contains(viewName) && classPathTemplatePath!=null ){
-                viewNamePath = jarViewName;
+
+            if(systemViewName.contains(viewName)  ){
+                String jarViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+viewName;
+                Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
+                if( classPathTemplatePath!=null){
+                    viewNamePath = jarViewName;
+                }else {
+                    viewNamePath =CMSUtils.getTemplates()+"error";
+                    Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
+                    if(!Files.exists(errorPath)){
+                        String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
+                        Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
+                        if(classPathErrorTemplatePath!=null) {
+                            viewNamePath =jarErrorViewName;
+                        }else {
+                            String error = "["+jarViewName+"]不存在!";
+                            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+jarViewName+"不存在！");
+                            return error;
+                        }
+                    }
+                }
+
             }else {
                 viewNamePath =CMSUtils.getTemplates()+"error";
                 Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
-
-
                 if(!Files.exists(errorPath)){
                     String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
                     Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
@@ -294,9 +310,29 @@ public class TemplateUtil {
                 Set<String> systemViewName = ServiceUtil.fetchProperty(SystemTemplates.components(), Components::getTemplateValue);
                 systemViewName.addAll(ServiceUtil.fetchProperty(SystemTemplates.templates(), Template::getTemplateValue));
                 String jarViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+viewName;
-                Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
-                if(systemViewName.contains(viewName) && classPathTemplatePath!=null ){
-                    viewNamePath = jarViewName;
+
+                if(systemViewName.contains(viewName) ){
+                    Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
+                    if(classPathTemplatePath!=null){
+                        viewNamePath = jarViewName;
+                    }else {
+                        viewNamePath =CMSUtils.getTemplates()+"error";
+                        Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
+
+
+                        if(!Files.exists(errorPath)){
+                            String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
+                            Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
+                            if(classPathErrorTemplatePath!=null) {
+                                viewNamePath =jarErrorViewName;
+                            }else {
+                                String error = "["+path+"]不存在!["+jarErrorViewName+"]也不存在! ["+jarViewName+"]也不存在!";
+                                writer.write(error);
+                                return;
+                            }
+                        }
+                    }
+
                 }else {
                     viewNamePath =CMSUtils.getTemplates()+"error";
                     Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
