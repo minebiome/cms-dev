@@ -1175,7 +1175,7 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         /**
          * 分页路径的格式生成
          */
-        articleListVo.setLinkPath(FormatUtil.categoryList2Format(category));
+        articleListVo.setLinkPath(FormatUtil.categoryListFormat(category));
         return articleListVo;
     }
 
