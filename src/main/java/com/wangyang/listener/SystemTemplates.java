@@ -83,6 +83,7 @@ public class SystemTemplates {
         components.add( new Components("热门文章", CMSUtils.getComponentsPath(), "components/@newArticleIndex","hotArticle",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_visits,order_DESC","",true));
         components.add( new Components("当下流行", CMSUtils.getComponentsPath(), "components/@articleList","keyWordArticle",CmsConst.ARTICLE_DATA_KEYWORD+"R语言","",true));
         components.add( new Components("最新文章", CMSUtils.getComponentsPath(), "components/@newArticleIndex","newArticleIndex",CmsConst.ARTICLE_DATA_SORT_SIZE+"size_20,sort_createDate,order_DESC","",true));
+        components.add( new Components("首页分类展示", CMSUtils.getComponentsPath(), "components/@categoryChild","categoryChild",CmsConst.CATEGORY_CHILD_DATA,"",true));
 
 
     }

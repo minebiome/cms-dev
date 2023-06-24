@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:each="category : ${view}">
+    <ul th:each="item : ${category.categoryVOS}">
+        <a th:href="${item.linkPath}"><li th:text="${item.name}"></li></a>
+    </ul>
+</div>
+</body>
+</html>
