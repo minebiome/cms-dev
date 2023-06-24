@@ -189,7 +189,7 @@ public class ArticleController {
 //        TemplateUtil.deleteTemplateHtml(article.getViewName(),article.getPath());
 
         //更新文章分类, 还需要重新生成老的分类
-        if(articleParams.getCategoryId()!=oldCategoryId&&oldCategoryId!=null){
+        if(!articleParams.getCategoryId().equals(oldCategoryId) && oldCategoryId!=null){
             Category oldCategory = categoryService.findById(oldCategoryId);
             articleDetailVO.setOldCategory(oldCategory);
             htmlService.convertArticleListBy(oldCategory);
