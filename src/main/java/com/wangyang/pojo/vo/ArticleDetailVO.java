@@ -28,6 +28,7 @@ public class ArticleDetailVO extends ArticleDto implements Serializable {
     private Category oldCategory;
     private String cssClass;
     private String commentPath;
+    private Boolean isPublisher=false;
 
 //    public String getCommentPath() {
 //        return this.getPath()+ CMSUtils.getCommentJSON()+ File.separator +this.getViewName();

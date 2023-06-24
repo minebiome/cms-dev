@@ -4,6 +4,7 @@ import com.wangyang.pojo.entity.Article;
 import com.wangyang.pojo.entity.Category;
 import com.wangyang.pojo.entity.Sheet;
 import com.wangyang.pojo.entity.base.Content;
+import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;
 
 import java.io.File;
@@ -73,5 +74,12 @@ public class FormatUtil {
             return File.separator+content.getPath().replace("html/","")+File.separator+content.getViewName()+".html";
         }
         return File.separator+content.getPath().replace(File.separator,"_")+"_"+content.getViewName()+".html";
+    }
+
+    public static String articleFormat(ArticleDetailVO articleDetailVO) {
+        if(articleDetailVO.getPath().startsWith("html")){
+            return File.separator+articleDetailVO.getPath().replace("html/","")+File.separator+articleDetailVO.getViewName()+".html";
+        }
+        return File.separator+articleDetailVO.getPath().replace(File.separator,"_")+"_"+articleDetailVO.getViewName()+".html";
     }
 }

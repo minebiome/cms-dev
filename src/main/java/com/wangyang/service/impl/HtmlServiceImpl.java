@@ -108,6 +108,10 @@ public class HtmlServiceImpl implements IHtmlService {
             }
             //生成文章详情页面,依赖文章评论(在栏目页面文章详情依赖文章列表)
             covertHtml(articleVO);
+            if(articleVO.getIsPublisher()){
+                SitePusher.push(articleVO.getLinkPath());
+            }
+
             log.info("!!### generate "+articleVO.getViewName()+" html success!!");
             // 生成首页文章最新文章
 //            generateNewArticle();

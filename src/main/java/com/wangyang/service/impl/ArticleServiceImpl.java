@@ -680,6 +680,8 @@ public class ArticleServiceImpl extends AbstractContentServiceImpl<Article,Artic
         User user = userService.findById(article.getUserId());
         articleDetailVO.setUser(user);
         articleDetailVO.setCommentPath( article.getPath()+ CMSUtils.getComment()+ File.separator +article.getViewName());
+        articleDetailVO.setLinkPath( FormatUtil.articleFormat(articleDetailVO));
+
         return articleDetailVO;
     }
 

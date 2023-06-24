@@ -1,6 +1,7 @@
 package com.wangyang.web.controller.api;
 
 import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
@@ -25,6 +26,7 @@ import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.util.AuthorizationUtil;
+import com.wangyang.util.FormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
@@ -76,6 +78,7 @@ public class ArticleController {
         BeanUtils.copyProperties(articleParams,article,getNullPropertyNames(articleParams));
         article.setUserId(userId);
         ArticleDetailVO articleDetailVO = articleService.createArticleDetailVo(article, articleParams.getTagIds());
+        articleDetailVO.setIsPublisher(true);
         htmlService.conventHtml(articleDetailVO);
         return articleDetailVO;
     }
@@ -195,6 +198,7 @@ public class ArticleController {
 //
 ////            producerService.sendMessage(articleDetailVO);
 //        }
+        articleDetailVO.setIsPublisher(true);
         htmlService.conventHtml(articleDetailVO);
         log.info(article.getTitle()+"--->更新成功！");
         return articleDetailVO;
@@ -425,6 +429,19 @@ public class ArticleController {
         return articleDetailVO;
     }
 
+    @GetMapping("/publisher/{id}")
+    public JSONObject publisher(@PathVariable("id") Integer id){
+
+//        TestStatic.test();
+        Article article = articleService.findArticleById(id);
+        String path = FormatUtil.articleListFormat(article);
+//        ArticleDetailVO articleDetailVO = articleService.convert(article);
+//        ArticleDetailVO articleDetailVO = articleService.convert(article);
+//        htmlService.conventHtml(articleDetailVO);
+        String content = SitePusher.push(path);
+        return JSONObject.parseObject(content);
+
+    }
 
     @GetMapping("/openOrCloseComment/{id}")
     public ArticleDetailVO openOrCloseComment(@PathVariable("id")Integer id){

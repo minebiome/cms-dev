@@ -138,6 +138,11 @@ wx:
 
 
 
+pusher:
+  baidu:
+    site: https://www.bioinfo.online
+    token: RGbsR3A09kEW9cWU
+
 #logging:
 #  level:
 #    org:
