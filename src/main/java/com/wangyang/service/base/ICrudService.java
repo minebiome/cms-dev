@@ -71,6 +71,8 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
 
     DOMAIN findByLang(Integer langSource, Lang lang);
 
+    DOMAIN update(ID id, DOMAIN updateDomain);
+
 
     //    @Override
 }

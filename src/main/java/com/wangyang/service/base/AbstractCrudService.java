@@ -12,7 +12,6 @@ import com.wangyang.pojo.enums.Lang;
 import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.util.File2Tsv;
-import com.wangyang.util.FormatUtil;
 import com.wangyang.util.ObjectToCollection;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -490,6 +489,13 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
 
     }
 
+    @Override
+    public DOMAIN update(ID id, DOMAIN updateDomain) {
+//        System.out.println(domainName);
+        DOMAIN domain = findById(id);
+        BeanUtils.copyProperties(updateDomain, domain,"id");
+        return repository.save(domain);
+    }
 
 
 }
