@@ -1,0 +1,14 @@
+package com.wangyang.weixin.service;
+
+import com.wangyang.weixin.entity.MsgReplyRule;
+import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.service.base.ICrudService;
+
+import java.util.List;
+
+
+public interface IMsgReplyRuleService extends ICrudService<MsgReplyRule, MsgReplyRule, BaseVo,Integer> {
+
+
+    List<MsgReplyRule> getMatchedRules(boolean exactMatch, String keywords);
+}

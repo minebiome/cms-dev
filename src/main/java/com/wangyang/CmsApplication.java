@@ -13,7 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //@EnableJms
 //@ComponentScan(basePackages = {"com.wangyang.common","com.wangyang.service","com.wangyang.web","com.wangyang.authorize","com.wangyang.syscall.controller","com.wangyang.schedule"})
 @EnableJpaRepositories(basePackages = {"com.wangyang"})
-@EntityScan(basePackages = {"com.wangyang.pojo"})
+@EntityScan(basePackages = {"com.wangyang"})
 @EnableCaching
 @EnableAsync
 @EnableSwagger2

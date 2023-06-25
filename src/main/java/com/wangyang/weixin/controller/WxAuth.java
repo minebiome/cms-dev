@@ -1,28 +1,19 @@
 package com.wangyang.weixin.controller;
 
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.LoginUser;
-import com.wangyang.pojo.authorize.WxUser;
+import com.wangyang.weixin.pojo.WxJsapiSignatureParam;
 import com.wangyang.service.authorize.IWxUserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
-import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/wxauth")
+@RequestMapping("/api/wxauth")
 public class WxAuth {
 
 
@@ -55,10 +46,10 @@ public class WxAuth {
 
 
     @PostMapping("/createJsapiSignature")
-    @Anonymous
-    public WxJsapiSignature createJsapiSignature(String url){
+    @WxRole
+    public WxJsapiSignature createJsapiSignature(@RequestBody WxJsapiSignatureParam wxJsapiSignatureParam){
         try {
-            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(url);
+            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(wxJsapiSignatureParam.getUrl());
             System.out.println();
 
             return jsapiSignature;

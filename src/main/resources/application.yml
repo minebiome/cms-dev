@@ -136,8 +136,6 @@ wx:
         aesKey: #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
 
-
-
 pusher:
   baidu:
     site: https://www.bioinfo.online

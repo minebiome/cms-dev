@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/wx")
+//@RestController
+////@RequestMapping("/wx")
 @Slf4j
 public class WeiXinVerify {
     @Autowired

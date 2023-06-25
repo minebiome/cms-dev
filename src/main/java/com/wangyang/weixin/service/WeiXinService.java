@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import static me.chanjar.weixin.common.api.WxConsts.*;
-@Service
+//@Service
 @RequiredArgsConstructor
 public class WeiXinService extends WxMpServiceImpl {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,34 +32,6 @@ public class WeiXinService extends WxMpServiceImpl {
     private final SubscribeHandler subscribeHandler;
     private WxMpMessageRouter router;
     private final WxMpConfigStorage wxMpConfigStorage;
-
-
-
-    protected MenuHandler getMenuHandler() {
-        return this.menuHandler;
-    }
-
-    protected SubscribeHandler getSubscribeHandler() {
-        return this.subscribeHandler;
-    }
-
-    protected UnsubscribeHandler getUnsubscribeHandler() {
-        return this.unsubscribeHandler;
-    }
-
-    protected AbstractHandler getLocationHandler() {
-        return this.locationHandler;
-    }
-
-    protected MsgHandler getMsgHandler() {
-        return this.msgHandler;
-    }
-
-    protected AbstractHandler getScanHandler() {
-        return null;
-    }
-
-
 
     @PostConstruct
     public void init() {
@@ -133,6 +105,28 @@ public class WeiXinService extends WxMpServiceImpl {
         return false;
     }
 
+    protected MenuHandler getMenuHandler() {
+        return this.menuHandler;
+    }
 
+    protected SubscribeHandler getSubscribeHandler() {
+        return this.subscribeHandler;
+    }
+
+    protected UnsubscribeHandler getUnsubscribeHandler() {
+        return this.unsubscribeHandler;
+    }
+
+    protected AbstractHandler getLocationHandler() {
+        return this.locationHandler;
+    }
+
+    protected MsgHandler getMsgHandler() {
+        return this.msgHandler;
+    }
+
+    protected AbstractHandler getScanHandler() {
+        return this.msgHandler;
+    }
 
 }
