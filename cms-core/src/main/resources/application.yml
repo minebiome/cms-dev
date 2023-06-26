@@ -94,7 +94,7 @@ server:
     key-store-password: 123456 #
     key-store-type: JKS # PKCS12 JKS
 http:
-  port: 8087
+  port: 8086
 org:
   quartz:
     scheduler:
