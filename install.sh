@@ -2,9 +2,8 @@
 git pull
 
 dir=`pwd`
-app="cms-dev-0.0.1-SNAPSHOT.jar"
+app="cms-boot-0.0.1-SNAPSHOT.jar"
 jar="${dir}/cms-boot/target/${app}"
-
 
 
 pid=$(jps | grep $app | awk '{print $1}')
