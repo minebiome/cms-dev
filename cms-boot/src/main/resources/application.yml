@@ -56,7 +56,7 @@ spring:
   datasource:
     platform: h2
     driverClassName: org.h2.Driver
-    url: jdbc:h2:file:${user.home}/cms/h2/db1;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
+    url: jdbc:h2:file:${user.home}/cms/h2/db2;DB_CLOSE_DELAY=-1;MODE=MySQL;NON_KEYWORDS=USER
     username: root
     password: 1234567
     #    schema: classpath:db/user.sql #启动时需要初始化的建表语句
@@ -88,13 +88,13 @@ server:
   tomcat:
     max-threads: 200
     max-connections: 300
-  port: 8081
+  port: 8085
   ssl:
     key-store: classpath:server.keystore #配置证书路径
     key-store-password: 123456 #
     key-store-type: JKS # PKCS12 JKS
 http:
-  port: 8080
+  port: 8086
 org:
   quartz:
     scheduler:
