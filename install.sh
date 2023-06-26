@@ -3,7 +3,7 @@ git pull
 
 dir=`pwd`
 app="cms-dev-0.0.1-SNAPSHOT.jar"
-jar="${dir}/target/${app}"
+jar="${dir}/cms-boot/target/${app}"
 
 
 

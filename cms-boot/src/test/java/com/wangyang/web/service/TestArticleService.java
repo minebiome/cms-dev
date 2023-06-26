@@ -1,19 +1,9 @@
 package com.wangyang.web.service;
 
 
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.enums.ArticleStatus;
-import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.pojo.params.ArticleParams;
-import com.wangyang.pojo.params.ArticleQuery;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Transactional
 public class TestArticleService extends AbstractServiceTest{
