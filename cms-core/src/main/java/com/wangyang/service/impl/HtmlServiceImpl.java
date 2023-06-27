@@ -25,6 +25,7 @@ import com.wangyang.service.*;
 import com.wangyang.service.base.IContentService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -308,15 +309,17 @@ public class HtmlServiceImpl implements IHtmlService {
             if(templateChild.getTemplateType().equals(TemplateType.ARTICLE_LIST)  && templateChild.getArticleSize()!=null && templateChild.getArticleSize()!=0){
                 List<ContentVO> contents = categoryArticle.getContents();
                 int size= templateChild.getArticleSize();
+                CategoryContentListDao newCategoryArticle = new CategoryContentListDao();
+                BeanUtils.copyProperties(categoryArticle, newCategoryArticle);
                 if(contents.size()>size){
                     List<ContentVO> newContents = new ArrayList<>();
                     for (int i = 0;i<size;i++){
                         newContents.add(contents.get(i));
                     }
-                    categoryArticle.setContents(newContents);
-                }
 
-                TemplateUtil.convertHtmlAndSave(category.getPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
+                    newCategoryArticle.setContents(newContents);
+                }
+                TemplateUtil.convertHtmlAndSave(category.getPath()+File.separator+templateChild.getEnName(),newCategoryArticle.getViewName(),newCategoryArticle, templateChild);
             }else {
                 TemplateUtil.convertHtmlAndSave(category.getPath()+File.separator+templateChild.getEnName(),categoryArticle.getViewName(),categoryArticle, templateChild);
             }
