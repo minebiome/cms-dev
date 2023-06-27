@@ -27,6 +27,8 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     DOMAIN add(@NonNull DOMAIN domain);
     DOMAIN save(@NonNull DOMAIN domain);
 
+    List<DOMAIN> listByIds(List<ID> ids);
+
     @Transactional
     void truncateTable();
 

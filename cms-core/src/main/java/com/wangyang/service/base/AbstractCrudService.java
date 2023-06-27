@@ -57,7 +57,10 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         domainName = domainClass.getSimpleName();
     }
 
-
+    @Override
+    public List<DOMAIN> listByIds(List<ID> ids) {
+        return repository.findAllById(ids);
+    }
     @Override
     @Transactional
     public void truncateTable(){
