@@ -275,101 +275,116 @@ public class TemplateUtil {
         return html;
     }
 
-    public static void getHtml(String viewName, WebContext ctx, HttpServletRequest request, HttpServletResponse response) {
+    public static String errorPath(){
+        String viewNamePath =CMSUtils.getTemplates()+"error";
+        Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
 
-        try ( PrintWriter writer = response.getWriter()){
-            String viewNamePath =viewName ;
-            if(viewName.startsWith("redirect:")){
-                String redirectPath = viewName.substring("redirect:".length());
-                String servername =request.getServerName();
 
-                if(request.getRequestURL().toString().toLowerCase().startsWith(CMSUtils.getProxyUrl())){
-                    response.sendRedirect("https://"+servername+"/"+redirectPath);
-                }else {
-                    response.sendRedirect(redirectPath);
-                }
-
-                return;
-            }else if(viewName.startsWith(CmsConst.TEMPLATE_FILE_PREFIX)){
-                viewName = viewName.replace(CmsConst.TEMPLATE_FILE_PREFIX,"");
-                viewNamePath = CMSUtils.getTemplates()+viewName;
+        if(!Files.exists(errorPath)){
+            String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
+            Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
+            if(classPathErrorTemplatePath!=null) {
+                viewNamePath =jarErrorViewName;
+                return viewNamePath;
+            }else {
+                String error = "["+viewNamePath+"]不存在!["+jarErrorViewName+"]也不存在! ";
+//                writer.write(error);
+               throw new ObjectException(error);
             }
+        }else {
+            return viewNamePath;
+        }
+    }
+
+    public static void getHtml(String viewName, WebContext ctx, HttpServletRequest request, HttpServletResponse response) {
+//        PrintWriter writer=null; // = response.getWriter();
+        try(PrintWriter writer = response.getWriter()) {
+            try {
+
+                String viewNamePath =viewName ;
+                if(viewName.startsWith("redirect:")){
+                    String redirectPath = viewName.substring("redirect:".length());
+                    String servername =request.getServerName();
+
+                    if(request.getRequestURL().toString().toLowerCase().startsWith(CMSUtils.getProxyUrl())){
+                        response.sendRedirect("https://"+servername+"/"+redirectPath);
+                    }else {
+                        response.sendRedirect(redirectPath);
+                    }
+
+                    return;
+                }else if(viewName.startsWith(CmsConst.TEMPLATE_FILE_PREFIX)){
+                    viewName = viewName.replace(CmsConst.TEMPLATE_FILE_PREFIX,"");
+                    viewNamePath = CMSUtils.getTemplates()+viewName;
+                }
 //        (!viewName.startsWith("html") && !viewName.startsWith("en") ){
 //
 //        }
 
 
-            viewNamePath = viewNamePath.replace("_", File.separator);
-            if(viewNamePath.equals("error")){
-                viewNamePath =CMSUtils.getTemplates()+"error";
-            }
-
-            Path path = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
-            if(!Files.exists(path)){
-                ctx.setVariable("errorMsg","路径["+path+"]不存在！");
-                Set<String> systemViewName = ServiceUtil.fetchProperty(SystemTemplates.components(), Components::getTemplateValue);
-                systemViewName.addAll(ServiceUtil.fetchProperty(SystemTemplates.templates(), Template::getTemplateValue));
-                String jarViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+viewName;
-
-                if(systemViewName.contains(viewName) ){
-                    Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
-                    if(classPathTemplatePath!=null){
-                        viewNamePath = jarViewName;
-                    }else {
-                        viewNamePath =CMSUtils.getTemplates()+"error";
-                        Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
-
-
-                        if(!Files.exists(errorPath)){
-                            String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
-                            Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
-                            if(classPathErrorTemplatePath!=null) {
-                                viewNamePath =jarErrorViewName;
-                            }else {
-                                String error = "["+path+"]不存在!["+jarErrorViewName+"]也不存在! ["+jarViewName+"]也不存在!";
-                                writer.write(error);
-                                return;
-                            }
-                        }
-                    }
-
-                }else {
+                viewNamePath = viewNamePath.replace("_", File.separator);
+                if(viewNamePath.equals("error")){
                     viewNamePath =CMSUtils.getTemplates()+"error";
-                    Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
+                }
+                String[] pathArgs = viewNamePath.split("_");
+                Path path = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
+                if(!Files.exists(path) && !invokeGenerateHtml(pathArgs,viewName)){
+                    ctx.setVariable("errorMsg","路径["+path+"]不存在！");
+                    Set<String> systemViewName = ServiceUtil.fetchProperty(SystemTemplates.components(), Components::getTemplateValue);
+                    systemViewName.addAll(ServiceUtil.fetchProperty(SystemTemplates.templates(), Template::getTemplateValue));
+                    String jarViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+viewName;
 
-
-                    if(!Files.exists(errorPath)){
-                        String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
-                        Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
-                        if(classPathErrorTemplatePath!=null) {
-                            viewNamePath =jarErrorViewName;
+                    // 只有系统模板文件在classpath查找
+                    if(systemViewName.contains(viewName) ){
+                        Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
+                        if(classPathTemplatePath!=null){
+                            viewNamePath = jarViewName;
                         }else {
-                            String error = "["+path+"]不存在!["+jarErrorViewName+"]也不存在! ["+errorPath+"]也不存在!";
-                            writer.write(error);
-                            return;
+                            viewNamePath = errorPath();
                         }
+
+                    }else {
+                        viewNamePath = errorPath();
+//                    viewNamePath =CMSUtils.getTemplates()+"error";
+//                    Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
+//
+//
+//                    if(!Files.exists(errorPath)){
+//                        String jarErrorViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+"error";
+//                        Path classPathErrorTemplatePath = FileUtils.getJarResources(jarErrorViewName+".html");
+//                        if(classPathErrorTemplatePath!=null) {
+//                            viewNamePath =jarErrorViewName;
+//                        }else {
+//                            String error = "["+path+"]不存在!["+jarErrorViewName+"]也不存在! ["+errorPath+"]也不存在!";
+//                            writer.write(error);
+//                            return;
+//                        }
+//                    }
                     }
                 }
-            }
 
-            String[] pathArgs = viewNamePath.split("_");
-//            if(!Paths.get(path).toFile().exists()&&!invokeGenerateHtml(pathArgs,viewName)){
-//                viewNamePath = CMSUtils.getTemplates()+"error";
-//                if(!Paths.get(path).toFile().exists()){
-//                    ctx.setVariable("message","模板不存在："+path);
-//                }
-//                response.setStatus(HttpStatus.NOT_FOUND.value());
+//            String[] pathArgs = viewNamePath.split("_");
+//            if(!path.toFile().exists()&&!invokeGenerateHtml(pathArgs,viewName)){
+//                viewNamePath = errorPath();
+////
 //            }
 //
 //            if(!Paths.get(path).toFile().exists()){
 //                ctx.setVariable("message","模板不存在："+path);
 //            }
-            getWebEngine().process(viewNamePath,ctx,writer);
-        } catch (IOException e) {
+                getWebEngine().process(viewNamePath,ctx,writer);
+            } catch (Exception e) {
 //            throw new RuntimeException(e);
-            e.printStackTrace();
+                e.printStackTrace();
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                e.printStackTrace(writer);
+
+            }
+        }catch (IOException ioe){
+            ioe.printStackTrace();
 
         }
+
 
 //        if(!templateValue.startsWith("html")){
 //            templateValue = CMSUtils.getTemplates()+templateValue;
@@ -396,61 +411,79 @@ public class TemplateUtil {
      * @param pathArgs
      */
 
-    public static boolean invokeGenerateHtml(String[] pathArgs,String viewName) {
+    public static boolean invokeGenerateHtml(String[] pathArgs,String viewName) throws InvocationTargetException, IllegalAccessException {
 //        if(pathArgs.length==1 && pathArgs[0].contains("index")){
 //            htmlService.generateHome();
 //            htmlService.generateHtmlByViewName();
 //        }
-        if(pathArgs.length==1
-                && viewName.contains("/")){
-            int pos = viewName.lastIndexOf("/");
-            String args1 = viewName.substring(0,pos);
-            String args2 = viewName.substring(pos+1);
-            pathArgs = new String[]{args1,args2};
-            if(!viewName.contains("article")
-                    && !viewName.contains("articleList")
-                    && !viewName.contains("sheet")){
-
-                try{
-                    htmlService.generateComponentsByViewName(args1, args2);
-                    return true;
-                }catch (ObjectException e){
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-        }
-
+//        if(pathArgs.length==1
+//                && viewName.contains("/")){
+//            int pos = viewName.lastIndexOf("/");
+//            String args1 = viewName.substring(0,pos);
+//            String args2 = viewName.substring(pos+1);
+//            pathArgs = new String[]{args1,args2};
+//
+//
+//
+//
+////            if(!viewName.contains("article")
+////                    && !viewName.contains("articleList")
+////                    && !viewName.contains("sheet")){
+////
+////                try{
+////                    htmlService.generateComponentsByViewName(args1, args2);
+////                    return true;
+////                }catch (ObjectException e){
+////                    e.printStackTrace();
+////                    return false;
+////                }
+////            }
+//        }
+        int pos = viewName.lastIndexOf("/");
+        String args1 = viewName.substring(0,pos);
+        String args2 = viewName.substring(pos+1);
+        pathArgs = new String[]{args1,args2};
         if(pathArgs.length<2){
             return false;
         }
-        if(!pathArgs[1].contains("-")){
-            try{
-                htmlService.generateHtmlByViewName(pathArgs[0],pathArgs[1]);
+        pathArgs = pathArgs[1].split("-");
+
+        GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
+        Method[] methods = generateHtml.getClass().getDeclaredMethods();
+        for (Method method: methods){
+            if(method.getName().equals(pathArgs[pathArgs.length-1])){
+                method.invoke(generateHtml,new Object[]{pathArgs});
                 return true;
-            }catch (ObjectException e){
-                e.printStackTrace();
-                return false;
-            }
-
-        }else {
-            pathArgs = pathArgs[1].split("-");
-
-            try {
-                GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
-                Method[] methods = generateHtml.getClass().getDeclaredMethods();
-                for (Method method: methods){
-                    if(method.getName().equals(pathArgs[pathArgs.length-1])){
-                        method.invoke(generateHtml,new Object[]{pathArgs});
-                        return true;
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
             }
         }
+
+//        if(!pathArgs[1].contains("-")){
+//            try{
+//                htmlService.generateHtmlByViewName(pathArgs[0],pathArgs[1]);
+//                return true;
+//            }catch (ObjectException e){
+//                e.printStackTrace();
+//                return false;
+//            }
+//
+//        }else {
+//            pathArgs = pathArgs[1].split("-");
+//
+//            try {
+//                GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
+//                Method[] methods = generateHtml.getClass().getDeclaredMethods();
+//                for (Method method: methods){
+//                    if(method.getName().equals(pathArgs[pathArgs.length-1])){
+//                        method.invoke(generateHtml,new Object[]{pathArgs});
+//                        return true;
+//                    }
+//                }
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            } catch (InvocationTargetException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         return false;
     }

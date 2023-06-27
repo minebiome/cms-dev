@@ -1,6 +1,7 @@
 package com.wangyang.web.core.view;
 
 import com.wangyang.common.CmsConst;
+import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.dto.ArticleAndCategoryMindDto;
@@ -45,6 +46,9 @@ public class GenerateHtml {
     public String page(String[] args){
 //        File file = new File(CmsConst.WORK_DIR+"/html/"+page+".html");
         Category category = categoryService.findByViewName(args[0]);
+        if(category==null){
+            throw new ObjectException(args[0]+"不存在！");
+        }
         String resultHtml = htmlService.convertArticleListBy(category,Integer.parseInt(args[1]));
         return resultHtml;
     }
