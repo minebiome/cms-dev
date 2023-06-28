@@ -179,7 +179,7 @@ public class PermissionServiceImpl implements IPermissionService {
             wxRole = new Role();
             wxRole.setName(CMSUtils.getWxRole());
             wxRole.setEnName(CMSUtils.getWxRole());
-            wxRole = roleService.save(commentRole);
+            wxRole = roleService.save(wxRole);
         }
 //        User commentUser = userService.findUserByUsername("test");
 //        if (commentUser == null) {
