@@ -1,11 +1,12 @@
 package com.wangyang.pojo.enums;
 
+import com.wangyang.common.enums.ValueEnum;
 import com.wangyang.pojo.support.TemplateTypeList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public enum  TemplateType implements ValueEnum<Integer>  {
+public enum  TemplateType implements ValueEnum<Integer> {
     ARTICLE(0,"文章模板"), //文章模板
     CATEGORY(1,"分类模板"), //分类模板
     SHEET(2,""), //单页模板

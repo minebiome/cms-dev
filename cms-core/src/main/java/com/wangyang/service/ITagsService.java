@@ -1,11 +1,8 @@
 package com.wangyang.service;
 
 import com.wangyang.pojo.dto.TagsDto;
-import com.wangyang.pojo.entity.Comment;
 import com.wangyang.pojo.entity.Tags;
-import com.wangyang.pojo.entity.base.BaseEntity;
-import com.wangyang.pojo.vo.BaseVo;
-import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

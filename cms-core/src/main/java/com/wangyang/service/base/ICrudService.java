@@ -1,11 +1,7 @@
 package com.wangyang.service.base;
 
-import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.Collection;
-import com.wangyang.pojo.entity.Comment;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.enums.Lang;
-import com.wangyang.pojo.vo.CollectionVO;
+import com.wangyang.common.enums.CrudType;
+import com.wangyang.common.enums.Lang;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,7 +40,7 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
 
     void deleteAll(Iterable<DOMAIN> domains);
 
-    void createTSVFile(HttpServletResponse response);
+//    void createTSVFile(HttpServletResponse response);
 
     List<DOMAIN> saveAll(Iterable<DOMAIN> domain);
 

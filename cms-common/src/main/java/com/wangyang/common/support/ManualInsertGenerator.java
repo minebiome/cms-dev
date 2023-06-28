@@ -1,4 +1,4 @@
-package com.wangyang.pojo.support;
+package com.wangyang.common.support;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

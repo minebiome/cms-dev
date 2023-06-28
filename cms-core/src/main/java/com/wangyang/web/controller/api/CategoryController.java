@@ -4,11 +4,8 @@ import com.wangyang.common.BaseResponse;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.entity.Article;
-import com.wangyang.pojo.entity.CategoryTags;
-import com.wangyang.pojo.entity.Components;
-import com.wangyang.pojo.enums.Lang;
+import com.wangyang.common.enums.Lang;
 import com.wangyang.pojo.vo.ArticleDetailVO;
-import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.repository.CategoryTagsRepository;
 import com.wangyang.service.IArticleService;
@@ -22,7 +19,6 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.utils.TemplateUtil;
 import com.wangyang.pojo.vo.CategoryVO;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

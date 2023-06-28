@@ -1,5 +1,7 @@
 package com.wangyang.pojo.enums;
 
+import com.wangyang.common.enums.ValueEnum;
+
 public enum  ArticleStatus implements ValueEnum<Integer> {
 
     /**

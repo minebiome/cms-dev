@@ -1,11 +1,7 @@
 package com.wangyang.service;
 
-import com.wangyang.pojo.entity.Comment;
-import com.wangyang.pojo.entity.ComponentsArticle;
 import com.wangyang.pojo.entity.ComponentsCategory;
-import com.wangyang.pojo.entity.base.BaseEntity;
-import com.wangyang.pojo.vo.BaseVo;
-import com.wangyang.pojo.vo.CommentVo;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 
 import java.util.List;

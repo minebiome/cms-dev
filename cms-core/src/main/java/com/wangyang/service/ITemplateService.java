@@ -1,12 +1,11 @@
 package com.wangyang.service;
 
-import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.entity.TemplateChild;
-import com.wangyang.pojo.enums.Lang;
+import com.wangyang.common.enums.Lang;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.params.TemplateParam;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

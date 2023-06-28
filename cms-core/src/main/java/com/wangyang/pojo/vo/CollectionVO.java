@@ -1,5 +1,6 @@
 package com.wangyang.pojo.vo;
 
+import com.wangyang.common.pojo.BaseVo;
 import lombok.Data;
 
 @Data

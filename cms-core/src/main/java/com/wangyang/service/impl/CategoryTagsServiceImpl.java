@@ -1,12 +1,12 @@
 package com.wangyang.service.impl;
 
 import com.wangyang.pojo.entity.CategoryTags;
-import com.wangyang.pojo.entity.base.BaseEntity;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.pojo.BaseEntity;
+import com.wangyang.common.enums.CrudType;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.repository.CategoryTagsRepository;
 import com.wangyang.service.ICategoryTagsService;
-import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.common.service.AbstractCrudService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 

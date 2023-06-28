@@ -2,13 +2,13 @@ package com.wangyang.service.authorize.impl;
 
 
 import com.wangyang.pojo.authorize.RoleResource;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.enums.CrudType;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.repository.authorize.ResourceRepository;
 import com.wangyang.repository.authorize.RoleRepository;
 import com.wangyang.repository.authorize.RoleResourceRepository;
 import com.wangyang.service.authorize.IRoleResourceService;
-import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.common.service.AbstractCrudService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 

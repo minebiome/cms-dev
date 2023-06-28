@@ -1,16 +1,14 @@
 package com.wangyang.service.impl;
 
-import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.pojo.entity.*;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.enums.CrudType;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.repository.ComponentsCategoryRepository;
-import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.service.ICategoryService;
 import com.wangyang.service.IComponentsCategoryService;
 import com.wangyang.service.IComponentsService;
-import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.common.service.AbstractCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;

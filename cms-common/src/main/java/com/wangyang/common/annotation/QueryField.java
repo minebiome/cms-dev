@@ -1,4 +1,4 @@
-package com.wangyang.pojo.annotation;
+package com.wangyang.common.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

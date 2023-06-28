@@ -3,12 +3,12 @@ package com.wangyang.service.authorize.impl;
 import com.wangyang.common.exception.UserException;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserRole;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.enums.CrudType;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.repository.authorize.UserRepository;
 import com.wangyang.repository.authorize.UserRoleRepository;
 import com.wangyang.service.authorize.IUserRoleService;
-import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.common.service.AbstractCrudService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 

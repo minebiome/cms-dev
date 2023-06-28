@@ -1,4 +1,4 @@
-package com.wangyang.util;
+package com.wangyang.common.utils;
 
 
 import java.lang.reflect.Field;

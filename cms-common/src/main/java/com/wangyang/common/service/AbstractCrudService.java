@@ -1,18 +1,20 @@
-package com.wangyang.service.base;
+package com.wangyang.common.service;
 
 import com.univocity.parsers.common.processor.BeanWriterProcessor;
 import com.univocity.parsers.tsv.TsvWriter;
 import com.univocity.parsers.tsv.TsvWriterSettings;
+import com.wangyang.common.annotation.QueryField;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.common.exception.FileOperationException;
 import com.wangyang.common.exception.UserException;
+import com.wangyang.common.pojo.BaseEntity;
+import com.wangyang.common.pojo.BaseVo;
+import com.wangyang.common.utils.File2Tsv;
+import com.wangyang.common.utils.ObjectToCollection;
 import com.wangyang.common.utils.ServiceUtil;
-import com.wangyang.pojo.annotation.QueryField;
-import com.wangyang.pojo.entity.base.BaseEntity;
-import com.wangyang.pojo.enums.Lang;
-import com.wangyang.pojo.vo.BaseVo;
-import com.wangyang.repository.base.BaseRepository;
-import com.wangyang.util.File2Tsv;
-import com.wangyang.util.ObjectToCollection;
+import com.wangyang.common.enums.Lang;
+import com.wangyang.common.repository.BaseRepository;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,8 +33,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.ServletOutputStream;
+//import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.lang.reflect.Field;
@@ -215,33 +217,33 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         repository.deleteAll(domains);
     }
 
-    @Override
-    public  void   createTSVFile(HttpServletResponse response){
-        List<DOMAIN> domains = listAll();
-        String name = getInstance().getClass().getSimpleName();
-        File tsvFile = createTSVFile(domains,
-                "/export/"+name+".tsv", null);//CacheStore.getValue("workDir")+
-        ServletOutputStream outputStream = null;
-        try {
-            outputStream = response.getOutputStream();
-            byte[] bytes = FileUtils.readFileToByteArray(tsvFile);
-            //写之前设置响应流以附件的形式打开返回值,这样可以保证前边打开文件出错时异常可以返回给前台
-            response.setHeader("content-disposition","attachment;filename="+tsvFile.getName());
-            outputStream.write(bytes);
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if(outputStream!=null){
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
+//    @Override
+//    public  void   createTSVFile(HttpServletResponse response){
+//        List<DOMAIN> domains = listAll();
+//        String name = getInstance().getClass().getSimpleName();
+//        File tsvFile = createTSVFile(domains,
+//                "/export/"+name+".tsv", null);//CacheStore.getValue("workDir")+
+//        ServletOutputStream outputStream = null;
+//        try {
+//            outputStream = response.getOutputStream();
+//            byte[] bytes = FileUtils.readFileToByteArray(tsvFile);
+//            //写之前设置响应流以附件的形式打开返回值,这样可以保证前边打开文件出错时异常可以返回给前台
+//            response.setHeader("content-disposition","attachment;filename="+tsvFile.getName());
+//            outputStream.write(bytes);
+//            outputStream.flush();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }finally {
+//            try {
+//                if(outputStream!=null){
+//                    outputStream.close();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//    }
 
     @Override
     public List<DOMAIN> saveAll(Iterable<DOMAIN> domain) {
@@ -500,5 +502,8 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         return repository.save(domain);
     }
 
-
+    @Override
+    public boolean supportType(CrudType type) {
+        return false;
+    }
 }

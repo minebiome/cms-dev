@@ -1,9 +1,7 @@
 package com.wangyang.repository;
 
-import com.wangyang.pojo.entity.ComponentsArticle;
-import com.wangyang.pojo.entity.Task;
 import com.wangyang.pojo.entity.TemplateChild;
-import com.wangyang.repository.base.BaseRepository;
+import com.wangyang.common.repository.BaseRepository;
 
 import java.util.List;
 

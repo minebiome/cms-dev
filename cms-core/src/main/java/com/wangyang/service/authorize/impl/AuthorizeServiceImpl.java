@@ -1,7 +1,7 @@
 package com.wangyang.service.authorize.impl;
 
 import com.wangyang.pojo.authorize.BaseAuthorize;
-import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.repository.base.AuthorizeRepository;
 import com.wangyang.service.base.AbstractAuthorizeServiceImpl;
 import com.wangyang.service.base.IAuthorizeService;

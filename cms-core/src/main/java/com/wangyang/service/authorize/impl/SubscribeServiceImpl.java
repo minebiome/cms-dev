@@ -2,7 +2,7 @@ package com.wangyang.service.authorize.impl;
 
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.pojo.entity.Subscribe;
-import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.repository.authorize.SubscribeRepository;
 import com.wangyang.service.MailService;
 import com.wangyang.service.authorize.ISubscribeService;

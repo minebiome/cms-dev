@@ -1,11 +1,10 @@
 package com.wangyang.weixin.entity;
 
-import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.common.pojo.BaseEntity;
 import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.sql.Time;
-import java.util.Date;
 
 @Entity
 @Data

@@ -3,7 +3,7 @@ package com.wangyang.service.authorize.impl;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
-import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.pojo.support.Token;
 import com.wangyang.repository.authorize.WxUserRepository;
 import com.wangyang.service.authorize.IWxUserService;
@@ -13,8 +13,6 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.bean.result.WxMpUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 

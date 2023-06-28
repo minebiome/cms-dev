@@ -2,9 +2,7 @@ package com.wangyang.service;
 
 import com.wangyang.pojo.dto.CommentDto;
 import com.wangyang.pojo.entity.Comment;
-import com.wangyang.pojo.entity.Literature;
-import com.wangyang.pojo.entity.base.BaseEntity;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.pojo.BaseEntity;
 import com.wangyang.pojo.vo.CommentVo;
 import com.wangyang.service.base.ICrudService;
 import org.springframework.data.domain.Page;

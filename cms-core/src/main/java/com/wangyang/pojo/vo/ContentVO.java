@@ -1,21 +1,17 @@
 package com.wangyang.pojo.vo;
 
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.dto.TagsDto;
-import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.entity.Tags;
-import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
 import lombok.Data;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
-public class ContentVO extends BaseVo<ContentVO>{
+public class ContentVO extends BaseVo<ContentVO> {
     private List<TagsDto> tags;
     private CategoryDto category;
     private String formatContent;

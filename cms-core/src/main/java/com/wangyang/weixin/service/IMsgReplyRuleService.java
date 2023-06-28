@@ -1,7 +1,7 @@
 package com.wangyang.weixin.service;
 
 import com.wangyang.weixin.entity.MsgReplyRule;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.service.base.ICrudService;
 
 import java.util.List;

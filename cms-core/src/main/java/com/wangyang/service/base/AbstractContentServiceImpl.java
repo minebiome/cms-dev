@@ -1,24 +1,21 @@
 package com.wangyang.service.base;
 
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.common.service.AbstractCrudService;
 import com.wangyang.common.utils.MarkdownUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.ComponentsArticle;
 import com.wangyang.pojo.entity.Template;
-import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.common.pojo.BaseEntity;
 import com.wangyang.pojo.entity.base.Content;
-import com.wangyang.pojo.enums.Lang;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.enums.Lang;
 import com.wangyang.pojo.vo.CategoryVO;
 import com.wangyang.pojo.vo.ContentDetailVO;
 import com.wangyang.pojo.vo.ContentVO;
-import com.wangyang.repository.ArticleRepository;
 import com.wangyang.repository.ComponentsArticleRepository;
-import com.wangyang.repository.base.BaseRepository;
 import com.wangyang.repository.base.ContentRepository;
-import com.wangyang.service.IOptionService;
 import com.wangyang.util.FormatUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
