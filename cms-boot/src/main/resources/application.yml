@@ -7,6 +7,7 @@ cms:
   url: http://localhost:8080
   proxy_url: "http://w66h994817.zicp.fun/"
   site-map: "http://www.bioinfo.online"
+  wxRedirectUri: http://192.168.0.178:8080/wx/auth/call
 spring:
   mvc:
     throw-exception-if-no-handler-found: true

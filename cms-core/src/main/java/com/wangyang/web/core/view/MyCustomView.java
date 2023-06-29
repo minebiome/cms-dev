@@ -54,6 +54,8 @@ public class MyCustomView implements View {
         Map<String,Object> map=(Map<String, Object>) mapInput;
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
+        String requestURI = request.getRequestURI();
+
 
 
 //        String viewNamePath = viewName.replace("_", File.separator);
@@ -83,7 +85,7 @@ public class MyCustomView implements View {
         WebContext ctx = new WebContext(request, response, request.getServletContext(), request.getLocale(),map);
         final ThymeleafEvaluationContext evaluationContext = new ThymeleafEvaluationContext(applicationContext, mvcConversionService);
         ctx.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME, evaluationContext);
-        String requestURI = request.getRequestURI();
+
         ctx.setVariable("URL",requestURI);
 //        ctx.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME,
 //                applicationContext);

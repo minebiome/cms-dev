@@ -19,6 +19,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -73,7 +74,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(AuthorizationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ModelAndView authorizationException(HttpServletRequest request, HttpServletResponse response, AuthorizationException e) {
+    public ModelAndView authorizationException(HttpServletRequest request, HttpServletResponse response, AuthorizationException e) throws IOException {
         Cookie[] cookies = request.getCookies();
         if(cookies!=null){
             for(Cookie cookie : cookies){
@@ -87,6 +88,7 @@ public class ControllerExceptionHandler {
                 }
             }
         }
+//        response.sendRedirect("/");
         return mvException(e,request,HttpStatus.UNAUTHORIZED.value());
     }
     // TODO 针对动态页面错误的处理；
