@@ -1,10 +1,11 @@
 package com.wangyang.listener;
 
+import com.wangyang.cache.StringCacheStore;
 import com.wangyang.common.CmsConst;
-import com.wangyang.interfaces.ITemplateInit;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
+import com.wangyang.interfaces.ITemplateInit;
 import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.Option;
 import com.wangyang.pojo.entity.Tags;
@@ -12,18 +13,19 @@ import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.PropertyEnum;
 import com.wangyang.pojo.support.TemplateOption;
 import com.wangyang.pojo.support.TemplateOptionMethod;
-import com.wangyang.service.authorize.IPermissionService;
-import com.wangyang.cache.StringCacheStore;
 import com.wangyang.repository.ComponentsRepository;
 import com.wangyang.repository.TemplateRepository;
 import com.wangyang.service.IComponentsService;
 import com.wangyang.service.IOptionService;
 import com.wangyang.service.ITagsService;
+import com.wangyang.service.authorize.IPermissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -39,11 +41,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-;
-
 @Slf4j
-@Configuration
-public class StartedListener implements ApplicationListener<ApplicationStartedEvent> {
+//@Configuration
+public class ContextListener implements ApplicationListener<ContextRefreshedEvent> {
+
 
     @Value("${cms.workDir}")
     private String workDir;
@@ -64,7 +65,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     @Autowired
     IOptionService optionService;
-//    @Autowired
+    //    @Autowired
 //    IUserService userService;
     @Autowired
     StringCacheStore stringCacheStore;
@@ -76,21 +77,18 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 
     @Autowired(required = false)
     ITemplateInit templateInit;
-
     @Override
-    public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
-//        initCms();
-        initDatabase(applicationStartedEvent);
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+
+
+        System.out.println();
+        initDatabase(event.getApplicationContext());
         initRun();
+
         permissionService.init();
-//        if(!isInit()){
-//            log.info("### init database!!!");
-//            initDatabase(applicationStartedEvent);
-//        }else {
-//            log.info("### database already init!!!");
-//        }
 
     }
+
     private  void initRun(){
         // 生成首页
 //        List<Components> components = componentsRepository.findAll();
@@ -114,22 +112,17 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         return false;
     }
 
-    private void initDatabase(ApplicationStartedEvent applicationStartedEvent) {
-
-        List<Template> templates = new ArrayList<>();
+    private void initDatabase(ApplicationContext applicationContext) {
+        List<Template> templates =SystemTemplates.templates();
         if(templateInit!=null){
             List<Template> templatesList = templateInit.templates();
-            templates.addAll(SystemTemplates.templates());
             templates.addAll(templatesList);
 
-        }else {
-            templates =SystemTemplates.templates();
         }
-
-       List<Tags> tags = Arrays.asList(new Tags(CmsConst.TAGS_INFORMATION,CmsConst.TAGS_INFORMATION),new Tags(CmsConst.TAGS_RECOMMEND,CmsConst.TAGS_RECOMMEND));
-       tags.forEach(tag->{
-           Tags saveTag = tagsService.add(tag);
-       });
+        List<Tags> tags = Arrays.asList(new Tags(CmsConst.TAGS_INFORMATION,CmsConst.TAGS_INFORMATION),new Tags(CmsConst.TAGS_RECOMMEND,CmsConst.TAGS_RECOMMEND));
+        tags.forEach(tag->{
+            Tags saveTag = tagsService.add(tag);
+        });
 //        log.info(">>> init user wangyang");
 //        User user = new User();
 //        user.setUsername("wangyang");
@@ -171,7 +164,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         //        componentsList.add( new Components("推荐标签", CMSUtils.getComponentsPath(),"components/@articleListAndVisit","recommendArticle",CmsConst.ARTICLE_DATA_TAGS+"推荐","",true));
 //        componentsList.add( new Components("自定义组件","components","自定义HTML内容","myHtml","","",true));
 
-        Map<String,Object> beans = applicationStartedEvent.getApplicationContext().getBeansWithAnnotation(TemplateOption.class);
+        Map<String,Object> beans = applicationContext.getBeansWithAnnotation(TemplateOption.class);
         beans.forEach((k,v)->{
             Class<?> targetClass = AopUtils.getTargetClass(v);
             Method[] methods = targetClass.getDeclaredMethods();
@@ -285,6 +278,4 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             e.printStackTrace();
         }
     }
-
-
 }

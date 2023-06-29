@@ -439,22 +439,25 @@ public class TemplateUtil {
 ////                }
 ////            }
 //        }
-        int pos = viewName.lastIndexOf("/");
-        String args1 = viewName.substring(0,pos);
-        String args2 = viewName.substring(pos+1);
-        pathArgs = new String[]{args1,args2};
-        if(pathArgs.length<2){
-            return false;
-        }
-        pathArgs = pathArgs[1].split("-");
-
-        GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
-        Method[] methods = generateHtml.getClass().getDeclaredMethods();
-        for (Method method: methods){
-            if(method.getName().equals(pathArgs[pathArgs.length-1])){
-                method.invoke(generateHtml,new Object[]{pathArgs});
-                return true;
+        if(viewName.contains("/")){
+            int pos = viewName.lastIndexOf("/");
+            String args1 = viewName.substring(0,pos);
+            String args2 = viewName.substring(pos+1);
+            pathArgs = new String[]{args1,args2};
+            if(pathArgs.length<2){
+                return false;
             }
+            pathArgs = pathArgs[1].split("-");
+
+            GenerateHtml generateHtml = CmsConfig.getBean(GenerateHtml.class);
+            Method[] methods = generateHtml.getClass().getDeclaredMethods();
+            for (Method method: methods){
+                if(method.getName().equals(pathArgs[pathArgs.length-1])){
+                    method.invoke(generateHtml,new Object[]{pathArgs});
+                    return true;
+                }
+            }
+
         }
 
 //        if(!pathArgs[1].contains("-")){

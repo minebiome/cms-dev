@@ -11,7 +11,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 //@EnableJms
-//@ComponentScan(basePackages = {"com.wangyang"})
+@ComponentScan(basePackages = {"com.wangyang"})
 @EnableJpaRepositories(basePackages = {"com.wangyang"})
 @EntityScan(basePackages = {"com.wangyang"})
 @EnableCaching

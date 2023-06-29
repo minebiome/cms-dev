@@ -68,7 +68,7 @@ public class PermissionServiceImpl implements IPermissionService {
         List<RoleResource> roleResources = roleResourceService.listAll();
 
 
-        Resource findResource = null;
+        List<Resource> findResource = new ArrayList<>();
         for (Resource resource : resources) {
             String url = resource.getMethod() + resource.getUrl();
             Matcher matcher = pattern.matcher(url);
@@ -76,28 +76,41 @@ public class PermissionServiceImpl implements IPermissionService {
                 String regUrl = matcher.replaceAll("(.*?)");
                 boolean matches = uri.matches(regUrl);
                 if (matches) {
-                    findResource = resource;
-                    break;
+//                    findResource = resource;
+                    findResource.add(resource);
+//                    break;
                 }
             } else if (url.equals(uri)) {
-                findResource = resource;
-                break;
+//                findResource = resource;
+                findResource.add(resource);
+//                break;
             }
         }
+//        Set<String> aa = ServiceUtil.fetchProperty(resources,Resource::getUrl).stream().filter(item->item.startsWith("/api")).collect(Collectors.toSet());
+//        Set<String> bbb = ServiceUtil.fetchProperty(resources,Resource::getUrl).stream().filter(item->item.startsWith("/surveys")).collect(Collectors.toSet());
+
         Set<Role> needRoles = new HashSet<>();
         if (findResource == null) {
             needRoles.add(new Role("anonymous"));
             return needRoles;
         }
 
-        Resource finalFindResource = findResource;
-        roleResources = roleResources.stream()
-                .filter(roleResource -> roleResource.getResourceId().equals(finalFindResource.getId()))
-                .collect(Collectors.toList());
-        Set<Integer> roleIds = ServiceUtil.fetchProperty(roleResources, RoleResource::getRoleId);
-        needRoles = roles.stream()
-                .filter(role -> roleIds.contains(role.getId()))
-                .collect(Collectors.toSet());
+
+
+//        Resource finalFindResource = findResource.get(0);
+        for (Resource finalFindResource :findResource){
+            List<RoleResource>  findRoleResources =roleResources.stream()
+                    .filter(roleResource -> roleResource.getResourceId().equals(finalFindResource.getId()))
+                    .collect(Collectors.toList());
+            Set<Integer> roleIds = ServiceUtil.fetchProperty(findRoleResources, RoleResource::getRoleId);
+            Set<Role> findRole =  roles.stream()
+                    .filter(role -> roleIds.contains(role.getId()))
+                    .collect(Collectors.toSet());
+            needRoles.addAll(findRole);
+        }
+
+
+
 
         if (needRoles.size() == 0) {
             needRoles.add(new Role("anonymous"));

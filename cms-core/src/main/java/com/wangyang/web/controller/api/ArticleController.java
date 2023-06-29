@@ -5,6 +5,8 @@ import com.wangyang.common.exception.ArticleException;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.*;
 import com.wangyang.common.enums.Lang;
+import com.wangyang.interfaces.ITemplateInit;
+import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.vo.ArticleVO;
 import com.wangyang.service.IArticleService;
 import com.wangyang.service.ICategoryService;
@@ -590,6 +592,7 @@ public class ArticleController {
         }
     }
 
+
     @GetMapping
     public Page<? extends ArticleVO> articleList(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable,
                                                   @RequestParam(value = "more", defaultValue = "true") Boolean more,
@@ -598,6 +601,7 @@ public class ArticleController {
 //        if(more){
 //
 //        }
+
         return articleService.convertToPageVo(articles);
 //        return articleService.convertToSimple(articles);
     }
