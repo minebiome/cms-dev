@@ -2,9 +2,7 @@ package com.wangyang.repository;
 
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.enums.TemplateType;
-import com.wangyang.repository.base.BaseRepository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.wangyang.common.repository.BaseRepository;
 
 import java.util.List;
 

@@ -1,11 +1,8 @@
 package com.wangyang.pojo.enums;
 
-import com.wangyang.pojo.support.TemplateTypeList;
+import com.wangyang.common.enums.ValueEnum;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public enum TemplateData implements ValueEnum<Integer>{
+public enum TemplateData implements ValueEnum<Integer> {
     ARTICLE_TREE,
     ARTICLE_PAGE,
     CATEGORY_CHILD_PAGE, // 分类及文章

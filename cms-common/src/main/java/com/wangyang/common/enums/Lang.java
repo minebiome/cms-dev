@@ -1,4 +1,4 @@
-package com.wangyang.pojo.enums;
+package com.wangyang.common.enums;
 
 public enum Lang implements ValueEnum<Integer>{
     ZH(""),EN("en");

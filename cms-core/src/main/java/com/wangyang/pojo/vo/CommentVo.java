@@ -1,11 +1,10 @@
 package com.wangyang.pojo.vo;
 
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.pojo.authorize.User;
-import com.wangyang.pojo.dto.CommentDto;
 import com.wangyang.pojo.entity.Comment;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 @Data

@@ -1,6 +1,6 @@
-package com.wangyang.pojo.enums;
+package com.wangyang.common.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+//import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CrudType {
     ARTICLE(0,"GSE"),GSM(1,"GSM"),GPL(2,"GPL"),CODE(3,"CODE");
@@ -14,7 +14,7 @@ public enum CrudType {
     public Integer getCode() {
         return code;
     }
-    @JsonValue
+//    @JsonValue
     public String getValue() {
         return name;
     }

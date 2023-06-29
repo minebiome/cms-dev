@@ -2,12 +2,12 @@ package com.wangyang.weixin.service.impl;
 
 
 import com.wangyang.weixin.entity.WxQrCode;
-import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.weixin.pojo.WxQrCodeParam;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.weixin.repository.WxQrCodeRepository;
 import com.wangyang.weixin.service.IWxQrCodeService;
-import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.common.service.AbstractCrudService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;

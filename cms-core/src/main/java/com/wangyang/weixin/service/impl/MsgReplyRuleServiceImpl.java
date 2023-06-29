@@ -1,11 +1,11 @@
 package com.wangyang.weixin.service.impl;
 
 import com.wangyang.weixin.entity.MsgReplyRule;
-import com.wangyang.pojo.enums.CrudType;
-import com.wangyang.pojo.vo.BaseVo;
+import com.wangyang.common.enums.CrudType;
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.weixin.repository.MsgReplyRuleRepository;
 import com.wangyang.weixin.service.IMsgReplyRuleService;
-import com.wangyang.service.base.AbstractCrudService;
+import com.wangyang.common.service.AbstractCrudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;

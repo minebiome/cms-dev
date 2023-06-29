@@ -1,6 +1,5 @@
-package com.wangyang.pojo.vo;
+package com.wangyang.common.pojo;
 
-import com.wangyang.pojo.entity.base.BaseEntity;
 import lombok.Data;
 
 import java.util.List;

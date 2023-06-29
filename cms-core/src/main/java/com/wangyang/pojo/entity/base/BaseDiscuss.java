@@ -1,6 +1,7 @@
 package com.wangyang.pojo.entity.base;
 
 
+import com.wangyang.common.pojo.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;

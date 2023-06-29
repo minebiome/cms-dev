@@ -1,6 +1,5 @@
 package com.wangyang.pojo.entity;
 
-import com.wangyang.pojo.entity.base.BaseEntity;
 import com.wangyang.pojo.entity.base.Content;
 import lombok.Data;
 

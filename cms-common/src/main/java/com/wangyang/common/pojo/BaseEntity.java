@@ -1,6 +1,6 @@
-package com.wangyang.pojo.entity.base;
+package com.wangyang.common.pojo;
 
-import com.wangyang.pojo.enums.Lang;
+import com.wangyang.common.enums.Lang;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -13,7 +13,7 @@ public class BaseEntity {
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "myid")
-    @GenericGenerator(name = "myid", strategy = "com.wangyang.pojo.support.ManualInsertGenerator")
+    @GenericGenerator(name = "myid", strategy = "com.wangyang.common.support.ManualInsertGenerator")
     private Integer id;
     @Column(columnDefinition = "int default 0")
     private Integer parentId=0;

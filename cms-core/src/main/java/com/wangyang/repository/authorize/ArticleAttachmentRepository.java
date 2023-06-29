@@ -1,7 +1,7 @@
 package com.wangyang.repository.authorize;
 
 import com.wangyang.pojo.entity.ArticleAttachment;
-import com.wangyang.repository.base.BaseRepository;
+import com.wangyang.common.repository.BaseRepository;
 
 import java.util.List;
 

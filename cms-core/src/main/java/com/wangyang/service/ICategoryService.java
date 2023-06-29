@@ -1,10 +1,9 @@
 package com.wangyang.service;
 
 import com.wangyang.pojo.dto.CategoryChild;
-import com.wangyang.pojo.dto.CategoryContentList;
 import com.wangyang.pojo.dto.CategoryDto;
 import com.wangyang.pojo.entity.Category;
-import com.wangyang.pojo.enums.Lang;
+import com.wangyang.common.enums.Lang;
 import com.wangyang.pojo.params.CategoryQuery;
 import com.wangyang.pojo.vo.CategoryDetailVO;
 import com.wangyang.pojo.vo.CategoryVO;

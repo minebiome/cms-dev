@@ -13,7 +13,7 @@ import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.dto.*;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.enums.ArticleStatus;
-import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.pojo.params.ArticleQuery;
 import com.wangyang.pojo.vo.ArticleDetailVO;
 import com.wangyang.pojo.vo.ArticleVO;

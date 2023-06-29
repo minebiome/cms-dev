@@ -7,7 +7,7 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.pojo.entity.Attachment;
-import com.wangyang.pojo.enums.CrudType;
+import com.wangyang.common.enums.CrudType;
 import com.wangyang.pojo.enums.FileWriteType;
 import com.wangyang.repository.authorize.UserRepository;
 import com.wangyang.service.authorize.IRoleService;

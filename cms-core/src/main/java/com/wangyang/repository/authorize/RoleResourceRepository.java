@@ -2,7 +2,7 @@ package com.wangyang.repository.authorize;
 
 
 import com.wangyang.pojo.authorize.RoleResource;
-import com.wangyang.repository.base.BaseRepository;
+import com.wangyang.common.repository.BaseRepository;
 import org.springframework.data.jpa.repository.QueryHints;
 
 import javax.persistence.QueryHint;

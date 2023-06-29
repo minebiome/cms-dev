@@ -1,4 +1,4 @@
-package com.wangyang.util;
+package com.wangyang.common.utils;
 
 import com.univocity.parsers.common.processor.BeanListProcessor;
 import com.univocity.parsers.tsv.TsvParser;

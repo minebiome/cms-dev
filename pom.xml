@@ -21,6 +21,7 @@
     <modules>
         <module>cms-core</module>
         <module>cms-boot</module>
+        <module>cms-common</module>
     </modules>
 
 

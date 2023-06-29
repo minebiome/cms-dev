@@ -1,4 +1,4 @@
-package com.wangyang.pojo.enums;
+package com.wangyang.common.enums;
 
 
 import org.springframework.util.Assert;

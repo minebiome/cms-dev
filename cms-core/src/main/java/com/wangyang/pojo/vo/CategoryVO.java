@@ -1,10 +1,7 @@
 package com.wangyang.pojo.vo;
 
-import com.wangyang.pojo.dto.CategoryDto;
+import com.wangyang.common.pojo.BaseVo;
 import lombok.Data;
-
-import javax.persistence.Column;
-import java.util.List;
 
 @Data
 public class CategoryVO extends BaseVo<CategoryVO> {

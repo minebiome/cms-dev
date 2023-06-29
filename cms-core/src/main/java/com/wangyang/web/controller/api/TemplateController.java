@@ -1,22 +1,18 @@
 package com.wangyang.web.controller.api;
 
-import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.FileUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
-import com.wangyang.pojo.entity.Components;
 import com.wangyang.pojo.entity.TemplateChild;
-import com.wangyang.pojo.enums.Lang;
+import com.wangyang.common.enums.Lang;
 import com.wangyang.pojo.enums.TemplateData;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.service.ITemplateService;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.entity.Template;
 import com.wangyang.pojo.params.TemplateParam;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

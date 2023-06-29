@@ -1,10 +1,11 @@
 package com.wangyang.pojo.vo;
 
+import com.wangyang.common.pojo.BaseVo;
 import com.wangyang.pojo.entity.Menu;
 import lombok.Data;
 
 @Data
-public class MenuVo extends BaseVo<Menu>{
+public class MenuVo extends BaseVo<Menu> {
     private Boolean status;
     private Integer categoryId;
     private Integer sheetId;

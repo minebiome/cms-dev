@@ -1,6 +1,6 @@
 package com.wangyang.pojo.authorize;
 
-import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.common.pojo.BaseEntity;
 import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

@@ -1,6 +1,6 @@
 package com.wangyang.weixin.entity;
 
-import com.wangyang.pojo.entity.base.BaseEntity;
+import com.wangyang.common.pojo.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.Entity;

@@ -1,5 +1,6 @@
 package com.wangyang.pojo.entity.base;
 
+import com.wangyang.common.pojo.BaseEntity;
 import com.wangyang.pojo.enums.ArticleStatus;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Entity(name = "base_article")
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER, columnDefinition = "int default 0")
 @Data
-public class Content extends BaseEntity{
+public class Content extends BaseEntity {
 
     private String picPath;
     private String picThumbPath;

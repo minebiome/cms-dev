@@ -1,5 +1,6 @@
 package com.wangyang.pojo.entity.base;
 
+import com.wangyang.common.pojo.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import javax.persistence.*;
 @Entity(name = "BaseTemplate")
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER, columnDefinition = "int default 0")
 @Data
-public class BaseTemplate extends  BaseEntity{
+public class BaseTemplate extends BaseEntity {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private int id;

@@ -2,7 +2,6 @@ package com.wangyang.service.authorize;
 
 
 import com.wangyang.pojo.authorize.APIUser;
-import com.wangyang.pojo.vo.BaseVo;
 import com.wangyang.service.base.IAuthorizeService;
 
 public interface IAPIUserService extends IAuthorizeService<APIUser> {

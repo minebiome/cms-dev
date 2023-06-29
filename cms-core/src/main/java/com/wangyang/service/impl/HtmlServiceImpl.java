@@ -13,7 +13,7 @@ import com.wangyang.pojo.dto.CategoryContentListDao;
 import com.wangyang.pojo.entity.*;
 import com.wangyang.pojo.entity.base.Content;
 import com.wangyang.pojo.enums.ArticleStatus;
-import com.wangyang.pojo.enums.Lang;
+import com.wangyang.common.enums.Lang;
 import com.wangyang.pojo.enums.TemplateType;
 import com.wangyang.pojo.vo.*;
 import com.wangyang.config.ApplicationBean;
@@ -40,7 +40,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
