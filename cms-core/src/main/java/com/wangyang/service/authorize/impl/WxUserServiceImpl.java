@@ -13,6 +13,7 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -38,33 +39,33 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
 
 
     @Override
-    public LoginUser loginNoSave(String code) {
+    public WxUser loginNoSave(String code) {
         try {
             WxOAuth2AccessToken wxOAuth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
             String openid = wxOAuth2AccessToken.getOpenId();
 //            WxUser wxUser = this.findBYOpenId(openid);
 //            if(wxUser==null){
-                WxUser wxUser = new WxUser();
-                WxOAuth2UserInfo wxOAuth2User = wxService.getOAuth2Service().getUserInfo(wxOAuth2AccessToken, "zh_CN");
-                wxUser.setOpenId(openid);
-                wxUser.setAvatar(wxOAuth2User.getHeadImgUrl());
-                wxUser.setNickname(wxOAuth2User.getNickname());
-                wxUser.setGender(wxOAuth2User.getSex());
-                wxUser.setRoleEn(CMSUtils.getWxRole());
+            WxUser wxUser = new WxUser();
+            WxOAuth2UserInfo wxOAuth2User = wxService.getOAuth2Service().getUserInfo(wxOAuth2AccessToken, "zh_CN");
+            wxUser.setOpenId(openid);
+            wxUser.setAvatar(wxOAuth2User.getHeadImgUrl());
+            wxUser.setNickname(wxOAuth2User.getNickname());
+            wxUser.setGender(wxOAuth2User.getSex());
+            wxUser.setRoleEn(CMSUtils.getWxRole());
 //                wxUser = super.save(wxUser);
 //            }
-            Token token = tokenProvider.generateTokenNoSave(wxUser);
+//            Token token = tokenProvider.generateTokenNoSave(wxUser);
+//
+//            LoginUser loginUser = new LoginUser();
+//            loginUser.setToken(token.getToken());
+//            loginUser.setExp(token.getExp());
+////            loginUser.setId(wxUser.getId());
+//            loginUser.setAvatar(wxUser.getAvatar());
+//            loginUser.setGender(wxUser.getGender());
+//            loginUser.setNickname(wxUser.getNickname());
 
-            LoginUser loginUser = new LoginUser();
-            loginUser.setToken(token.getToken());
-            loginUser.setExp(token.getExp());
-//            loginUser.setId(wxUser.getId());
-            loginUser.setAvatar(wxUser.getAvatar());
-            loginUser.setGender(wxUser.getGender());
-            loginUser.setNickname(wxUser.getNickname());
 
-
-            return loginUser;
+            return wxUser;
         } catch (WxErrorException e) {
             throw new RuntimeException(e);
         }
@@ -104,6 +105,34 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
     }
 
 
+    @Override
+    public LoginUser login(WxUser inputWxUser){
+        WxUser wxUser = this.findBYOpenId(inputWxUser.getOpenId());
+        if(inputWxUser==null){
+            wxUser = new WxUser();
+            BeanUtils.copyProperties(inputWxUser, wxUser);
+//                WxOAuth2UserInfo wxOAuth2User = wxService.getOAuth2Service().getUserInfo(wxOAuth2AccessToken, "zh_CN");
+//                wxUser.setOpenId(openid);
+//                wxUser.setAvatar(wxOAuth2User.getHeadImgUrl());
+//                wxUser.setNickname(wxOAuth2User.getNickname());
+//                wxUser.setGender(wxOAuth2User.getSex());
+//                wxUser.setRoleEn(CMSUtils.getWxRole());
+            wxUser = super.save(wxUser);
+        }
+        Token token = tokenProvider.generateToken(wxUser);
+
+        LoginUser loginUser = new LoginUser();
+        loginUser.setToken(token.getToken());
+        loginUser.setExp(token.getExp());
+        loginUser.setId(wxUser.getId());
+        loginUser.setAvatar(wxUser.getAvatar());
+        loginUser.setGender(wxUser.getGender());
+        loginUser.setNickname(wxUser.getNickname());
+
+
+        return loginUser;
+
+    }
 
 
 

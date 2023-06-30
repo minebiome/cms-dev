@@ -8,5 +8,7 @@ import com.wangyang.service.base.IAuthorizeService;
 public interface IWxUserService  extends IAuthorizeService<WxUser> {
     LoginUser login(String code);
 
-    LoginUser loginNoSave(String code);
+    WxUser loginNoSave(String code);
+
+    LoginUser login(WxUser inputWxUser);
 }
