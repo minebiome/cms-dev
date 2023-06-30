@@ -40,6 +40,22 @@ public class TokenProvider implements InitializingBean {
     }
 
     private Key key;
+    public Token generateTokenNoSave(WxUser user) {
+        String authorities = user.getRoleEn();
+
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + 24*60*60*1000);;
+
+
+        String token = Jwts.builder()
+                .setSubject(user.getOpenId())
+                .claim("ID", -1)
+                .claim(AUTHORITIES_KEY, authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
+                .compact();
+        return new Token(token,validity.getTime());
+    }
 
     public Token generateToken(WxUser user) {
         String authorities = user.getRoleEn();

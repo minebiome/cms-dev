@@ -329,7 +329,7 @@ public class TemplateUtil {
                 String[] pathArgs = viewNamePath.split("_");
                 Path path = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
                 if(!Files.exists(path) && !invokeGenerateHtml(pathArgs,viewName)){
-                    ctx.setVariable("errorMsg","路径["+path+"]不存在！");
+
                     Set<String> systemViewName = ServiceUtil.fetchProperty(SystemTemplates.components(), Components::getTemplateValue);
                     systemViewName.addAll(ServiceUtil.fetchProperty(SystemTemplates.templates(), Template::getTemplateValue));
                     String jarViewName = CmsConst.SYSTEM_INTERNAL_TEMPLATE_PATH+File.separator+viewName;
@@ -338,12 +338,22 @@ public class TemplateUtil {
                     if(systemViewName.contains(viewName) ){
                         Path classPathTemplatePath = FileUtils.getJarResources(jarViewName+".html");
                         if(classPathTemplatePath!=null){
+                            log.info("使用jar内部模板："+jarViewName);
                             viewNamePath = jarViewName;
                         }else {
+                            ctx.setVariable("message","路径["+jarViewName+"]不存在！");
                             viewNamePath = errorPath();
                         }
 
                     }else {
+                        if(!viewName.equals("error")){
+                            String message = "路径["+path+"]不存在！";
+                            if(ctx.getVariable("message")!=null){
+                                message = ctx.getVariable("message")+message;
+                            }
+                            ctx.setVariable("message",message);
+                        }
+
                         viewNamePath = errorPath();
 //                    viewNamePath =CMSUtils.getTemplates()+"error";
 //                    Path errorPath = Paths.get(CmsConst.WORK_DIR+ File.separator+viewNamePath+".html");
@@ -376,7 +386,7 @@ public class TemplateUtil {
             } catch (Exception e) {
 //            throw new RuntimeException(e);
                 e.printStackTrace();
-                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 e.printStackTrace(writer);
 
             }

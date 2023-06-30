@@ -55,6 +55,15 @@ public class MyCustomView implements View {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
         String requestURI = request.getRequestURI();
+        String authUrl = request.getParameter("authUrl");
+        Object status = map.get("status");
+        if(status!=null &&status.equals(401) && authUrl!=null ){
+            response.sendRedirect(authUrl+"?state="+requestURI+"?authUrl="+authUrl);
+            return;
+        }
+        if(status!=null&&status.equals(404) &&map.get("error")!=null){
+            map.put("message",map.get("error"));
+        }
 
 
 
