@@ -82,8 +82,16 @@ public class WxWeb {
 
     @GetMapping("login")
     @Anonymous
-    public String login(@RequestParam(required = true) String state){
-        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+    public String login(@RequestParam(required = false) String state,@RequestParam(required = false) String reserved){
+        String currentUrl;
+        if(state!=null && !"".equals(state)){
+            currentUrl= state;
+        } else if (reserved!=null && !"".equals(reserved)) {
+            currentUrl= reserved;
+        }else {
+            throw new ObjectException("登陆页面不存在!");
+        }
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
         if(authRedirect==null){
             throw  new ObjectException(state+"login 登陆页面不存在!");
         }
@@ -104,16 +112,9 @@ public class WxWeb {
     //    wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
     @GetMapping("/callLogin")
     @Anonymous
-    public String callLogin(@RequestParam String code, @RequestParam(required = false)String state,@RequestParam(required = false) String reserved, HttpServletResponse response,HttpServletRequest request){
-        String currentUrl;
-        if(state!=null && !"".equals(state)){
-            currentUrl= state;
-        } else if (reserved!=null && !"".equals(reserved)) {
-            currentUrl= reserved;
-        }else {
-            throw new ObjectException("登陆页面不存在!");
-        }
-        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
+    public String callLogin(@RequestParam String code, @RequestParam(required = true)String state, HttpServletResponse response,HttpServletRequest request){
+
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
         if(authRedirect==null){
             throw  new ObjectException(state+"callLogin 登陆页面不存在!");
         }
@@ -141,17 +142,10 @@ public class WxWeb {
 
     @GetMapping("/callLoginPage")
     @Anonymous
-    public String callLoginPage(@RequestParam(required = false) String code,@RequestParam(required = false) String reserved, @RequestParam(required = false)String state, HttpServletResponse response,HttpServletRequest request){
-        String currentUrl;
-        if(state!=null && !"".equals(state)){
-            currentUrl= state;
-        } else if (reserved!=null && !"".equals(reserved)) {
-            currentUrl= reserved;
-        }else {
-            throw new ObjectException("登陆页面不存在!");
-        }
+    public String callLoginPage(@RequestParam(required = false) String code, @RequestParam(required = true)String state, HttpServletResponse response,HttpServletRequest request){
 
-        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
+
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
         if(authRedirect==null){
             throw  new ObjectException(state+"callLogin 登陆页面不存在!");
         }
@@ -298,23 +292,23 @@ public class WxWeb {
     @GetMapping("/submit")
     @Anonymous
     public ModelAndView callLoginNoSave2(@RequestParam(required = false) String code,
-                                         @RequestParam(required = false) String state,
-                                         @RequestParam(required = false) String reserved,
+                                         @RequestParam(required = true) String state,
+//                                         @RequestParam(required = false) String reserved,
                                          ModelAndView modelAndView,
                                          HttpServletRequest request,
                                          HttpServletResponse response){
 //        try {
-        String currentUrl;
-        if(state!=null && !"".equals(state)){
-            currentUrl= state;
-        } else if (reserved!=null && !"".equals(reserved)) {
-            currentUrl= reserved;
-        }else {
-            throw new ObjectException(state+"登陆页面不存在!");
-        }
+//        String currentUrl;
+//        if(state!=null && !"".equals(state)){
+//            currentUrl= state;
+//        } else if (reserved!=null && !"".equals(reserved)) {
+//            currentUrl= reserved;
+//        }else {
+//            throw new ObjectException(state+"登陆页面不存在!");
+//        }
 
 
-        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
         if(authRedirect==null){
             throw new ObjectException(state+"登陆页面不存在!");
         }
