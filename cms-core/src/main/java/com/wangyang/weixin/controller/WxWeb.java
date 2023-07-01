@@ -104,8 +104,16 @@ public class WxWeb {
     //    wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
     @GetMapping("/callLogin")
     @Anonymous
-    public String callLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response,HttpServletRequest request){
-        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+    public String callLogin(@RequestParam String code, @RequestParam(required = false)String state,@RequestParam(required = false) String reserved, HttpServletResponse response,HttpServletRequest request){
+        String currentUrl;
+        if(state!=null && !"".equals(state)){
+            currentUrl= state;
+        } else if (reserved!=null && !"".equals(reserved)) {
+            currentUrl= reserved;
+        }else {
+            throw new ObjectException("登陆页面不存在!");
+        }
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
         if(authRedirect==null){
             throw  new ObjectException(state+"callLogin 登陆页面不存在!");
         }
@@ -133,8 +141,17 @@ public class WxWeb {
 
     @GetMapping("/callLoginPage")
     @Anonymous
-    public String callLoginPage(@RequestParam(required = false) String code, @RequestParam String state, HttpServletResponse response,HttpServletRequest request){
-        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+    public String callLoginPage(@RequestParam(required = false) String code,@RequestParam(required = false) String reserved, @RequestParam(required = false)String state, HttpServletResponse response,HttpServletRequest request){
+        String currentUrl;
+        if(state!=null && !"".equals(state)){
+            currentUrl= state;
+        } else if (reserved!=null && !"".equals(reserved)) {
+            currentUrl= reserved;
+        }else {
+            throw new ObjectException("登陆页面不存在!");
+        }
+
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
         if(authRedirect==null){
             throw  new ObjectException(state+"callLogin 登陆页面不存在!");
         }
@@ -200,8 +217,8 @@ public class WxWeb {
 //                wxRedirectUri+"/"+authRedirect.getSubscribeRedirect(),
 //                state
 //                );
-        log.info("subscribeMsg:{} ", "redirect:"+authUrl+"?state="+state);
-        return "redirect:"+authUrl+"?state="+state;
+        log.info("subscribeMsg:{} ", "redirect:"+authUrl);
+        return "redirect:"+authUrl;
     }
 
     @GetMapping("/subscribeMsgAddCookie")
@@ -259,7 +276,7 @@ public class WxWeb {
         } else if (reserved!=null && !"".equals(reserved)) {
             currentUrl= reserved;
         }else {
-            throw new ObjectException(state+"登陆页面不存在!");
+            throw new ObjectException("登陆页面不存在!");
         }
 
         AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
