@@ -89,7 +89,7 @@ public class WxWeb {
         } else if (reserved!=null && !"".equals(reserved)) {
             currentUrl= reserved;
         }else {
-            throw new ObjectException("登陆页面不存在!");
+            throw new ObjectException("state 和 reserved 都不存在!");
         }
         AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
         if(authRedirect==null){
@@ -97,13 +97,13 @@ public class WxWeb {
         }
 //        authUrl = authUrl.replace("APPID",);
 //        authUrl = authUrl.replace("REDIRECT_URI",wxRedirectUri);
-        if(state==null){
-            state="/";
-        }
+//        if(state==null){
+//            state="/";
+//        }
         String authUrl = String.format("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=%s#wechat_redirect",
                 wxMpConfigStorage.getAppId(),
                 wxRedirectUri+authRedirect.getLoginRedirect(),
-                state);
+                currentUrl);
         log.info("login:{} ","redirect:"+authUrl);
         return "redirect:"+authUrl;
     }
