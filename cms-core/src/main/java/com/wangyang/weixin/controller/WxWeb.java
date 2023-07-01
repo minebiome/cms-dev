@@ -176,6 +176,8 @@ public class WxWeb {
             cookie.setPath("/");
             response.addCookie(cookie);
             request.getSession().setAttribute("wsUser",wxUserToken);
+        }else {
+            throw  new ObjectException(state+"subscribeMsg 登陆页面不存在!");
         }
         AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
         if(authRedirect==null){

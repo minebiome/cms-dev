@@ -27,7 +27,8 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
 
     @Override
     public AuthRedirect findByCurrentUrl(String currentUrl) {
-        List<AuthRedirect> authRedirects = authRedirectRepository.findAll();
+
+        List<AuthRedirect> authRedirects = this.listAll();
         if(!authRedirects.isEmpty()){
             Map<String, AuthRedirect> authRedirectMap = ServiceUtil.convertToMap(authRedirects, AuthRedirect::getCurrentUrl);
             if(authRedirectMap.containsKey(currentUrl)){
