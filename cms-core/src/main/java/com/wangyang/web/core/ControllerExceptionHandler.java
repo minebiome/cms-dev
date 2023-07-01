@@ -32,7 +32,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BaseResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ModelAndView handleMethodArgumentNotValidException(MethodArgumentNotValidException e,HttpServletRequest request) {
         BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 
@@ -46,14 +46,16 @@ public class ControllerExceptionHandler {
             baseResponse.setMessage("字段验证错误，请完善后重试！");
         }
         baseResponse.setData(errMap);
-        return baseResponse;
+//        return baseResponse;
+        return mvException(e,request,HttpStatus.BAD_REQUEST.value());
     }
     @ExceptionHandler(CmsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BaseResponse cmsException(CmsException e) {
+    public ModelAndView cmsException(CmsException e,HttpServletRequest request) {
         BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        return baseResponse;
+//        return baseResponse;
+        return mvException(e,request,HttpStatus.BAD_REQUEST.value());
     }
 
 //    @ExceptionHandler(InternalAuthenticationServiceException.class)
@@ -66,10 +68,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BaseResponse httpMessageNotReadableException(HttpMessageNotReadableException e) {
+    public ModelAndView httpMessageNotReadableException(HttpMessageNotReadableException e,HttpServletRequest request) {
         BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        return baseResponse;
+//        return baseResponse;
+        return mvException(e,request,HttpStatus.BAD_REQUEST.value());
     }
 //    // TODO 针对动态页面错误的处理；
 //    @ExceptionHandler(AuthorizationException.class)
@@ -104,21 +107,23 @@ public class ControllerExceptionHandler {
     // TODO 针对动态页面错误的处理；
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public BaseResponse handleGlobalException(Exception e) {
+    public ModelAndView handleGlobalException(Exception e, HttpServletRequest request) {
         BaseResponse baseResponse = handleBaseException(e);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         baseResponse.setStatus(status.value());
         baseResponse.setMessage(e.getMessage());
-        return baseResponse;
+//        return baseResponse;
+        return mvException(e,request,HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public BaseResponse noHandleFoundException(NoHandlerFoundException e) {
+    public ModelAndView noHandleFoundException(NoHandlerFoundException e,HttpServletRequest request) {
         BaseResponse baseResponse = handleBaseException(e);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         baseResponse.setStatus(status.value());
         baseResponse.setMessage(e.getMessage());
-        return baseResponse;
+//        return baseResponse;
+        return mvException(e,request,HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 
