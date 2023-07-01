@@ -139,7 +139,7 @@ public class WxWeb {
 
             }
             if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
-                wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
+                wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId(),subscribeTemplateId);
             }
 
 

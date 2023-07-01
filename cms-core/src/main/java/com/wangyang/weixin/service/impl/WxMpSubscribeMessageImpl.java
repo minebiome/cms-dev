@@ -15,9 +15,10 @@ public class WxMpSubscribeMessageImpl implements IWxMpSubscribeMessage{
 
     @Override
     @Async
-    public void sendSubscribeMessageMsg(String openId) {
+    public void sendSubscribeMessageMsg(String openId,String templateId) {
         try {
             WxMpSubscribeMessage message = WxMpSubscribeMessage.builder()
+                    .templateId(templateId)
                     .title("weixin test")
                     .toUser(openId)
                     .scene("1000")

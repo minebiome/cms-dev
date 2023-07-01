@@ -4,5 +4,5 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface IWxMpSubscribeMessage {
     @Async
-    void sendSubscribeMessageMsg(String openId);
+    void sendSubscribeMessageMsg(String openId,String templateId);
 }
