@@ -16,6 +16,7 @@ import com.wangyang.weixin.service.ITemplateMsgService;
 import com.wangyang.weixin.service.IWxMpSubscribeMessage;
 import com.wangyang.weixin.util.CaptchaGenerator;
 import lombok.AllArgsConstructor;
+import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import me.chanjar.weixin.mp.config.WxMpConfigStorage;
@@ -61,10 +62,11 @@ public class WxWeb {
     @Autowired
     IWxMpSubscribeMessage wxMpSubscribeMessage;
 
+
+
     @Value("${cms.templateId}")
     String templateId;
-    @Value("${cms.subscribeTemplateId}")
-    String subscribeTemplateId;
+
     @Value("${cms.wxRedirectUri}")
     private String wxRedirectUri;
 //    http://192.168.0.178:8080/wx/auth?state=/login.html
@@ -83,6 +85,11 @@ public class WxWeb {
                 state);
         return "redirect:"+authUrl;
     }
+
+
+
+
+//    wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
     @GetMapping("/callLogin")
     @Anonymous
     public String callLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response){
@@ -138,9 +145,9 @@ public class WxWeb {
                 templateMsgService.sendTemplateMsg(wxMpTemplateMessage,appid);
 
             }
-            if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
-                wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId(),subscribeTemplateId);
-            }
+//            if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
+//
+//            }
 
 
 //            context.setVariable();
@@ -163,7 +170,6 @@ public class WxWeb {
 //            throw new RuntimeException(e);
 //        }
     }
-
 
 
 
@@ -212,6 +218,25 @@ public class WxWeb {
 
 
     }
+//    http://192.168.0.178:8080/wx/auth/subscribeMsg?redirect=/&reserved=authUrl=/wx/auth/loginNoSave/aaaa
+
+    @GetMapping("/subscribeMsg")
+    @Anonymous
+    public String subscribeMsg(@RequestParam(required = false) String reserved,String redirect){
+//        authUrl = authUrl.replace("APPID",);
+//        authUrl = authUrl.replace("REDIRECT_URI",wxRedirectUri);
+        if(reserved==null){
+            reserved="/";
+        }
+        String authUrl = String.format("https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=%s&scene=1000&template_id=%s&redirect_url=%s&reserved=%s#wechat_redirect",
+                wxMpConfigStorage.getAppId(),
+                wxMpSubscribeMessage.getSubscribeTemplateId(),
+                wxRedirectUri+"/"+redirect,
+                reserved);
+        return "redirect:"+authUrl;
+    }
+
+
 
     private void sendSms(String phoneNumber, String verificationCode) {
         // 实际项目中，调用短信服务商的API发送短信
