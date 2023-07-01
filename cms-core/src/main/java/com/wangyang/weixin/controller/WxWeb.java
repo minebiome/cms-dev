@@ -10,7 +10,10 @@ import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
+import com.wangyang.pojo.dto.WxUserToken;
+import com.wangyang.pojo.entity.AuthRedirect;
 import com.wangyang.pojo.params.WxPhoneParam;
+import com.wangyang.service.IAuthRedirectService;
 import com.wangyang.service.authorize.IWxUserService;
 import com.wangyang.weixin.service.ITemplateMsgService;
 import com.wangyang.weixin.service.IWxMpSubscribeMessage;
@@ -61,7 +64,8 @@ public class WxWeb {
 
     @Autowired
     IWxMpSubscribeMessage wxMpSubscribeMessage;
-
+    @Autowired
+    IAuthRedirectService authRedirectService;
 
 
     @Value("${cms.templateId}")
@@ -71,9 +75,16 @@ public class WxWeb {
     private String wxRedirectUri;
 //    http://192.168.0.178:8080/wx/auth?state=/login.html
 //    private  static String  authUrl = ;
+
+
+
     @GetMapping("login")
     @Anonymous
-    public String login(@RequestParam(required = false) String state){
+    public String login(@RequestParam(required = true) String state){
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+        if(authRedirect==null){
+            throw  new ObjectException(state+"login 登陆页面不存在!");
+        }
 //        authUrl = authUrl.replace("APPID",);
 //        authUrl = authUrl.replace("REDIRECT_URI",wxRedirectUri);
         if(state==null){
@@ -81,30 +92,180 @@ public class WxWeb {
         }
         String authUrl = String.format("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=%s#wechat_redirect",
                 wxMpConfigStorage.getAppId(),
-                wxRedirectUri+"/wx/auth/callLogin",
+                wxRedirectUri+authRedirect.getLoginRedirect(),
                 state);
         return "redirect:"+authUrl;
     }
 
 
-
-
-//    wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
+    //    wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
     @GetMapping("/callLogin")
     @Anonymous
-    public String callLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response){
-        LoginUser loginUser = wxUserService.login(code);
-        Cookie cookie = new Cookie("Authorization", loginUser.getToken());
+    public String callLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response,HttpServletRequest request){
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+        if(authRedirect==null){
+            throw  new ObjectException(state+"callLogin 登陆页面不存在!");
+        }
+        WxUserToken wxUserToken = wxUserService.loginWx(code);
+
+        request.getSession().setAttribute("wsUser",wxUserToken);
+        Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
         // 设置Cookie的属性（可选）
         cookie.setMaxAge(3600); // 设置过期时间为1小时
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:"+state;
+        return "redirect:"+authRedirect.getLoginAuthRedirect();
     }
 
 
 //   response.sendRedirect(authUrl + "?state=" + requestURI + "?authUrl=" + authUrl);
+    @GetMapping("/loginNoSave")
+    @Anonymous
+    public String loginNoSave2(@RequestParam(required = true) String state){
+    //        authUrl = authUrl.replace("APPID",);
+    //        authUrl = authUrl.replace("REDIRECT_URI",wxRedirectUri);
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+        if(authRedirect==null){
+            throw  new ObjectException(state+"loginNoSave 登陆页面不存在!");
+        }
+        String authUrl = String.format("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=%s#wechat_redirect",
+                wxMpConfigStorage.getAppId(),
+                wxRedirectUri+authRedirect.getLoginRedirect(),
+                state);
+        return "redirect:"+authUrl;
+    }
+
+    @GetMapping("/subscribeMsg")
+    @Anonymous
+    public String subscribeMsg(@RequestParam(required = false) String code,
+                               @RequestParam(required = true) String state,
+                               HttpServletRequest request){
+        if(code!=null) {
+            WxUser wxUser = wxUserService.loginNoSave(code);
+            request.getSession().setAttribute("wsUser",wxUser);
+        }
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+        if(authRedirect==null){
+            throw  new ObjectException(state+"subscribeMsg 登陆页面不存在!");
+        }
+
+        String authUrl = String.format("https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=%s&scene=1000&template_id=%s&redirect_url=%s&reserved=%s#wechat_redirect",
+                wxMpConfigStorage.getAppId(),
+                wxMpSubscribeMessage.getSubscribeTemplateId(),
+                wxRedirectUri+authRedirect.getSubscribeRedirect(),
+                state);
+//        authUrl =String.format( "https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=wx012e2066fbd9f17b&scene=1000&template_id=XHVMe68IcNmg950kg8TEL1tsVnkL3vWgjL-uZc7x--E&redirect_url=%s&reserved=%s#wechat_redirect",
+//                wxRedirectUri+"/"+authRedirect.getSubscribeRedirect(),
+//                state
+//                );
+        return "redirect:"+authUrl;
+    }
+
+    @GetMapping("/subscribeMsgAddCookie")
+    @Anonymous
+    public String subscribeMsgAddCookie(@RequestParam(required = false) String code,
+                               @RequestParam(required = true) String state,
+                               HttpServletRequest request,
+                                        HttpServletResponse response){
+        if(code!=null) {
+            WxUserToken wxUserToken = wxUserService.loginWx(code);
+            Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
+            // 设置Cookie的属性（可选）
+            cookie.setMaxAge(3600); // 设置过期时间为1小时
+            cookie.setPath("/");
+            response.addCookie(cookie);
+            request.getSession().setAttribute("wsUser",wxUserToken);
+        }
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+        if(authRedirect==null){
+            throw  new ObjectException(state+"subscribeMsg 登陆页面不存在!");
+        }
+
+        String authUrl = String.format("https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=%s&scene=1000&template_id=%s&redirect_url=%s&reserved=%s#wechat_redirect",
+                wxMpConfigStorage.getAppId(),
+                wxMpSubscribeMessage.getSubscribeTemplateId(),
+                wxRedirectUri+authRedirect.getSubscribeRedirect(),
+                state);
+//        authUrl =String.format( "https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=wx012e2066fbd9f17b&scene=1000&template_id=XHVMe68IcNmg950kg8TEL1tsVnkL3vWgjL-uZc7x--E&redirect_url=%s&reserved=%s#wechat_redirect",
+//                wxRedirectUri+"/"+authRedirect.getSubscribeRedirect(),
+//                state
+//                );
+        return "redirect:"+authUrl;
+    }
+
+
+    @GetMapping("/phone")
+    @Anonymous
+    public ModelAndView callLoginNoSave2(@RequestParam(required = false) String code,
+                                         @RequestParam(required = false) String state,
+                                         @RequestParam(required = false) String reserved,
+                                         ModelAndView modelAndView,
+                                         HttpServletRequest request,
+                                         HttpServletResponse response){
+//        try {
+        String currentUrl;
+        if(state!=null && !"".equals(state)){
+            currentUrl= state;
+        } else if (reserved!=null && !"".equals(reserved)) {
+            currentUrl= reserved;
+        }else {
+            throw new ObjectException(state+"登陆页面不存在!");
+        }
+
+
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
+        if(authRedirect==null){
+            throw new ObjectException(state+"登陆页面不存在!");
+        }
+
+        if(code!=null){
+            WxUser wxUser = wxUserService.loginNoSave(code);
+            request.getSession().setAttribute("wsUser",wxUser);
+            modelAndView.addObject("wxUser",wxUser);
+//
+//            String appid = WxMpConfigStorageHolder.get();
+//            List<WxMpTemplateData> data  = new ArrayList<>();
+//            data.add(new WxMpTemplateData("first","模板消息测试"));
+//            data.add(new WxMpTemplateData("keywords1","xxxxx"));
+//            data.add(new WxMpTemplateData("keywords2","xxxxx"));
+//            data.add(new WxMpTemplateData("remark","点击查看消息详情"));
+//            if(templateId!=null && !"".equals(templateId)){
+//                WxMpTemplateMessage wxMpTemplateMessage = WxMpTemplateMessage.builder()
+//                        .templateId(templateId)
+//                        .url("https://www.yuque.com/nifury/wx/cyku5l")
+//                        .toUser(wxUser.getOpenId())
+//                        .data(data)
+//                        .build();
+//                templateMsgService.sendTemplateMsg(wxMpTemplateMessage,appid);
+//
+//            }
+//            if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
+//
+//            }
+
+
+//            context.setVariable();
+            //            modelAndView.addObject("state",state);
+        }else {
+            Object obj = request.getSession().getAttribute("wxUser");
+            if(obj!=null){
+                WxUser wxUser = (WxUser)obj;
+                modelAndView.addObject("wxUser",wxUser);
+            }else {
+                modelAndView.setViewName( "redirect:"+authRedirect.getAuthUrl());
+                return  modelAndView;
+            }
+        }
+
+        modelAndView.addObject("loginAuthRedirect",authRedirect.getLoginAuthRedirect());
+        modelAndView.setViewName(authRedirect.getLoginPage());
+        return modelAndView;
+//        } catch (UnsupportedEncodingException e) {
+//            throw new RuntimeException(e);
+//        }
+    }
+
 
     @GetMapping("/loginNoSave/{viewName}")
     @Anonymous
@@ -219,22 +380,6 @@ public class WxWeb {
 
     }
 //    http://192.168.0.178:8080/wx/auth/subscribeMsg?redirect=/&reserved=authUrl=/wx/auth/loginNoSave/aaaa
-
-    @GetMapping("/subscribeMsg")
-    @Anonymous
-    public String subscribeMsg(@RequestParam(required = false) String reserved,String redirect){
-//        authUrl = authUrl.replace("APPID",);
-//        authUrl = authUrl.replace("REDIRECT_URI",wxRedirectUri);
-        if(reserved==null){
-            reserved="/";
-        }
-        String authUrl = String.format("https://mp.weixin.qq.com/mp/subscribemsg?action=get_confirm&appid=%s&scene=1000&template_id=%s&redirect_url=%s&reserved=%s#wechat_redirect",
-                wxMpConfigStorage.getAppId(),
-                wxMpSubscribeMessage.getSubscribeTemplateId(),
-                wxRedirectUri+"/"+redirect,
-                reserved);
-        return "redirect:"+authUrl;
-    }
 
 
 

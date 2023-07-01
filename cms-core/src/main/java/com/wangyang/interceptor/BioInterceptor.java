@@ -6,6 +6,7 @@ import com.wangyang.pojo.authorize.ApiUserDetailDTO;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserDetailDTO;
+import com.wangyang.service.IAuthRedirectService;
 import com.wangyang.service.authorize.IPermissionService;
 import com.wangyang.util.AuthorizationException;
 import com.wangyang.util.TokenProvider;
@@ -29,6 +30,9 @@ public class BioInterceptor implements HandlerInterceptor {
     TokenProvider tokenProvider;
     @Autowired
     IPermissionService permissionService;
+
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if("OPTIONS".equals(request.getMethod().toString())) {

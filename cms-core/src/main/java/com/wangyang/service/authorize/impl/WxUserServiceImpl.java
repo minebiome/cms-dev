@@ -4,6 +4,7 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
 import com.wangyang.common.enums.CrudType;
+import com.wangyang.pojo.dto.WxUserToken;
 import com.wangyang.pojo.support.Token;
 import com.wangyang.repository.authorize.WxUserRepository;
 import com.wangyang.service.authorize.IWxUserService;
@@ -72,6 +73,34 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
     }
 
     @Override
+    public WxUserToken loginWx(String code){
+        try {
+            WxOAuth2AccessToken wxOAuth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
+            String openid = wxOAuth2AccessToken.getOpenId();
+            WxUser wxUser = this.findBYOpenId(openid);
+            if(wxUser==null){
+                wxUser = new WxUser();
+                WxOAuth2UserInfo wxOAuth2User = wxService.getOAuth2Service().getUserInfo(wxOAuth2AccessToken, "zh_CN");
+                wxUser.setOpenId(openid);
+                wxUser.setAvatar(wxOAuth2User.getHeadImgUrl());
+                wxUser.setNickname(wxOAuth2User.getNickname());
+                wxUser.setGender(wxOAuth2User.getSex());
+                wxUser.setRoleEn(CMSUtils.getWxRole());
+                wxUser = super.save(wxUser);
+            }
+            Token token = tokenProvider.generateToken(wxUser);
+
+
+            WxUserToken wxUserToken = new WxUserToken();
+            BeanUtils.copyProperties(wxUser,wxUserToken);
+            wxUserToken.setToken(token);
+            return wxUserToken;
+        } catch (WxErrorException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public LoginUser login(String code){
         try {
             WxOAuth2AccessToken wxOAuth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
@@ -103,7 +132,6 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     public LoginUser login(WxUser inputWxUser){

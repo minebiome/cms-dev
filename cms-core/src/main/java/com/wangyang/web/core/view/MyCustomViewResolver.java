@@ -1,5 +1,6 @@
 package com.wangyang.web.core.view;
 
+import com.wangyang.service.IAuthRedirectService;
 import com.wangyang.service.IHtmlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,8 @@ public class MyCustomViewResolver implements ViewResolver, Ordered {
     @Value("${cms.isDebug}")
     private Boolean isDebug;
 
-
+    @Autowired
+    IAuthRedirectService authRedirectService;
     //保存当前视图解析器的优先级
     private int order = Integer.MAX_VALUE;
     /**
@@ -37,7 +39,7 @@ public class MyCustomViewResolver implements ViewResolver, Ordered {
 //            //返回视图对象，该视图对象为自定义的
 //
 //        }
-        return new MyCustomView(ViewName,isDebug,applicationContext,mvcConversionService,htmlService);
+        return new MyCustomView(ViewName,isDebug,applicationContext,mvcConversionService,htmlService,authRedirectService);
 //        return null;
     }
 

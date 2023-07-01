@@ -9,7 +9,9 @@ import com.wangyang.config.CmsConfig;
 import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserDetailDTO;
+import com.wangyang.pojo.entity.AuthRedirect;
 import com.wangyang.pojo.entity.Components;
+import com.wangyang.service.IAuthRedirectService;
 import com.wangyang.service.IHtmlService;
 import com.wangyang.util.AuthorizationUtil;
 import org.apache.el.lang.EvaluationContext;
@@ -31,6 +33,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,11 +46,13 @@ public class MyCustomView implements View {
 
     private Boolean isDebug;
     private String viewName;
-    public  MyCustomView(String viewName, Boolean isDebug, ApplicationContext applicationContext, ConversionService mvcConversionService, IHtmlService htmlService){
+    IAuthRedirectService authRedirectService;
+    public  MyCustomView(String viewName, Boolean isDebug, ApplicationContext applicationContext, ConversionService mvcConversionService, IHtmlService htmlService, IAuthRedirectService authRedirectService){
         this.viewName = viewName;
         this.applicationContext =applicationContext;
         this.mvcConversionService =mvcConversionService;
         this.isDebug =isDebug;
+        this.authRedirectService = authRedirectService;
     }
     @Override
     public void render(Map<String, ?> mapInput, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -55,8 +60,15 @@ public class MyCustomView implements View {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html");
         String requestURI = request.getRequestURI();
-        String authUrl = request.getParameter("authUrl");
+
         Object status = map.get("status");
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(requestURI);
+        if(status!=null &&status.equals(401) &&  authRedirect!=null){
+            response.sendRedirect(authRedirect.getAuthUrl()+"?state="+requestURI);
+        }
+
+        String authUrl = request.getParameter("authUrl");
+
         if(status!=null &&status.equals(401) && authUrl!=null ){
             response.sendRedirect(authUrl+"?state="+requestURI+"?authUrl="+authUrl);
             return;
@@ -64,7 +76,6 @@ public class MyCustomView implements View {
         if(status!=null&&status.equals(404) &&map.get("error")!=null){
             map.put("message",map.get("error"));
         }
-
 
 
 //        String viewNamePath = viewName.replace("_", File.separator);
