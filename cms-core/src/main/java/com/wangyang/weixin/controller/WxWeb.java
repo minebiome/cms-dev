@@ -200,8 +200,8 @@ public class WxWeb {
 //                wxRedirectUri+"/"+authRedirect.getSubscribeRedirect(),
 //                state
 //                );
-        log.info("subscribeMsg:{} ", "redirect:"+authUrl);
-        return "redirect:"+authUrl;
+        log.info("subscribeMsg:{} ", "redirect:"+authUrl+"?state="+state);
+        return "redirect:"+authUrl+"?state="+state;
     }
 
     @GetMapping("/subscribeMsgAddCookie")
