@@ -22,6 +22,9 @@ public class CMSUtils {
 //        return UUID.randomUUID().toString();
         return viewName;
     }
+    public static String phoneAuth(){
+        return CmsConst.PHONE_AUTH;
+    }
     public static String getWorkDir(){
         return CmsConst.WORK_DIR;
     }

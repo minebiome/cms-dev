@@ -20,6 +20,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -33,8 +35,16 @@ public class ControllerExceptionHandler {
     public BaseResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         BaseResponse<Map<String, String>> baseResponse = handleBaseException(e);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        baseResponse.setMessage("字段验证错误，请完善后重试！");
+
+
         Map<String, String> errMap = ValidationUtils.mapWithFieldError(e.getBindingResult().getFieldErrors());
+        if (!errMap.isEmpty()) {
+            List<String> valuesList = new ArrayList<>(errMap.values());
+            String firstValue = valuesList.get(0);
+            baseResponse.setMessage(firstValue);
+        }else {
+            baseResponse.setMessage("字段验证错误，请完善后重试！");
+        }
         baseResponse.setData(errMap);
         return baseResponse;
     }

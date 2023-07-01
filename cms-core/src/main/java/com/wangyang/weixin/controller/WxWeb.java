@@ -5,29 +5,46 @@ import com.alibaba.fastjson.JSON;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
+import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
+import com.wangyang.pojo.params.WxPhoneParam;
 import com.wangyang.service.authorize.IWxUserService;
+import com.wangyang.weixin.service.ITemplateMsgService;
+import com.wangyang.weixin.service.IWxMpSubscribeMessage;
 import com.wangyang.weixin.util.CaptchaGenerator;
 import lombok.AllArgsConstructor;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
+import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import me.chanjar.weixin.mp.config.WxMpConfigStorage;
+import me.chanjar.weixin.mp.util.WxMpConfigStorageHolder;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.context.Context;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/wx/auth")
@@ -38,6 +55,16 @@ public class WxWeb {
     private  IWxUserService wxUserService;
     @Autowired
     private   WxMpConfigStorage wxMpConfigStorage;
+    @Autowired
+    ITemplateMsgService templateMsgService;
+
+    @Autowired
+    IWxMpSubscribeMessage wxMpSubscribeMessage;
+
+    @Value("${cms.templateId}")
+    String templateId;
+    @Value("${cms.subscribeTemplateId}")
+    String subscribeTemplateId;
     @Value("${cms.wxRedirectUri}")
     private String wxRedirectUri;
 //    http://192.168.0.178:8080/wx/auth?state=/login.html
@@ -70,11 +97,11 @@ public class WxWeb {
     }
 
 
+//   response.sendRedirect(authUrl + "?state=" + requestURI + "?authUrl=" + authUrl);
 
-
-    @GetMapping("loginNoSave")
+    @GetMapping("/loginNoSave/{viewName}")
     @Anonymous
-    public String loginNoSave(@RequestParam(required = false) String state){
+    public String loginNoSave(@PathVariable String viewName,@RequestParam(required = false) String state){
 //        authUrl = authUrl.replace("APPID",);
 //        authUrl = authUrl.replace("REDIRECT_URI",wxRedirectUri);
         if(state==null){
@@ -82,17 +109,40 @@ public class WxWeb {
         }
         String authUrl = String.format("https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=%s#wechat_redirect",
                 wxMpConfigStorage.getAppId(),
-                wxRedirectUri+"/wx/auth/phone",
+                wxRedirectUri+"/wx/auth/phone/"+viewName,
                 state);
         return "redirect:"+authUrl;
     }
-//    http://192.168.10.30:8080/api/article?authUrl=/wx/auth/loginNoSave
-    @GetMapping("/phone")
+//    http://192.168.0.178:8080/api/article?authUrl=/wx/auth/loginNoSave/aaaa
+    @GetMapping("/phone/{viewName}")
     @Anonymous
-    public ModelAndView callLoginNoSave(@RequestParam(required = false) String code,@RequestParam(required = false) String state, ModelAndView modelAndView, HttpServletResponse response){
+    public ModelAndView callLoginNoSave(@PathVariable String viewName,@RequestParam(required = false) String code,@RequestParam(required = false) String state, ModelAndView modelAndView, HttpServletResponse response){
 //        try {
         if(code!=null){
             WxUser wxUser = wxUserService.loginNoSave(code);
+
+
+            String appid = WxMpConfigStorageHolder.get();
+            List<WxMpTemplateData> data  = new ArrayList<>();
+            data.add(new WxMpTemplateData("first","模板消息测试"));
+            data.add(new WxMpTemplateData("keywords1","xxxxx"));
+            data.add(new WxMpTemplateData("keywords2","xxxxx"));
+            data.add(new WxMpTemplateData("remark","点击查看消息详情"));
+            if(templateId!=null && !"".equals(templateId)){
+                WxMpTemplateMessage wxMpTemplateMessage = WxMpTemplateMessage.builder()
+                        .templateId(templateId)
+                        .url("https://www.yuque.com/nifury/wx/cyku5l")
+                        .toUser(wxUser.getOpenId())
+                        .data(data)
+                        .build();
+                templateMsgService.sendTemplateMsg(wxMpTemplateMessage,appid);
+
+            }
+            if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
+                wxMpSubscribeMessage.sendSubscribeMessageMsg(wxUser.getOpenId());
+            }
+
+
 //            context.setVariable();
             modelAndView.addObject("wxUser",JSON.toJSON(wxUser).toString());
             modelAndView.addObject("state",state);
@@ -107,7 +157,7 @@ public class WxWeb {
 
 
 //            return "redirect:"+state;
-            modelAndView.setViewName(CmsConst.TEMPLATE_FILE_PREFIX+"phone");
+            modelAndView.setViewName(CMSUtils.phoneAuth()+"/"+viewName);
             return modelAndView;
 //        } catch (UnsupportedEncodingException e) {
 //            throw new RuntimeException(e);
@@ -119,14 +169,21 @@ public class WxWeb {
 
     @PostMapping("/phone")
     @Anonymous
-    public String phoneAdd( String captcha,  String redirect, WxUser wxUser,HttpServletResponse response,HttpServletRequest request){
+    @ResponseBody
+    public LoginUser phoneAdd(@Valid @RequestBody  WxPhoneParam wxPhoneParam, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
+
+
+
+        WxUser wxUser = new WxUser();
+        BeanUtils.copyProperties(wxPhoneParam, wxUser);
+
         String captchaText = (String) request.getSession().getAttribute("captcha");
         LocalDateTime expirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
         LoginUser loginUser = wxUserService.login(wxUser);
 
 
         String requestURI = request.getRequestURI();
-        if (captchaText != null && captchaText.equalsIgnoreCase(captcha)) {
+        if (captchaText != null && captchaText.equalsIgnoreCase(wxPhoneParam.getCaptcha())) {
             if (expirationTime != null && expirationTime.isAfter(LocalDateTime.now())) {
                 // 验证码验证通过且未过期
                 Cookie cookie = new Cookie("Authorization", loginUser.getToken());
@@ -134,18 +191,24 @@ public class WxWeb {
                 cookie.setMaxAge(3600); // 设置过期时间为1小时
                 cookie.setPath("/");
                 response.addCookie(cookie);
-                return "redirect:"+redirect;
-
+//                return "redirect:"+wxPhoneParam.getRedirect();
+                return loginUser;
             } else {
+                throw  new ObjectException("验证码已过期！");
                 // 验证码已过期
 //                return "The captcha has expired.";
-                return "redirect:"+requestURI;
+//                return wxPhoneParam.getCurrentUrl()+"?state="+wxPhoneParam.getRedirect();
             }
         } else {
+            throw  new ObjectException("验证码不正确！");
             // 验证码验证失败
 //            return "Invalid captcha.";
-            return "redirect:"+requestURI;
+//            request.getRequestDispatcher(wxPhoneParam.getCurrentUrl()).forward(request,response);
+//            return "redirect:"+wxPhoneParam.getCurrentUrl();
+//            return wxPhoneParam.getCurrentUrl()+"?state="+wxPhoneParam.getRedirect();
         }
+
+
 
 
     }
@@ -160,6 +223,9 @@ public class WxWeb {
     @Anonymous
     @ResponseBody
     public BaseResponse smsVerification(@RequestParam String phone,HttpServletRequest request){
+        if(phone==null || phone.equals("")){
+            throw new ObjectException("手机号码不能为空！");
+        }
         LocalDateTime getExpirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
         if (getExpirationTime != null && getExpirationTime.isAfter(LocalDateTime.now())) {
             // 验证码验证通过且未过期
@@ -173,7 +239,7 @@ public class WxWeb {
         sendSms(phone, verificationCode);
         return BaseResponse.ok("验证码发送成功！");
     }
-    private static final int EXPIRATION_MINUTES = 5; // 验证码有效期（分钟）
+    private static final int EXPIRATION_MINUTES = 1; // 验证码有效期（分钟）
     public LocalDateTime getExpirationTime() {
         return LocalDateTime.now().plus(EXPIRATION_MINUTES, ChronoUnit.MINUTES);
     }
@@ -198,4 +264,15 @@ public class WxWeb {
 //            return ResponseEntity.badRequest().body("验证码错误");
 //        }
 //    }
+
+    @GetMapping("/testWxAuth1")
+    @WxRole
+    public String testWxAuth1(){
+        return CmsConst.TEMPLATE_FILE_PREFIX+"testWxAuth1";
+    }
+    @GetMapping("/testWxAuth2")
+    @WxRole
+    public String testWxAuth2(){
+        return CmsConst.TEMPLATE_FILE_PREFIX+"testWxAuth2";
+    }
 }
