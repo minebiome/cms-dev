@@ -19,6 +19,7 @@ import com.wangyang.weixin.service.ITemplateMsgService;
 import com.wangyang.weixin.service.IWxMpSubscribeMessage;
 import com.wangyang.weixin.util.CaptchaGenerator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
@@ -52,6 +53,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/wx/auth")
+@Slf4j
 public class WxWeb {
     @Autowired
     private CaptchaGenerator captchaGenerator;
@@ -94,6 +96,7 @@ public class WxWeb {
                 wxMpConfigStorage.getAppId(),
                 wxRedirectUri+authRedirect.getLoginRedirect(),
                 state);
+        log.info("login:{} ","redirect:"+authUrl);
         return "redirect:"+authUrl;
     }
 
@@ -124,10 +127,41 @@ public class WxWeb {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+        log.info("callLogin:{} ","redirect:"+authRedirect.getLoginAuthRedirect());
         return "redirect:"+authRedirect.getLoginAuthRedirect();
     }
 
+    @GetMapping("/callLoginPage")
+    @Anonymous
+    public String callLoginPage(@RequestParam(required = false) String code, @RequestParam String state, HttpServletResponse response,HttpServletRequest request){
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
+        if(authRedirect==null){
+            throw  new ObjectException(state+"callLogin 登陆页面不存在!");
+        }
+        if(code!=null){
 
+            WxUserToken wxUserToken = wxUserService.loginWx(code);
+
+//        request.getSession().setAttribute("wsUser",wxUserToken);
+            Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
+            // 设置Cookie的属性（可选）
+            cookie.setMaxAge(3600); // 设置过期时间为1小时
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            try {
+                String encodeCookie = URLEncoder.encode(JSON.toJSON(wxUserToken).toString(),"utf-8");
+                Cookie userCookie = new Cookie("wxUser", encodeCookie);
+                userCookie.setMaxAge(3600); // 设置过期时间为1小时
+                userCookie.setPath("/");
+                response.addCookie(userCookie);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        log.info("callLoginPage:{} ",authRedirect.getLoginPage());
+        return authRedirect.getLoginPage();
+    }
 //   response.sendRedirect(authUrl + "?state=" + requestURI + "?authUrl=" + authUrl);
 //    @GetMapping("/loginNoSave")
 //    @Anonymous
@@ -147,13 +181,11 @@ public class WxWeb {
 
     @GetMapping("/subscribeMsg")
     @Anonymous
-    public String subscribeMsg(@RequestParam(required = false) String code,
-                               @RequestParam(required = true) String state,
-                               HttpServletRequest request){
-        if(code!=null) {
-            WxUser wxUser = wxUserService.loginNoSave(code);
-            request.getSession().setAttribute("wsUser",wxUser);
-        }
+    public String subscribeMsg( @RequestParam(required = true) String state){
+//        if(code!=null) {
+//            WxUser wxUser = wxUserService.loginNoSave(code);
+//            request.getSession().setAttribute("wsUser",wxUser);
+//        }
         AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(state);
         if(authRedirect==null){
             throw  new ObjectException(state+"subscribeMsg 登陆页面不存在!");
@@ -168,6 +200,7 @@ public class WxWeb {
 //                wxRedirectUri+"/"+authRedirect.getSubscribeRedirect(),
 //                state
 //                );
+        log.info("subscribeMsg:{} ", "redirect:"+authUrl);
         return "redirect:"+authUrl;
     }
 
@@ -211,11 +244,41 @@ public class WxWeb {
 //                wxRedirectUri+"/"+authRedirect.getSubscribeRedirect(),
 //                state
 //                );
+        log.info("subscribeMsgAddCookie:{} ","redirect:"+authUrl);
         return "redirect:"+authUrl;
     }
+    @GetMapping("/page")
+    @Anonymous
+    public ModelAndView page( @RequestParam(required = false) String state,
+                                         @RequestParam(required = false) String reserved,
+                                         ModelAndView modelAndView){
+//        try {
+        String currentUrl;
+        if(state!=null && !"".equals(state)){
+            currentUrl= state;
+        } else if (reserved!=null && !"".equals(reserved)) {
+            currentUrl= reserved;
+        }else {
+            throw new ObjectException(state+"登陆页面不存在!");
+        }
+
+        AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(currentUrl);
+        if(authRedirect==null){
+            throw new ObjectException(state+"登陆页面不存在!");
+        }
 
 
-    @GetMapping("/phone")
+
+        modelAndView.addObject("loginAuthRedirect",authRedirect.getLoginAuthRedirect());
+        modelAndView.setViewName(authRedirect.getLoginPage());
+        log.info("page:{} ",authRedirect.getLoginAuthRedirect());
+        return modelAndView;
+//        } catch (UnsupportedEncodingException e) {
+//            throw new RuntimeException(e);
+//        }
+    }
+
+    @GetMapping("/submit")
     @Anonymous
     public ModelAndView callLoginNoSave2(@RequestParam(required = false) String code,
                                          @RequestParam(required = false) String state,
@@ -277,11 +340,13 @@ public class WxWeb {
             //            modelAndView.addObject("state",state);
         }else {
             modelAndView.setViewName( "redirect:"+authRedirect.getAuthUrl()+"?state="+authRedirect.getCurrentUrl());
+            log.info("submit:{} ","redirect:"+authRedirect.getAuthUrl()+"?state="+authRedirect.getCurrentUrl());
             return  modelAndView;
         }
 
         modelAndView.addObject("loginAuthRedirect",authRedirect.getLoginAuthRedirect());
         modelAndView.setViewName(authRedirect.getLoginPage());
+        log.info("submit:{} ",authRedirect.getLoginPage());
         return modelAndView;
 //        } catch (UnsupportedEncodingException e) {
 //            throw new RuntimeException(e);
@@ -356,7 +421,7 @@ public class WxWeb {
 
 
 
-    @PostMapping("/phone")
+    @PostMapping("/submit")
     @Anonymous
     @ResponseBody
     public LoginUser phoneAdd(@Valid @RequestBody  WxPhoneParam wxPhoneParam, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
