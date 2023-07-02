@@ -66,7 +66,9 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
             Map map = (Map) returnBody;
             if(map.get("status")!=null && map.get("path")!=null){
                 if( map.get("status").equals(404)){
-                    if(map.get("path").toString().endsWith("css") || map.get("path").toString().endsWith("js")){
+                    if(map.get("path").toString().endsWith("css")
+                            || map.get("path").toString().endsWith("js")
+                            || map.get("path").toString().endsWith(".map")){
                         log.info(map.get("path").toString()+"不存在！");
                     }else {
                         throw new ObjectException( map.get("path").toString()+"不存在！");
