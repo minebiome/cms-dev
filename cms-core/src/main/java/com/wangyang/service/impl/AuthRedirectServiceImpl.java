@@ -38,7 +38,9 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
     }
 
     @Override
-    public AuthRedirect update(Integer integer, AuthRedirect authRedirect) {
+    public AuthRedirect update(Integer integer, AuthRedirect authRedirectInput) {
+        AuthRedirect authRedirect = findById(integer);
+        BeanUtils.copyProperties(authRedirectInput, authRedirect);
         if(authRedirect.getTemplateName()==null){
 
             authRedirect.setTemplateName(CmsConst.LOGIN_CONFIRM);
