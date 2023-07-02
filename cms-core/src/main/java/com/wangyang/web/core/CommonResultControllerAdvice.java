@@ -3,6 +3,7 @@ package com.wangyang.web.core;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.exception.ObjectException;
 import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 //@ControllerAdvice({"com.wangyang.web.controller","com.wangyang.authorize.controller","com.wangyang.schedule.controller"})
 @ControllerAdvice
+@Slf4j
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -64,7 +66,12 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
             Map map = (Map) returnBody;
             if(map.get("status")!=null && map.get("path")!=null){
                 if( map.get("status").equals(404)){
-                    throw new ObjectException( map.get("path").toString()+"不存在！");
+                    if(map.get("path").toString().endsWith("css") || map.get("path").toString().endsWith("js")){
+                        log.info(map.get("path").toString()+"不存在！");
+                    }else {
+                        throw new ObjectException( map.get("path").toString()+"不存在！");
+                    }
+
                 }
             }
 

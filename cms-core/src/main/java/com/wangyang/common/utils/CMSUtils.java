@@ -4,6 +4,9 @@ import com.wangyang.common.CmsConst;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -142,5 +145,19 @@ public class CMSUtils {
     public static LocalDateTime getExpirationTime() {
         return LocalDateTime.now().plus(EXPIRATION_MINUTES, ChronoUnit.MINUTES);
     }
-
+    public static void deleteCooke(HttpServletRequest request, HttpServletResponse response){
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("Authorization")){
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);// 立即销毁cookie
+                    cookie.setPath("/");
+//                    System.out.println("被删除的cookie名字为:"+cookie.getName());
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
+    }
 }
