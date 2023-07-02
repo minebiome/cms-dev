@@ -69,7 +69,11 @@ public class SystemTemplates {
                 new Template("文章置顶列表",CmsConst.ARTICLE_TOP_LIST,"@articleTopList", TemplateType.ARTICLE_LIST,12),
                 new Template("更多文章和文章搜索",CmsConst.ARTICLE_PAGE,"@articleMore", TemplateType.ARTICLE_LIST,12),
                 new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"@jsMind", TemplateType.ARTICLE_MIND,12),
-                new Template("手机验证码登陆页面",CmsConst.PHONE_AUTH_PAGE,"@phoneAuth", TemplateType.PHONE_AUTH,12)
+                new Template("手机验证码页面", CmsConst.LOGIN_PHONE_AUTH,"@loginPhoneAuth", TemplateType.SUBMIT_PAGE,1),
+                new Template("确认页面", CmsConst.LOGIN_CONFIRM,"@loginConfirm", TemplateType.SUBMIT_PAGE,1)
+
+
+//                new Template("手机验证码登陆页面",CmsConst.PHONE_AUTH_PAGE,"@phoneAuth", TemplateType.SUBMIT_PAGE,12)
 
         );
 

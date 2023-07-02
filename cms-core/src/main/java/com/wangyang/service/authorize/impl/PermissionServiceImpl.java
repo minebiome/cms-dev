@@ -7,6 +7,7 @@ import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.annotation.CommentRole;
+import com.wangyang.pojo.annotation.PhoneRole;
 import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.support.RoleUrl;
@@ -194,6 +195,14 @@ public class PermissionServiceImpl implements IPermissionService {
             wxRole.setEnName(CMSUtils.getWxRole());
             wxRole = roleService.save(wxRole);
         }
+
+        Role phoneRole = roleService.findByEnName(CMSUtils.getPhoneRole());
+        if (phoneRole == null) {
+            phoneRole = new Role();
+            phoneRole.setName(CMSUtils.getPhoneRole());
+            phoneRole.setEnName(CMSUtils.getPhoneRole());
+            phoneRole = roleService.save(phoneRole);
+        }
 //        User commentUser = userService.findUserByUsername("test");
 //        if (commentUser == null) {
 //            commentUser = new User();
@@ -243,7 +252,10 @@ public class PermissionServiceImpl implements IPermissionService {
                 RoleUrl roleUrl = new RoleUrl(wxRole.getId(), url, methodName);
                 roleResourceName.add(roleUrl);
             }
-
+            if(method.isAnnotationPresent(PhoneRole.class)){
+                RoleUrl roleUrl = new RoleUrl(phoneRole.getId(), url, methodName);
+                roleResourceName.add(roleUrl);
+            }
             resources.add(resource);
         }
         List<Resource> dataBaseResource = resourceService.listAll();

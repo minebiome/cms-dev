@@ -91,6 +91,9 @@ public class CMSUtils {
     public static String getWxRole(){
         return CmsConst.WX_ROLE;
     }
+    public static String getPhoneRole(){
+        return CmsConst.PHONE_ROLE;
+    }
 
 
     public static String randomTime(){

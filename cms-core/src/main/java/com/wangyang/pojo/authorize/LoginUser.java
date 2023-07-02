@@ -14,6 +14,8 @@ public class LoginUser {
     private String avatar;
     private String email;
     private Integer gender;
+
+    private String sessionKey;
     private String token;
     private long exp;
 }

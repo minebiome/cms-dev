@@ -118,6 +118,8 @@ public class CmsConst {
 
 
     public final static String ARTICLE_JS_MIND = "ARTICLE_JS_MIND";//文章思维导图
+    public final static String LOGIN_PHONE_AUTH = "LOGIN_PHONE_AUTH";//文章思维导图
+    public final static String LOGIN_CONFIRM = "LOGIN_CONFIRM";//文章思维导图
     public final static String PHONE_AUTH_PAGE = "PHONE_AUTH_PAGE";//文章思维导图
 
     public final static String TAGS_INFORMATION = "资讯";//分类列表
@@ -147,5 +149,6 @@ public class CmsConst {
 
     public final static String PHONE_AUTH = "html/phoneAuth";
     public final static String WX_ROLE = "WX_ROLE";
+    public final static String PHONE_ROLE = "PHONE_ROLE";
     public final static String TEMPLATE_FILE_PREFIX = "tf:";
 }

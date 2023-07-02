@@ -17,11 +17,17 @@ import javax.persistence.Entity;
 @Cacheable
 @Cache(usage= CacheConcurrencyStrategy.READ_WRITE)
 public class AuthRedirect extends BaseEntity {
+    private String title;
+    private String description;
     private String currentUrl;
     private String authUrl;
     private String loginRedirect;
     private String subscribeRedirect;
     private String loginAuthRedirect;
+    private String viewName;
+    private String path;
+
+    private String templateName;
     private String loginPage;
 
 }

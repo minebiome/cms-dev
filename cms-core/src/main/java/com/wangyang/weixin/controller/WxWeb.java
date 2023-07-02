@@ -7,6 +7,7 @@ import com.wangyang.common.CmsConst;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.annotation.Anonymous;
+import com.wangyang.pojo.annotation.PhoneRole;
 import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.WxUser;
@@ -439,17 +440,16 @@ public class WxWeb {
 
 
 
-        WxUser wxUser = new WxUser();
-        BeanUtils.copyProperties(wxPhoneParam, wxUser);
 
         String captchaText = (String) request.getSession().getAttribute("captcha");
-        LocalDateTime expirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
-        LoginUser loginUser = wxUserService.login(wxUser);
-
-
-        String requestURI = request.getRequestURI();
+//        String requestURI = request.getRequestURI();
         if (captchaText != null && captchaText.equalsIgnoreCase(wxPhoneParam.getCaptcha())) {
+            LocalDateTime expirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
+
             if (expirationTime != null && expirationTime.isAfter(LocalDateTime.now())) {
+                WxUser wxUser = new WxUser();
+                BeanUtils.copyProperties(wxPhoneParam, wxUser);
+                LoginUser loginUser = wxUserService.login(wxUser);
                 // 验证码验证通过且未过期
                 Cookie cookie = new Cookie("Authorization", loginUser.getToken());
                 // 设置Cookie的属性（可选）
@@ -535,6 +535,7 @@ public class WxWeb {
 
     @GetMapping("/testWxAuth1")
     @WxRole
+    @PhoneRole
     public String testWxAuth1(){
         return CmsConst.TEMPLATE_FILE_PREFIX+"testWxAuth1";
     }

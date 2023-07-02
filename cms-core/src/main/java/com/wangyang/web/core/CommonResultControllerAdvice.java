@@ -1,6 +1,8 @@
 package com.wangyang.web.core;
 
 import com.wangyang.common.BaseResponse;
+import com.wangyang.common.exception.ObjectException;
+import javassist.NotFoundException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,7 +14,11 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 //@ControllerAdvice({"com.wangyang.web.controller","com.wangyang.authorize.controller","com.wangyang.schedule.controller"})
 @ControllerAdvice
 public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> {
@@ -53,6 +59,15 @@ public class CommonResultControllerAdvice implements ResponseBodyAdvice<Object> 
             BaseResponse<?> baseResponse = (BaseResponse) returnBody;
             response.setStatusCode(HttpStatus.resolve(baseResponse.getStatus()));
             return;
+        }
+        if(returnBody instanceof  Map){
+            Map map = (Map) returnBody;
+            if(map.get("status")!=null && map.get("path")!=null){
+                if( map.get("status").equals(404)){
+                    throw new ObjectException( map.get("path").toString()+"不存在！");
+                }
+            }
+
         }
 
         // Wrap the return body

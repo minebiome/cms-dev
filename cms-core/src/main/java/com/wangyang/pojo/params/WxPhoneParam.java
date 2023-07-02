@@ -16,6 +16,7 @@ public class WxPhoneParam {
     private String roleEn;
     private Integer gender;
     private String username;
+//    @NotEmpty(message = "nickname不能为空！")
     private String nickname;
     private String avatar;
     private String email;

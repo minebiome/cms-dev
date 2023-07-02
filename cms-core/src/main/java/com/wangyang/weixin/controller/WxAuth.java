@@ -7,9 +7,14 @@ import com.wangyang.weixin.pojo.WxJsapiSignatureParam;
 import com.wangyang.service.authorize.IWxUserService;
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -22,8 +27,8 @@ public class WxAuth {
 
     @GetMapping
     @Anonymous
-    public LoginUser authGet(@RequestParam String code) {
-        LoginUser loginUser = wxUserService.login(code);
+    public LoginUser authGet(@RequestParam String code) throws WxErrorException {
+        LoginUser loginUser = wxUserService.loginMp(code);
         return loginUser;
 
 
@@ -56,12 +61,23 @@ public class WxAuth {
         } catch (WxErrorException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
+    @GetMapping("/getShareSignature")
+    @Anonymous
+    public WxJsapiSignature getShareSignature(WxJsapiSignatureParam wxJsapiSignatureParam){
+        try {
+            WxJsapiSignature jsapiSignature = wxService.createJsapiSignature(wxJsapiSignatureParam.getUrl());
+            System.out.println();
+            String jsapiTicket = wxService.getJsapiTicket();
+
+            return jsapiSignature;
+        } catch (WxErrorException e) {
+            throw new RuntimeException(e);
+        }
+    }
 //    @GetMapping("/getShareSignature")
-//    @ApiOperation(value = "获取微信分享的签名配置",notes = "微信公众号添加了js安全域名的网站才能加载微信分享")
+////    @ApiOperation(value = "获取微信分享的签名配置",notes = "微信公众号添加了js安全域名的网站才能加载微信分享")
 //    public R getShareSignature(HttpServletRequest request, HttpServletResponse response) throws WxErrorException {
 ////        wxService.switchoverTo(appid);
 //        // 1.拼接url（当前网页的URL，不包含#及其后面部分）

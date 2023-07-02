@@ -20,7 +20,7 @@ public enum  TemplateType implements ValueEnum<Integer> {
     Literature(8,"文献模板"),
     TAGS(8,"标签"),
     SURVEY(8,"标签"),
-    PHONE_AUTH(8,"标签"),
+    SUBMIT_PAGE(8,"标签"),
     TAGS_LIST(9,"标签");
 
     private final int value;

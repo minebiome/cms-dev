@@ -7,5 +7,8 @@ import com.wangyang.service.base.ICrudService;
 import java.util.List;
 
 public interface IAuthRedirectService extends ICrudService<AuthRedirect,AuthRedirect, BaseVo,Integer> {
+    AuthRedirect addUniqueCurrentUrl(AuthRedirect authRedirectInput);
+
     AuthRedirect findByCurrentUrl(String currentUrl);
+
 }

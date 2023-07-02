@@ -9,9 +9,13 @@ import com.wangyang.service.base.IAuthorizeService;
 public interface IWxUserService  extends IAuthorizeService<WxUser> {
     WxUserToken loginWx(String code);
 
-    LoginUser login(String code);
+    LoginUser loginMp(String code);
 
     WxUser loginNoSave(String code);
 
     LoginUser login(WxUser inputWxUser);
+
+    WxUser findByPhoneId(String phone);
+
+    LoginUser loginMa(String code);
 }
