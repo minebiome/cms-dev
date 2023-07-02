@@ -149,6 +149,7 @@ public class CmsConst {
 
     public final static String PHONE_AUTH = "html/phoneAuth";
     public final static String WX_ROLE = "WX_ROLE";
+    public final static String EMAIL_ROLE = "EMAIL_ROLE";
     public final static String PHONE_ROLE = "PHONE_ROLE";
     public final static String TEMPLATE_FILE_PREFIX = "tf:";
 }

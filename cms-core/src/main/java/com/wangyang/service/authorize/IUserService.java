@@ -1,6 +1,7 @@
 package com.wangyang.service.authorize;
 
 
+import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.User;
 import com.wangyang.pojo.authorize.UserDetailDTO;
 import com.wangyang.pojo.authorize.UserParam;
@@ -33,8 +34,14 @@ public interface IUserService  extends IAuthorizeService<User> {
 
     User findUserByEmail(String email);
 
+    User findUserByPhone(String phone);
+
     UserDto findUserDaoById(int userId);
 
     User addUser(UserParam inputUser, MultipartFile file);
+
+    UserDetailDTO loginEmail(String email);
+
+    UserDetailDTO loginPhone(String phone);
     // ---------------------------------------
 }

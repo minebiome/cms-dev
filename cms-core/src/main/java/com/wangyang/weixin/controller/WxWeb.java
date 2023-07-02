@@ -56,8 +56,7 @@ import java.util.List;
 @RequestMapping("/wx/auth")
 @Slf4j
 public class WxWeb {
-    @Autowired
-    private CaptchaGenerator captchaGenerator;
+
     @Autowired
     private  IWxUserService wxUserService;
     @Autowired
@@ -456,6 +455,15 @@ public class WxWeb {
                 cookie.setMaxAge(3600); // 设置过期时间为1小时
                 cookie.setPath("/");
                 response.addCookie(cookie);
+                try {
+                    String encodeCookie = URLEncoder.encode(JSON.toJSON(loginUser).toString(),"utf-8");
+                    Cookie userCookie = new Cookie("wxUser", encodeCookie);
+                    userCookie.setMaxAge(3600); // 设置过期时间为1小时
+                    userCookie.setPath("/");
+                    response.addCookie(userCookie);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
 //                return "redirect:"+wxPhoneParam.getRedirect();
                 return loginUser;
             } else {
@@ -481,47 +489,9 @@ public class WxWeb {
 
 
 
-    private void sendSms(String phoneNumber, String verificationCode) {
-        // 实际项目中，调用短信服务商的API发送短信
-        // 这里只是简单地打印验证码和手机号码
-        System.out.println("发送验证码：" + verificationCode + " 到手机号码：" + phoneNumber);
-    }
 
-    @GetMapping("/smsVerification")
-    @Anonymous
-    @ResponseBody
-    public BaseResponse smsVerification(@RequestParam String phone,HttpServletRequest request){
-        if(phone==null || phone.equals("")){
-            throw new ObjectException("手机号码不能为空！");
-        }
-        LocalDateTime getExpirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
-        if (getExpirationTime != null && getExpirationTime.isAfter(LocalDateTime.now())) {
-            // 验证码验证通过且未过期
-            throw new ObjectException("验证码已发送请稍后再试！");
-        }
 
-        LocalDateTime expirationTime = getExpirationTime();
-        String verificationCode = generateVerificationCode();
-        request.getSession().setAttribute("captcha", verificationCode);
-        request.getSession().setAttribute("captcha_expiration", expirationTime);
-        sendSms(phone, verificationCode);
-        return BaseResponse.ok("验证码发送成功！");
-    }
-    private static final int EXPIRATION_MINUTES = 1; // 验证码有效期（分钟）
-    public LocalDateTime getExpirationTime() {
-        return LocalDateTime.now().plus(EXPIRATION_MINUTES, ChronoUnit.MINUTES);
-    }
-    private static String generateVerificationCode() {
-        // 生成随机六位数验证码
-        SecureRandom random = new SecureRandom();
-        int code = random.nextInt(900000) + 100000;
-        return Integer.toString(code);
-    }
-    @GetMapping("/captcha")
-    @Anonymous
-    public void generateCaptcha(HttpServletRequest request, HttpServletResponse response)  {
-        captchaGenerator.generateCaptchaImage(request, response);
-    }
+
 //    @PostMapping("/captcha/validate")
 //    public ResponseEntity<String> validateCaptcha(HttpServletRequest request, @RequestParam("captcha") String inputCaptcha) {
 //        boolean isValid = captchaGenerator.validateCaptcha(request, inputCaptcha);

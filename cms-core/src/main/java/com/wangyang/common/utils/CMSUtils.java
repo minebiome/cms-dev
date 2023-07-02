@@ -5,6 +5,9 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.io.File;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -91,6 +94,9 @@ public class CMSUtils {
     public static String getWxRole(){
         return CmsConst.WX_ROLE;
     }
+    public static String getEmailRole(){
+        return CmsConst.EMAIL_ROLE;
+    }
     public static String getPhoneRole(){
         return CmsConst.PHONE_ROLE;
     }
@@ -125,5 +131,16 @@ public class CMSUtils {
         return emptyNames.toArray(result);
     }
 
+    public static String generateVerificationCode() {
+        // 生成随机六位数验证码
+        SecureRandom random = new SecureRandom();
+        int code = random.nextInt(900000) + 100000;
+        return Integer.toString(code);
+    }
+
+    private static final int EXPIRATION_MINUTES = 1; // 验证码有效期（分钟）
+    public static LocalDateTime getExpirationTime() {
+        return LocalDateTime.now().plus(EXPIRATION_MINUTES, ChronoUnit.MINUTES);
+    }
 
 }

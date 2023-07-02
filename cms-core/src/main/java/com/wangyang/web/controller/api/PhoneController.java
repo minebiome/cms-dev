@@ -6,12 +6,12 @@ import com.wangyang.common.BaseResponse;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.pojo.annotation.Anonymous;
-import com.wangyang.pojo.authorize.*;
-import com.wangyang.pojo.entity.Mail;
+import com.wangyang.pojo.authorize.LoginUser;
+import com.wangyang.pojo.authorize.UserDetailDTO;
+import com.wangyang.pojo.authorize.WxUser;
 import com.wangyang.pojo.params.EmailLoginParam;
-import com.wangyang.pojo.params.WxPhoneParam;
+import com.wangyang.pojo.params.PhoneLoginParam;
 import com.wangyang.pojo.support.Token;
-import com.wangyang.service.MailService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.util.TokenProvider;
 import org.springframework.beans.BeanUtils;
@@ -27,29 +27,26 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/mail")
-public class MailController {
-
-    @Autowired
-    MailService mailService;
-    @Autowired
-    TokenProvider tokenProvider;
+@RequestMapping("/api/phone")
+public class PhoneController {
     @Autowired
     IUserService userService;
-
-    @PostMapping
-    public List<BaseAuthorize> pushMail(@RequestBody  Mail mailInput){
-        List<BaseAuthorize> baseAuthorizes= mailService.sendEmail(mailInput);
-        return baseAuthorizes;
+    @Autowired
+    TokenProvider tokenProvider;
+    private void sendSms(String phoneNumber, String verificationCode) {
+        // 实际项目中，调用短信服务商的API发送短信
+        // 这里只是简单地打印验证码和手机号码
+        System.out.println("发送验证码：" + verificationCode + " 到手机号码：" + phoneNumber);
     }
-    @GetMapping("/sendCode")
+
+    @GetMapping("/smsVerification")
     @Anonymous
-    public BaseResponse sendCode(String email,HttpServletRequest request){
-        if(email==null || email.equals("")){
-            throw new ObjectException("邮箱不能为空！");
+    @ResponseBody
+    public BaseResponse smsVerification(@RequestParam String phone, HttpServletRequest request){
+        if(phone==null || phone.equals("")){
+            throw new ObjectException("手机号码不能为空！");
         }
         LocalDateTime getExpirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
         if (getExpirationTime != null && getExpirationTime.isAfter(LocalDateTime.now())) {
@@ -61,30 +58,35 @@ public class MailController {
         String verificationCode = CMSUtils.generateVerificationCode();
         request.getSession().setAttribute("captcha", verificationCode);
         request.getSession().setAttribute("captcha_expiration", expirationTime);
-//        sendSms(phone, verificationCode);
-        mailService.sendSimpleMail(email,"验证码",verificationCode);
+        sendSms(phone, verificationCode);
         return BaseResponse.ok("验证码发送成功！");
     }
-
-    @PostMapping("/loginEmail")
+    @PostMapping("/loginPhone")
     @Anonymous
     @ResponseBody
-    public LoginUser loginEmail(@Valid @RequestBody EmailLoginParam emailLoginParam, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
+    public LoginUser loginPhone(@Valid @RequestBody PhoneLoginParam phoneLoginParam, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
 
 
         String captchaText = (String) request.getSession().getAttribute("captcha");
 //        String requestURI = request.getRequestURI();
-        if (captchaText != null && captchaText.equalsIgnoreCase(emailLoginParam.getCaptcha())) {
+        if (captchaText != null && captchaText.equalsIgnoreCase(phoneLoginParam.getCaptcha())) {
             LocalDateTime expirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
 
             if (expirationTime != null && expirationTime.isAfter(LocalDateTime.now())) {
                 WxUser wxUser = new WxUser();
-                UserDetailDTO user = userService.loginEmail(emailLoginParam.getEmail());
-
+                UserDetailDTO user = userService.loginPhone(phoneLoginParam.getPhone());
                 LoginUser loginUser = new LoginUser();
                 BeanUtils.copyProperties(user,loginUser);
                 Token token = tokenProvider.generateToken(user);
                 loginUser.setToken(token.getToken());
+//                BeanUtils.copyProperties(wxPhoneParam, wxUser);
+//                LoginUser loginUser = wxUserService.login(wxUser);
+                // 验证码验证通过且未过期
+                Cookie cookie = new Cookie("Authorization", loginUser.getToken());
+                // 设置Cookie的属性（可选）
+                cookie.setMaxAge(3600); // 设置过期时间为1小时
+                cookie.setPath("/");
+                response.addCookie(cookie);
                 try {
                     String encodeCookie = URLEncoder.encode(JSON.toJSON(loginUser).toString(),"utf-8");
                     Cookie userCookie = new Cookie("wxUser", encodeCookie);
@@ -94,14 +96,7 @@ public class MailController {
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
-//                BeanUtils.copyProperties(wxPhoneParam, wxUser);
-//                LoginUser loginUser = wxUserService.login(wxUser);
-                // 验证码验证通过且未过期
-                Cookie cookie = new Cookie("Authorization", loginUser.getToken());
-                // 设置Cookie的属性（可选）
-                cookie.setMaxAge(3600); // 设置过期时间为1小时
-                cookie.setPath("/");
-                response.addCookie(cookie);
+
 //                return "redirect:"+wxPhoneParam.getRedirect();
                 return loginUser;
             } else {
@@ -113,5 +108,4 @@ public class MailController {
         }
 
     }
-
 }

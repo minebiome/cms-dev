@@ -48,6 +48,7 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     private final IRoleService roleService;
     private final IAttachmentService attachmentService;
 
+
     public UserServiceImpl(UserRepository userRepository,
                            IUserRoleService userRoleService,
                            IRoleService roleService,
@@ -204,7 +205,16 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
         });
         return CollectionUtils.isEmpty(users)?null:users.get(0);
     }
-
+    @Override
+    public User findUserByPhone(String phone) {
+        List<User> users = userRepository.findAll(new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                return criteriaQuery.where(criteriaBuilder.equal(root.get("phone"), phone)).getRestriction();
+            }
+        });
+        return CollectionUtils.isEmpty(users)?null:users.get(0);
+    }
     @Override
     public UserDto findUserDaoById(int userId) {
         User user = findById(userId);
@@ -224,6 +234,58 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
             user.setAvatar(attachment.getPath());
         }
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserDetailDTO loginEmail(String email) {
+        UserDetailDTO userDetailDTO = new UserDetailDTO();
+        User user = findUserByEmail(email);
+        if(user==null){
+            user = new User();
+            Role commentRole = roleService.findByEnName(CMSUtils.getEmailRole());
+            user = save(user);
+            UserRole userRole = new UserRole(user.getId(),commentRole.getId());
+            userRoleService.save(userRole);
+        }
+        List<Role> roles = roleService.listAll();
+        List<UserRole> userRoles = userRoleService.listAll();
+        User finalUser = user;
+        userRoles = userRoles.stream()
+                .filter(userRole -> userRole.getUserId().equals(finalUser.getId()))
+                .collect(Collectors.toList());
+        Set<Integer> roleIds = ServiceUtil.fetchProperty(userRoles, UserRole::getRoleId);
+        Set<Role> usrRoles = roles.stream()
+                .filter(role -> roleIds.contains(role.getId()))
+                .collect(Collectors.toSet());
+        userDetailDTO.setRoles(usrRoles);
+        BeanUtils.copyProperties(user,userDetailDTO);
+        return userDetailDTO;
+    }
+
+    @Override
+    public UserDetailDTO loginPhone(String phone) {
+        UserDetailDTO userDetailDTO = new UserDetailDTO();
+        User user = findUserByPhone(phone);
+        if(user==null){
+            user = new User();
+            Role phoneRole = roleService.findByEnName(CMSUtils.getPhoneRole());
+            user = save(user);
+            UserRole userRole = new UserRole(user.getId(),phoneRole.getId());
+            userRoleService.save(userRole);
+        }
+        List<Role> roles = roleService.listAll();
+        List<UserRole> userRoles = userRoleService.listAll();
+        User finalUser = user;
+        userRoles = userRoles.stream()
+                .filter(userRole -> userRole.getUserId().equals(finalUser.getId()))
+                .collect(Collectors.toList());
+        Set<Integer> roleIds = ServiceUtil.fetchProperty(userRoles, UserRole::getRoleId);
+        Set<Role> usrRoles = roles.stream()
+                .filter(role -> roleIds.contains(role.getId()))
+                .collect(Collectors.toSet());
+        userDetailDTO.setRoles(usrRoles);
+        BeanUtils.copyProperties(user,userDetailDTO);
+        return userDetailDTO;
     }
 
     @Override

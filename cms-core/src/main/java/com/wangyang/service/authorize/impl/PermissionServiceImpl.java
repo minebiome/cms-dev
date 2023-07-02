@@ -5,10 +5,7 @@ import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
-import com.wangyang.pojo.annotation.Anonymous;
-import com.wangyang.pojo.annotation.CommentRole;
-import com.wangyang.pojo.annotation.PhoneRole;
-import com.wangyang.pojo.annotation.WxRole;
+import com.wangyang.pojo.annotation.*;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.support.RoleUrl;
 import com.wangyang.service.authorize.*;
@@ -203,6 +200,13 @@ public class PermissionServiceImpl implements IPermissionService {
             phoneRole.setEnName(CMSUtils.getPhoneRole());
             phoneRole = roleService.save(phoneRole);
         }
+        Role emailRole = roleService.findByEnName(CMSUtils.getEmailRole());
+        if (emailRole == null) {
+            emailRole = new Role();
+            emailRole.setName(CMSUtils.getEmailRole());
+            emailRole.setEnName(CMSUtils.getEmailRole());
+            emailRole = roleService.save(emailRole);
+        }
 //        User commentUser = userService.findUserByUsername("test");
 //        if (commentUser == null) {
 //            commentUser = new User();
@@ -254,6 +258,10 @@ public class PermissionServiceImpl implements IPermissionService {
             }
             if(method.isAnnotationPresent(PhoneRole.class)){
                 RoleUrl roleUrl = new RoleUrl(phoneRole.getId(), url, methodName);
+                roleResourceName.add(roleUrl);
+            }
+            if(method.isAnnotationPresent(EmailRole.class)){
+                RoleUrl roleUrl = new RoleUrl(emailRole.getId(), url, methodName);
                 roleResourceName.add(roleUrl);
             }
             resources.add(resource);
