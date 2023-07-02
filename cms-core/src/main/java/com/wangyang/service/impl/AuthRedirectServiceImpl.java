@@ -40,7 +40,8 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
     @Override
     public AuthRedirect update(Integer integer, AuthRedirect authRedirectInput) {
         AuthRedirect authRedirect = findById(integer);
-        BeanUtils.copyProperties(authRedirectInput, authRedirect);
+        authRedirectInput.setId(null);
+        BeanUtils.copyProperties(authRedirectInput, authRedirect,CMSUtils.getNullPropertyNames(authRedirectInput));
         if(authRedirect.getTemplateName()==null){
 
             authRedirect.setTemplateName(CmsConst.LOGIN_CONFIRM);
@@ -63,7 +64,8 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
         if(authRedirect==null){
             authRedirect = new AuthRedirect();
         }
-        BeanUtils.copyProperties(authRedirectInput, authRedirect,"id");
+        authRedirectInput.setId(null);
+        BeanUtils.copyProperties(authRedirectInput, authRedirect,CMSUtils.getNullPropertyNames(authRedirectInput));
 
         if(authRedirect.getTemplateName()==null){
 
