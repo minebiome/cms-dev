@@ -136,8 +136,8 @@ public class WxWeb {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
-        log.info("callLogin:{} ","redirect:"+authRedirect.getLoginAuthRedirect());
-        return "redirect:"+authRedirect.getLoginAuthRedirect();
+        log.info("callLogin:{} ","redirect:"+authRedirect.getLoginAuthRedirect()+"?state="+authRedirect.getCurrentUrl());
+        return "redirect:"+authRedirect.getLoginAuthRedirect()+"?state="+authRedirect.getCurrentUrl();
     }
 
     @GetMapping("/callLoginPage")
