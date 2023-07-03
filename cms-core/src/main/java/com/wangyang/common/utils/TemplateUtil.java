@@ -272,7 +272,7 @@ public class TemplateUtil {
         }
         final ThymeleafEvaluationContext evaluationContext = new ThymeleafEvaluationContext(applicationContext, mvcConversionService);
         context.setVariable(ThymeleafEvaluationContext.THYMELEAF_EVALUATION_CONTEXT_CONTEXT_VARIABLE_NAME, evaluationContext);
-
+        context.setVariable("isWeb",false);
         String html = getFileEngine().process(viewNamePath, context);
         return html;
     }
@@ -408,6 +408,7 @@ public class TemplateUtil {
 //            if(!Paths.get(path).toFile().exists()){
 //                ctx.setVariable("message","模板不存在："+path);
 //            }
+                ctx.setVariable("isWeb",true);
                 getWebEngine().process(viewNamePath,ctx,writer);
             } catch (Exception e) {
 //            throw new RuntimeException(e);
