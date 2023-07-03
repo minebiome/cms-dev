@@ -73,7 +73,6 @@ public class PhoneController {
             LocalDateTime expirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
 
             if (expirationTime != null && expirationTime.isAfter(LocalDateTime.now())) {
-                WxUser wxUser = new WxUser();
                 UserDetailDTO user = userService.loginPhone(phoneLoginParam.getPhone());
                 LoginUser loginUser = new LoginUser();
                 BeanUtils.copyProperties(user,loginUser);
