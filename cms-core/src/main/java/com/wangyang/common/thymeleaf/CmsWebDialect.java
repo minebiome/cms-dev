@@ -72,7 +72,7 @@ public class CmsWebDialect extends AbstractProcessorDialect {
         processors.add(new StandardHrefTagProcessor(dialectPrefix));
         processors.add(new StandardIfTagProcessor(TemplateMode.HTML, dialectPrefix));
         processors.add(new StandardIncludeTagProcessor(TemplateMode.HTML, dialectPrefix));
-        processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
+//        processors.add(new StandardInlineHTMLTagProcessor(dialectPrefix));
         processors.add(new StandardInsertTagProcessor(TemplateMode.HTML, dialectPrefix));
         processors.add(new StandardLangXmlLangTagProcessor(dialectPrefix));
         processors.add(new StandardMethodTagProcessor(dialectPrefix));
