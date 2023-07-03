@@ -54,3 +54,29 @@ $:git pull
 [Springboot日志](https://blog.csdn.net/aa390481978/article/details/108096503)
 
 http://www.diyiziti.com/Download/153
+
+
+//
+//            String appid = WxMpConfigStorageHolder.get();
+//            List<WxMpTemplateData> data  = new ArrayList<>();
+//            data.add(new WxMpTemplateData("first","模板消息测试"));
+//            data.add(new WxMpTemplateData("keywords1","xxxxx"));
+//            data.add(new WxMpTemplateData("keywords2","xxxxx"));
+//            data.add(new WxMpTemplateData("remark","点击查看消息详情"));
+//            if(templateId!=null && !"".equals(templateId)){
+//                WxMpTemplateMessage wxMpTemplateMessage = WxMpTemplateMessage.builder()
+//                        .templateId(templateId)
+//                        .url("https://www.yuque.com/nifury/wx/cyku5l")
+//                        .toUser(wxUser.getOpenId())
+//                        .data(data)
+//                        .build();
+//                templateMsgService.sendTemplateMsg(wxMpTemplateMessage,appid);
+//
+//            }
+//            if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
+//
+//            }
+
+
+//            context.setVariable();
+//            modelAndView.addObject("state",state);

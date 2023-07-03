@@ -7,11 +7,11 @@ import com.wangyang.pojo.dto.WxUserToken;
 import com.wangyang.service.base.IAuthorizeService;
 
 public interface IWxUserService  extends IAuthorizeService<WxUser> {
-    WxUserToken loginWx(String code);
+//    WxUserToken loginWx(String code);
 
     LoginUser loginMp(String code);
 
-    WxUser loginNoSave(String code);
+    LoginUser loginNoSave(String code);
 
     LoginUser login(WxUser inputWxUser);
 

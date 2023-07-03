@@ -78,6 +78,24 @@ public class WxWeb {
 //    http://192.168.0.178:8080/wx/auth?state=/login.html
 //    private  static String  authUrl = ;
 
+    private void   addCookie(LoginUser loginUser,HttpServletResponse response){
+
+
+        try {
+            String encodeCookie = URLEncoder.encode(JSON.toJSON(loginUser).toString(),"utf-8");
+            Cookie userCookie = new Cookie("wxUser", encodeCookie);
+            userCookie.setMaxAge(3600); // 设置过期时间为1小时
+            userCookie.setPath("/");
+            response.addCookie(userCookie);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        Cookie cookie = new Cookie("Authorization",loginUser.getToken());
+        // 设置Cookie的属性（可选）
+        cookie.setMaxAge(3600); // 设置过期时间为1小时
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
 
 
     @GetMapping("login")
@@ -118,24 +136,10 @@ public class WxWeb {
         if(authRedirect==null){
             throw  new ObjectException(state+"callLogin 登陆页面不存在!");
         }
-        WxUserToken wxUserToken = wxUserService.loginWx(code);
-
+        LoginUser loginUser = wxUserService.loginMp(code);
+        addCookie(loginUser,response);
 //        request.getSession().setAttribute("wsUser",wxUserToken);
-        Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
-        // 设置Cookie的属性（可选）
-        cookie.setMaxAge(3600); // 设置过期时间为1小时
-        cookie.setPath("/");
-        response.addCookie(cookie);
 
-        try {
-            String encodeCookie = URLEncoder.encode(JSON.toJSON(wxUserToken).toString(),"utf-8");
-            Cookie userCookie = new Cookie("wxUser", encodeCookie);
-            userCookie.setMaxAge(3600); // 设置过期时间为1小时
-            userCookie.setPath("/");
-            response.addCookie(userCookie);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
         log.info("callLogin:{} ","redirect:"+authRedirect.getLoginAuthRedirect()+"?state="+authRedirect.getCurrentUrl());
         return "redirect:"+authRedirect.getLoginAuthRedirect()+"?state="+authRedirect.getCurrentUrl();
     }
@@ -151,24 +155,24 @@ public class WxWeb {
         }
         if(code!=null){
 
-            WxUserToken wxUserToken = wxUserService.loginWx(code);
-
+            LoginUser loginUser = wxUserService.loginMp(code);
+            addCookie(loginUser,response);
 //        request.getSession().setAttribute("wsUser",wxUserToken);
-            Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
-            // 设置Cookie的属性（可选）
-            cookie.setMaxAge(3600); // 设置过期时间为1小时
-            cookie.setPath("/");
-            response.addCookie(cookie);
-
-            try {
-                String encodeCookie = URLEncoder.encode(JSON.toJSON(wxUserToken).toString(),"utf-8");
-                Cookie userCookie = new Cookie("wxUser", encodeCookie);
-                userCookie.setMaxAge(3600); // 设置过期时间为1小时
-                userCookie.setPath("/");
-                response.addCookie(userCookie);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+//            Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
+//            // 设置Cookie的属性（可选）
+//            cookie.setMaxAge(3600); // 设置过期时间为1小时
+//            cookie.setPath("/");
+//            response.addCookie(cookie);
+//
+//            try {
+//                String encodeCookie = URLEncoder.encode(JSON.toJSON(wxUserToken).toString(),"utf-8");
+//                Cookie userCookie = new Cookie("wxUser", encodeCookie);
+//                userCookie.setMaxAge(3600); // 设置过期时间为1小时
+//                userCookie.setPath("/");
+//                response.addCookie(userCookie);
+//            } catch (UnsupportedEncodingException e) {
+//                throw new RuntimeException(e);
+//            }
         }
         log.info("callLoginPage:{} ",authRedirect.getLoginPage());
         return authRedirect.getLoginPage();
@@ -222,22 +226,9 @@ public class WxWeb {
                                HttpServletRequest request,
                                         HttpServletResponse response){
         if(code!=null) {
-            WxUserToken wxUserToken = wxUserService.loginWx(code);
-            Cookie cookie = new Cookie("Authorization", wxUserToken.getToken().getToken());
-            // 设置Cookie的属性（可选）
-            cookie.setMaxAge(3600); // 设置过期时间为1小时
-            cookie.setPath("/");
-            response.addCookie(cookie);
-
-            try {
-                String encodeCookie = URLEncoder.encode(JSON.toJSON(wxUserToken).toString(),"utf-8");
-                Cookie userCookie = new Cookie("wxUser", encodeCookie);
-                userCookie.setMaxAge(3600); // 设置过期时间为1小时
-                userCookie.setPath("/");
-                response.addCookie(userCookie);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+//            WxUserToken wxUserToken = wxUserService.loginWx(code);
+            LoginUser loginUser = wxUserService.loginMp(code);
+            addCookie(loginUser,response);
         }else {
             throw  new ObjectException(state+"subscribeMsg 登陆页面不存在!");
         }
@@ -314,9 +305,9 @@ public class WxWeb {
         }
 
         if(code!=null){
-            WxUser wxUser = wxUserService.loginNoSave(code);
+            LoginUser loginUser = wxUserService.loginNoSave(code);
             try {
-                String encodeCookie = URLEncoder.encode(JSON.toJSON(wxUser).toString(),"utf-8");
+                String encodeCookie = URLEncoder.encode(JSON.toJSON(loginUser).toString(),"utf-8");
                 Cookie userCookie = new Cookie("wxUser", encodeCookie);
                 userCookie.setMaxAge(3600); // 设置过期时间为1小时
                 userCookie.setPath("/");
@@ -324,35 +315,22 @@ public class WxWeb {
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
-            modelAndView.addObject("wxUser",wxUser);
-//
-//            String appid = WxMpConfigStorageHolder.get();
-//            List<WxMpTemplateData> data  = new ArrayList<>();
-//            data.add(new WxMpTemplateData("first","模板消息测试"));
-//            data.add(new WxMpTemplateData("keywords1","xxxxx"));
-//            data.add(new WxMpTemplateData("keywords2","xxxxx"));
-//            data.add(new WxMpTemplateData("remark","点击查看消息详情"));
-//            if(templateId!=null && !"".equals(templateId)){
-//                WxMpTemplateMessage wxMpTemplateMessage = WxMpTemplateMessage.builder()
-//                        .templateId(templateId)
-//                        .url("https://www.yuque.com/nifury/wx/cyku5l")
-//                        .toUser(wxUser.getOpenId())
-//                        .data(data)
-//                        .build();
-//                templateMsgService.sendTemplateMsg(wxMpTemplateMessage,appid);
-//
-//            }
-//            if(subscribeTemplateId!=null && !"".equals(subscribeTemplateId)){
-//
-//            }
 
+            request.getSession().setAttribute("wxUser",loginUser);
+            modelAndView.addObject("wxUser",loginUser);
 
-//            context.setVariable();
-            //            modelAndView.addObject("state",state);
         }else {
-            modelAndView.setViewName( "redirect:"+authRedirect.getAuthUrl()+"?state="+authRedirect.getCurrentUrl());
-            log.info("submit:{} ","redirect:"+authRedirect.getAuthUrl()+"?state="+authRedirect.getCurrentUrl());
-            return  modelAndView;
+            Object obj = request.getSession().getAttribute("wxUser");
+            if(obj!=null){
+                log.info("session wxUser");
+                LoginUser loginUser =(LoginUser)obj;
+                modelAndView.addObject("wxUser",loginUser);
+            }else {
+                modelAndView.setViewName( "redirect:"+authRedirect.getAuthUrl()+"?state="+authRedirect.getCurrentUrl());
+                log.info("submit:{} ","redirect:"+authRedirect.getAuthUrl()+"?state="+authRedirect.getCurrentUrl());
+                return  modelAndView;
+            }
+
         }
 
         modelAndView.addObject("loginAuthRedirect",authRedirect.getLoginAuthRedirect());
@@ -449,21 +427,22 @@ public class WxWeb {
                 WxUser wxUser = new WxUser();
                 BeanUtils.copyProperties(wxPhoneParam, wxUser);
                 LoginUser loginUser = wxUserService.login(wxUser);
+                addCookie(loginUser,response);
                 // 验证码验证通过且未过期
-                Cookie cookie = new Cookie("Authorization", loginUser.getToken());
-                // 设置Cookie的属性（可选）
-                cookie.setMaxAge(3600); // 设置过期时间为1小时
-                cookie.setPath("/");
-                response.addCookie(cookie);
-                try {
-                    String encodeCookie = URLEncoder.encode(JSON.toJSON(loginUser).toString(),"utf-8");
-                    Cookie userCookie = new Cookie("wxUser", encodeCookie);
-                    userCookie.setMaxAge(3600); // 设置过期时间为1小时
-                    userCookie.setPath("/");
-                    response.addCookie(userCookie);
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
+//                Cookie cookie = new Cookie("Authorization", loginUser.getToken());
+//                // 设置Cookie的属性（可选）
+//                cookie.setMaxAge(3600); // 设置过期时间为1小时
+//                cookie.setPath("/");
+//                response.addCookie(cookie);
+//                try {
+//                    String encodeCookie = URLEncoder.encode(JSON.toJSON(loginUser).toString(),"utf-8");
+//                    Cookie userCookie = new Cookie("wxUser", encodeCookie);
+//                    userCookie.setMaxAge(3600); // 设置过期时间为1小时
+//                    userCookie.setPath("/");
+//                    response.addCookie(userCookie);
+//                } catch (UnsupportedEncodingException e) {
+//                    throw new RuntimeException(e);
+//                }
 //                return "redirect:"+wxPhoneParam.getRedirect();
                 return loginUser;
             } else {

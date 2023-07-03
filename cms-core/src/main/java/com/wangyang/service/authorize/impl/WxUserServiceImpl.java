@@ -45,7 +45,7 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
 
 
     @Override
-    public WxUser loginNoSave(String code) {
+    public LoginUser loginNoSave(String code) {
         try {
             WxOAuth2AccessToken wxOAuth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
             String openid = wxOAuth2AccessToken.getOpenId();
@@ -70,40 +70,41 @@ public class WxUserServiceImpl  extends AbstractAuthorizeServiceImpl<WxUser>
 //            loginUser.setGender(wxUser.getGender());
 //            loginUser.setNickname(wxUser.getNickname());
 
-
-            return wxUser;
+            LoginUser loginUser = new LoginUser();
+            BeanUtils.copyProperties(wxUser,loginUser);
+            return loginUser;
         } catch (WxErrorException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public WxUserToken loginWx(String code){
-        try {
-            WxOAuth2AccessToken wxOAuth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
-            String openid = wxOAuth2AccessToken.getOpenId();
-            WxUser wxUser = this.findBYOpenId(openid);
-            if(wxUser==null){
-                wxUser = new WxUser();
-                WxOAuth2UserInfo wxOAuth2User = wxService.getOAuth2Service().getUserInfo(wxOAuth2AccessToken, "zh_CN");
-                wxUser.setOpenId(openid);
-                wxUser.setAvatar(wxOAuth2User.getHeadImgUrl());
-                wxUser.setNickname(wxOAuth2User.getNickname());
-                wxUser.setGender(wxOAuth2User.getSex());
-                wxUser.setRoleEn(CMSUtils.getWxRole());
-                wxUser = super.save(wxUser);
-            }
-            Token token = tokenProvider.generateToken(wxUser);
-
-
-            WxUserToken wxUserToken = new WxUserToken();
-            BeanUtils.copyProperties(wxUser,wxUserToken);
-            wxUserToken.setToken(token);
-            return wxUserToken;
-        } catch (WxErrorException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Override
+//    public WxUserToken loginWx(String code){
+//        try {
+//            WxOAuth2AccessToken wxOAuth2AccessToken = wxService.getOAuth2Service().getAccessToken(code);
+//            String openid = wxOAuth2AccessToken.getOpenId();
+//            WxUser wxUser = this.findBYOpenId(openid);
+//            if(wxUser==null){
+//                wxUser = new WxUser();
+//                WxOAuth2UserInfo wxOAuth2User = wxService.getOAuth2Service().getUserInfo(wxOAuth2AccessToken, "zh_CN");
+//                wxUser.setOpenId(openid);
+//                wxUser.setAvatar(wxOAuth2User.getHeadImgUrl());
+//                wxUser.setNickname(wxOAuth2User.getNickname());
+//                wxUser.setGender(wxOAuth2User.getSex());
+//                wxUser.setRoleEn(CMSUtils.getWxRole());
+//                wxUser = super.save(wxUser);
+//            }
+//            Token token = tokenProvider.generateToken(wxUser);
+//
+//
+//            WxUserToken wxUserToken = new WxUserToken();
+//            BeanUtils.copyProperties(wxUser,wxUserToken);
+//            wxUserToken.setToken(token);
+//            return wxUserToken;
+//        } catch (WxErrorException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Override
     public LoginUser loginMp(String code){

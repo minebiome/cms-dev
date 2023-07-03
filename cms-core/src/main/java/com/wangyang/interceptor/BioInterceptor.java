@@ -51,8 +51,6 @@ public class BioInterceptor implements HandlerInterceptor {
             user.setId(-1);
             if(token!=null && tokenProvider.validateToken(token)){
                 user = tokenProvider.getAuthentication(token);
-            }else {
-                CMSUtils.deleteCooke(request,response);
             }
             request.setAttribute("user",user);
             return true;
@@ -77,9 +75,8 @@ public class BioInterceptor implements HandlerInterceptor {
 
 
         if(token==null | !tokenProvider.validateToken(token)){
-            throw new AuthorizationException("["+uri+"]需要授权！");
-        }else {
             CMSUtils.deleteCooke(request,response);
+            throw new AuthorizationException("["+uri+"]需要授权！");
         }
 
         UserDetailDTO userDetailDTO = tokenProvider.getAuthentication(token);
