@@ -249,11 +249,23 @@ public class WxWeb {
         log.info("subscribeMsgAddCookie:{} ","redirect:"+authUrl);
         return "redirect:"+authUrl;
     }
+    public static boolean isCookieExist(HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(cookieName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     @GetMapping("/page")
     @Anonymous
     public ModelAndView page( @RequestParam(required = false) String state,
                                          @RequestParam(required = false) String reserved,
-                                         ModelAndView modelAndView){
+                                         ModelAndView modelAndView,
+                              HttpServletRequest request){
 //        try {
         String currentUrl;
         if(state!=null && !"".equals(state)){
@@ -269,7 +281,11 @@ public class WxWeb {
             throw new ObjectException(state+"登陆页面不存在!");
         }
 
-
+        if(isCookieExist(request,"Authorization")){
+            log.info("already login!");
+            modelAndView.setViewName( "redirect:"+authRedirect.getCurrentUrl());
+            return  modelAndView;
+        }
 
         modelAndView.addObject("loginAuthRedirect",authRedirect.getLoginAuthRedirect());
         modelAndView.setViewName(authRedirect.getLoginPage());
@@ -303,7 +319,11 @@ public class WxWeb {
         if(authRedirect==null){
             throw new ObjectException(state+"登陆页面不存在!");
         }
-
+        if(isCookieExist(request,"Authorization")){
+            log.info("already login!");
+            modelAndView.setViewName( "redirect:"+authRedirect.getCurrentUrl());
+            return  modelAndView;
+        }
         if(code!=null){
             LoginUser loginUser = wxUserService.loginNoSave(code);
             try {
