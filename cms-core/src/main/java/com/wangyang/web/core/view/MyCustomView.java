@@ -66,12 +66,7 @@ public class MyCustomView implements View {
         if(status!=null &&status.equals(401)){
             AuthRedirect authRedirect = authRedirectService.findByCurrentUrl(requestURI);
             if(authRedirect!=null){
-                if(authRedirect.getAuthUrl().equals("/wx/auth/page")){
-                    response.sendRedirect(authRedirect.getAuthUrl()+"?nextPage="+authRedirect.getLoginAuthRedirect()+"?state="+requestURI);
-                }else {
-                    response.sendRedirect(authRedirect.getAuthUrl()+"?state="+requestURI);
-                }
-
+                response.sendRedirect(authRedirect.getAuthUrl()+"?state="+requestURI);
             }
 
         }
