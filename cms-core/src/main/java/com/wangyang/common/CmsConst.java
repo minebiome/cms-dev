@@ -120,6 +120,7 @@ public class CmsConst {
     public final static String ARTICLE_JS_MIND = "ARTICLE_JS_MIND";//文章思维导图
     public final static String LOGIN_PHONE_AUTH = "LOGIN_PHONE_AUTH";//文章思维导图
     public final static String LOGIN_CONFIRM = "LOGIN_CONFIRM";//文章思维导图
+    public final static String AUTH_OTHER_PAGE = "AUTH_OTHER_PAGE";//文章思维导图
     public final static String PHONE_AUTH_PAGE = "PHONE_AUTH_PAGE";//文章思维导图
 
     public final static String TAGS_INFORMATION = "资讯";//分类列表

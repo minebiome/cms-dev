@@ -29,5 +29,11 @@ public class AuthRedirect extends BaseEntity {
 
     private String templateName;
     private String loginPage;
+    private String otherViewName;
+    private String otherTemplateName;
+    private String otherPage;
+    private Integer appId;
+    private Boolean isOne;
+
 
 }

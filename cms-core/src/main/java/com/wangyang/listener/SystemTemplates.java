@@ -71,7 +71,8 @@ public class SystemTemplates {
                 new Template("文章思维导图jsMind",CmsConst.ARTICLE_JS_MIND,"@jsMind", TemplateType.ARTICLE_MIND,12),
                 new Template("手机验证码页面", CmsConst.LOGIN_PHONE_AUTH,"@loginPhoneAuth", TemplateType.SUBMIT_PAGE,1),
                 new Template("确认页面", CmsConst.LOGIN_CONFIRM,"@loginConfirm", TemplateType.SUBMIT_PAGE,1),
-                new Template("手机验证码直接登陆", CmsConst.PHONE_AUTH_PAGE,"@phoneAuth", TemplateType.SUBMIT_PAGE,1)
+                new Template("手机验证码直接登陆", CmsConst.PHONE_AUTH_PAGE,"@phoneAuth", TemplateType.SUBMIT_PAGE,1),
+                new Template("登陆后操作完成页面", CmsConst.AUTH_OTHER_PAGE,"@resultPage", TemplateType.OTHER_PAGE,1)
 
 
 //                new Template("手机验证码登陆页面",CmsConst.PHONE_AUTH_PAGE,"@phoneAuth", TemplateType.SUBMIT_PAGE,12)

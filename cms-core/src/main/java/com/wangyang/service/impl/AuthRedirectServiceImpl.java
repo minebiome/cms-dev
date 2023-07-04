@@ -37,25 +37,46 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
         return authRedirectRepository.findAll();
     }
 
+    public void htmlGenerate(AuthRedirect authRedirect){
+
+        if(authRedirect.getTemplateName()==null){
+            authRedirect.setTemplateName(CmsConst.LOGIN_CONFIRM);
+        }
+        if(authRedirect.getOtherTemplateName()==null){
+            authRedirect.setOtherTemplateName(CmsConst.AUTH_OTHER_PAGE);
+        }
+        if(authRedirect.getViewName()==null){
+            authRedirect.setViewName(CMSUtils.randomViewName());
+        }
+        if(authRedirect.getOtherViewName()==null){
+            authRedirect.setOtherViewName(CMSUtils.randomViewName());
+        }
+        if(authRedirect.getPath()==null){
+            authRedirect.setPath("html/loginPage");
+        }
+
+
+        Template template = templateService.findByEnName(authRedirect.getTemplateName());
+        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getViewName(),authRedirect,template);
+        String loginPage = authRedirect.getPath()+ File.separator + authRedirect.getViewName() ;
+        authRedirect.setLoginPage(loginPage);
+
+        Template otherTemplate = templateService.findByEnName(authRedirect.getOtherTemplateName());
+        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getOtherViewName(),authRedirect,otherTemplate);
+        String otherPage = authRedirect.getPath()+ File.separator + authRedirect.getOtherViewName() ;
+        authRedirect.setOtherPage(otherPage);
+
+    }
+
+
+
     @Override
     public AuthRedirect update(Integer integer, AuthRedirect authRedirectInput) {
         AuthRedirect authRedirect = findById(integer);
         authRedirectInput.setId(null);
         BeanUtils.copyProperties(authRedirectInput, authRedirect,CMSUtils.getNullPropertyNames(authRedirectInput));
-        if(authRedirect.getTemplateName()==null){
 
-            authRedirect.setTemplateName(CmsConst.LOGIN_CONFIRM);
-        }
-        if(authRedirect.getViewName()==null){
-            authRedirect.setViewName(CMSUtils.randomViewName());
-        }
-        if(authRedirect.getPath()==null){
-            authRedirect.setPath("html/loginPage");
-        }
-        Template template = templateService.findByEnName(authRedirect.getTemplateName());
-        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getViewName(),authRedirect,template);
-        String loginPage = authRedirect.getPath()+ File.separator + authRedirect.getViewName() ;
-        authRedirect.setLoginPage(loginPage);
+        htmlGenerate(authRedirect);
         return super.update(integer, authRedirect);
     }
     @Override
@@ -67,40 +88,23 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
         authRedirectInput.setId(null);
         BeanUtils.copyProperties(authRedirectInput, authRedirect,CMSUtils.getNullPropertyNames(authRedirectInput));
 
-        if(authRedirect.getTemplateName()==null){
 
-            authRedirect.setTemplateName(CmsConst.LOGIN_CONFIRM);
-        }
-        if(authRedirect.getViewName()==null){
-            authRedirect.setViewName(CMSUtils.randomViewName());
-        }
-        if(authRedirect.getPath()==null){
-            authRedirect.setPath("html/loginPage");
-        }
-        Template template = templateService.findByEnName(authRedirect.getTemplateName());
-        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getViewName(),authRedirect,template);
-        String loginPage = authRedirect.getPath()+ File.separator + authRedirect.getViewName();
-        authRedirect.setLoginPage(loginPage);
+//        Template template = templateService.findByEnName(authRedirect.getTemplateName());
+//        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getViewName(),authRedirect,template);
+//        String loginPage = authRedirect.getPath()+ File.separator + authRedirect.getViewName();
+//        authRedirect.setLoginPage(loginPage);
+        htmlGenerate(authRedirect);
         return super.add(authRedirect);
     }
     @Override
     public AuthRedirect add(AuthRedirect authRedirect) {
 
 
-        if(authRedirect.getTemplateName()==null){
-
-            authRedirect.setTemplateName(CmsConst.LOGIN_CONFIRM);
-        }
-        if(authRedirect.getViewName()==null){
-            authRedirect.setViewName(CMSUtils.randomViewName());
-        }
-        if(authRedirect.getPath()==null){
-            authRedirect.setPath("html/loginPage");
-        }
-        Template template = templateService.findByEnName(authRedirect.getTemplateName());
-        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getViewName(),authRedirect,template);
-        String loginPage = authRedirect.getPath()+ File.separator + authRedirect.getViewName() + ".html";
-        authRedirect.setLoginPage(loginPage);
+//        Template template = templateService.findByEnName(authRedirect.getTemplateName());
+//        TemplateUtil.convertHtmlAndSave(authRedirect.getPath(),authRedirect.getViewName(),authRedirect,template);
+//        String loginPage = authRedirect.getPath()+ File.separator + authRedirect.getViewName() + ".html";
+//        authRedirect.setLoginPage(loginPage);
+        htmlGenerate(authRedirect);
         return super.add(authRedirect);
     }
 
