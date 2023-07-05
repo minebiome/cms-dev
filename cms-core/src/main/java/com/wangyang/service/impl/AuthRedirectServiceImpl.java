@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,AuthRedirect, BaseVo,Integer>
@@ -114,8 +116,9 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
         List<AuthRedirect> authRedirects = this.listAll();
         if(!authRedirects.isEmpty()){
             Map<String, AuthRedirect> authRedirectMap = ServiceUtil.convertToMap(authRedirects, AuthRedirect::getCurrentUrl);
-            if(authRedirectMap.containsKey(currentUrl)){
-                return authRedirectMap.get(currentUrl);
+            List<String> list = authRedirectMap.keySet().stream().filter(item -> item.startsWith(currentUrl)).collect(Collectors.toList());
+            if(list.size()>0){
+                return authRedirectMap.get( list.get(0));
             }
         }
 
