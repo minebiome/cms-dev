@@ -48,7 +48,7 @@ public class AuthRedirectServiceImpl extends AbstractCrudService<AuthRedirect,Au
         if(authRedirect.getViewName()==null){
             authRedirect.setViewName(CMSUtils.randomViewName());
         }
-        if(authRedirect.getOtherViewName()==null){
+        if(authRedirect.getOtherViewName()==null || (authRedirect.getOtherViewName()!=null && authRedirect.getOtherViewName().equals(authRedirect.getViewName()) )){
             authRedirect.setOtherViewName(CMSUtils.randomViewName());
         }
         if(authRedirect.getPath()==null){
