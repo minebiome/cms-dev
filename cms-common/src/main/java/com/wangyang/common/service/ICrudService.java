@@ -29,6 +29,9 @@ public interface ICrudService<DOMAIN,DOMAINDTO,DOMAINVO,ID> {
     @Transactional
     void truncateTable();
 
+    @Transactional
+    void importData(List<DOMAIN> entities,int batchSize );
+
     DOMAIN findById(@NonNull ID id);
 
     void deleteAll();

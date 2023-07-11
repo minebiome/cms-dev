@@ -15,8 +15,8 @@ import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.common.enums.Lang;
 import com.wangyang.common.repository.BaseRepository;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Session;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,8 +70,8 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
         String name = entity.name();
         Query query = em.createNativeQuery("truncate table "+name);
         query.executeUpdate();
-        Query resetQuery = em.createNativeQuery("ALTER TABLE "+name+" ALTER COLUMN ID RESTART WITH 1");
-        resetQuery.executeUpdate();
+//        Query resetQuery = em.createNativeQuery("ALTER TABLE "+name+" ALTER COLUMN ID RESTART WITH 1");
+//        resetQuery.executeUpdate();
     }
     protected Specification<DOMAIN> buildSpecByQuery(DOMAIN baseFileQuery, String keywords, Set<String> sets) {
         return (Specification<DOMAIN>) (root, query, criteriaBuilder) ->{
@@ -107,6 +107,20 @@ public abstract class AbstractCrudService<DOMAIN extends BaseEntity,DOMAINDTO ex
             }
             return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };
+    }
+    @Transactional
+    @Override
+    public void importData(List<DOMAIN> entities,int batchSize ) {
+        Session session = em.unwrap(Session.class);
+//        int batchSize = 100; // 设置批量大小
+        for (int i = 0; i < entities.size(); i++) {
+            DOMAIN entity = entities.get(i);
+            session.persist(entity);
+            if (i % batchSize == 0 && i > 0) {
+                session.flush();
+                session.clear();
+            }
+        }
     }
 
     protected List<Predicate> toPredicate(DOMAIN domain,Root<DOMAIN> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
