@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
+import com.wangyang.config.AliSmsClient;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.UserDetailDTO;
@@ -35,10 +36,19 @@ public class PhoneController {
     IUserService userService;
     @Autowired
     TokenProvider tokenProvider;
+
+    @Autowired
+    AliSmsClient aliSmsClient;
+
     private void sendSms(String phoneNumber, String verificationCode) {
         // 实际项目中，调用短信服务商的API发送短信
         // 这里只是简单地打印验证码和手机号码
         System.out.println("发送验证码：" + verificationCode + " 到手机号码：" + phoneNumber);
+        try {
+            aliSmsClient.sendSmsVerificationCode(verificationCode, phoneNumber);
+        } catch (Exception e) {
+            throw new RuntimeException("手机验证码发送失败，失败原因: " + e.getMessage());
+        }
     }
 
     @GetMapping("/smsVerification")

@@ -141,7 +141,7 @@ public class CMSUtils {
         return Integer.toString(code);
     }
 
-    private static final int EXPIRATION_MINUTES = 1; // 验证码有效期（分钟）
+    private static final int EXPIRATION_MINUTES = 3; // 验证码有效期（分钟）
     public static LocalDateTime getExpirationTime() {
         return LocalDateTime.now().plus(EXPIRATION_MINUTES, ChronoUnit.MINUTES);
     }
