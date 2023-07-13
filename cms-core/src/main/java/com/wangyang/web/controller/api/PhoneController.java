@@ -5,15 +5,13 @@ import com.alibaba.fastjson.JSON;
 import com.wangyang.common.BaseResponse;
 import com.wangyang.common.exception.ObjectException;
 import com.wangyang.common.utils.CMSUtils;
-import com.wangyang.config.AliSmsClient;
 import com.wangyang.pojo.annotation.Anonymous;
 import com.wangyang.pojo.authorize.LoginUser;
 import com.wangyang.pojo.authorize.UserDetailDTO;
-import com.wangyang.pojo.authorize.WxUser;
-import com.wangyang.pojo.params.EmailLoginParam;
 import com.wangyang.pojo.params.PhoneLoginParam;
 import com.wangyang.pojo.support.Token;
 import com.wangyang.service.authorize.IUserService;
+import com.wangyang.service.base.SmsService;
 import com.wangyang.util.TokenProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +36,16 @@ public class PhoneController {
     TokenProvider tokenProvider;
 
     @Autowired
-    AliSmsClient aliSmsClient;
+    SmsService smsService;
 
     private void sendSms(String phoneNumber, String verificationCode) {
         // 实际项目中，调用短信服务商的API发送短信
         // 这里只是简单地打印验证码和手机号码
         System.out.println("发送验证码：" + verificationCode + " 到手机号码：" + phoneNumber);
         try {
-            aliSmsClient.sendSmsVerificationCode(verificationCode, phoneNumber);
+            smsService.sendSmsVerificationCode(verificationCode, phoneNumber);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("手机验证码发送失败，失败原因: " + e.getMessage());
         }
     }
