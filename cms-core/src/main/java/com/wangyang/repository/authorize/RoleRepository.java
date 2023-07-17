@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.QueryHints;
 import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author wangyang
@@ -23,4 +24,6 @@ public interface RoleRepository extends BaseRepository<Role,Integer> {
     @Override
     @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value ="true") })
     Optional<Role> findById(Integer integer);
+
+    Set<Role> findByEnNameIn(List<String> enNames);
 }
