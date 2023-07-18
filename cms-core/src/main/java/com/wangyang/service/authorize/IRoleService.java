@@ -17,6 +17,9 @@ import java.util.List;
  * @date 2021/5/5
  */
 public interface IRoleService  extends ICrudService<Role, Role, BaseVo,Integer> {
+
+    List<Role> findRolesByUserId(Integer userId);
+
     Role addRole(Role role);
     Role findRoleById(int id);
     Role delRole(int id);

@@ -152,5 +152,15 @@ public class CmsConst {
     public final static String WX_ROLE = "WX_ROLE";
     public final static String EMAIL_ROLE = "EMAIL_ROLE";
     public final static String PHONE_ROLE = "PHONE_ROLE";
+
+    // 实验室人员角色
+    public final static String LABORATORY_ROLE = "LABORATORY_ROLE";
+
+    // 生信部人员角色
+    public final static String BIOLOG_INFO_ROLE = "BIOLOG_INFO_ROLE";
+
+    // 报告审核角色
+    public final static String REPORT_APPROVE_ROLE = "REPORT_APPROVE_ROLE";
+
     public final static String TEMPLATE_FILE_PREFIX = "tf:";
 }

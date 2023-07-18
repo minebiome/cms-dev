@@ -26,4 +26,6 @@ public interface RoleRepository extends BaseRepository<Role,Integer> {
     Optional<Role> findById(Integer integer);
 
     Set<Role> findByEnNameIn(List<String> enNames);
+
+    Set<Role> findByIdIn(List<Integer> roleIds);
 }

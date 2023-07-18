@@ -23,6 +23,12 @@ public class RoleController {
 
     @Autowired
     IRoleService roleService;
+
+    @GetMapping("/findRolesByUserId/{userId}")
+    public List<Role> findRolesByUserId(@PathVariable("userId") Integer userId){
+        return roleService.findRolesByUserId(userId);
+    }
+
     @GetMapping
     public Page<Role> page(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         return roleService.pageBy(pageable);

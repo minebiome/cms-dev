@@ -1,7 +1,7 @@
 package com.wangyang.pojo.authorize;
 
 import com.wangyang.common.pojo.BaseEntity;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -14,7 +14,11 @@ import javax.persistence.*;
 
 
 @Entity(name = "t_role")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Role extends BaseEntity {
@@ -28,8 +32,6 @@ public class Role extends BaseEntity {
         this.enName = enName;
     }
 
-    public Role() {
-    }
     //    @ManyToMany(cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
 //    @JoinTable(name = "t_user_role",joinColumns = @JoinColumn(name = "roleId"),
 //    inverseJoinColumns = @JoinColumn(name = "userId"))

@@ -13,11 +13,13 @@ import com.wangyang.service.authorize.IRoleService;
 import com.wangyang.service.authorize.IUserRoleService;
 import com.wangyang.common.service.AbstractCrudService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,6 +53,17 @@ public class RoleServiceImpl extends AbstractCrudService<Role,Role, BaseVo,Integ
     @Override
     public List<Role> listAll() {
         return roleRepository.findAll();
+    }
+
+    @Override
+    public List<Role> findRolesByUserId(Integer userId) {
+        List<UserRole> userRoles = userRoleService.findByUserId(userId);
+        if (CollectionUtils.isEmpty(userRoles)) {
+            return new ArrayList<>();
+        }
+        List<Integer> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        Set<Role> roles = roleRepository.findByIdIn(roleIds);
+        return new ArrayList<>(roles);
     }
 
     @Override

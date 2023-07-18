@@ -3,6 +3,7 @@ package com.wangyang.service.authorize.impl;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import com.wangyang.common.CmsConst;
 import com.wangyang.common.utils.CMSUtils;
 import com.wangyang.common.utils.ServiceUtil;
 import com.wangyang.pojo.annotation.*;
@@ -155,7 +156,7 @@ public class PermissionServiceImpl implements IPermissionService {
 //    }
 
     @Override
-    public void init() {
+    public synchronized void init() {
 
         Role role = roleService.findByEnName("ADMIN");
         if (role == null) {
@@ -207,6 +208,31 @@ public class PermissionServiceImpl implements IPermissionService {
             emailRole.setEnName(CMSUtils.getEmailRole());
             emailRole = roleService.save(emailRole);
         }
+
+        Role biglogInfoRole = roleService.findByEnName(CmsConst.BIOLOG_INFO_ROLE);
+        if (biglogInfoRole == null) {
+            roleService.save(Role.builder()
+                    .name(CmsConst.BIOLOG_INFO_ROLE)
+                    .enName(CmsConst.BIOLOG_INFO_ROLE)
+                    .build());
+        }
+
+        Role laboratoryRole = roleService.findByEnName(CmsConst.LABORATORY_ROLE);
+        if (laboratoryRole == null) {
+            roleService.save(Role.builder()
+                    .name(CmsConst.LABORATORY_ROLE)
+                    .enName(CmsConst.LABORATORY_ROLE)
+                    .build());
+        }
+
+        Role reportApproveRole = roleService.findByEnName(CmsConst.REPORT_APPROVE_ROLE);
+        if (reportApproveRole == null) {
+            roleService.save(Role.builder()
+                    .name(CmsConst.REPORT_APPROVE_ROLE)
+                    .enName(CmsConst.REPORT_APPROVE_ROLE)
+                    .build());
+        }
+
 //        User commentUser = userService.findUserByUsername("test");
 //        if (commentUser == null) {
 //            commentUser = new User();
