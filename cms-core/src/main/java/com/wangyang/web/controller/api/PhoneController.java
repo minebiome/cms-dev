@@ -13,6 +13,7 @@ import com.wangyang.pojo.support.Token;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.base.SmsService;
 import com.wangyang.util.TokenProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +67,7 @@ public class PhoneController {
         LocalDateTime expirationTime = CMSUtils.getExpirationTime();
         String verificationCode = CMSUtils.generateVerificationCode();
         request.getSession().setAttribute("captcha", verificationCode);
+        request.getSession().setAttribute("phone_number", phone);
         request.getSession().setAttribute("captcha_expiration", expirationTime);
         sendSms(phone, verificationCode);
         return BaseResponse.ok("验证码发送成功！");
@@ -77,8 +79,10 @@ public class PhoneController {
 
 
         String captchaText = (String) request.getSession().getAttribute("captcha");
+        String phoneNumber = (String) request.getSession().getAttribute("phone_number");
 //        String requestURI = request.getRequestURI();
-        if (captchaText != null && captchaText.equalsIgnoreCase(phoneLoginParam.getCaptcha())) {
+        if (captchaText != null && captchaText.equalsIgnoreCase(phoneLoginParam.getCaptcha())
+                && StringUtils.isNotBlank(phoneNumber) && phoneNumber.equals(phoneLoginParam.getPhone())) {
             LocalDateTime expirationTime = (LocalDateTime) request.getSession().getAttribute("captcha_expiration");
 
             if (expirationTime != null && expirationTime.isAfter(LocalDateTime.now())) {

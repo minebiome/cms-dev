@@ -1,5 +1,6 @@
 package com.wangyang.web.controller.user;
 
+import com.wangyang.pojo.annotation.WxRole;
 import com.wangyang.pojo.authorize.*;
 import com.wangyang.service.authorize.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class RoleController {
     IRoleService roleService;
 
     @GetMapping("/findRolesByUserId/{userId}")
+    @WxRole
     public List<Role> findRolesByUserId(@PathVariable("userId") Integer userId){
         return roleService.findRolesByUserId(userId);
     }
