@@ -1,7 +1,7 @@
 package com.wangyang.pojo.authorize;
 
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -13,7 +13,11 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue(value = "0")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User extends BaseAuthorize{
 //    private String username;
 //    private String avatar;

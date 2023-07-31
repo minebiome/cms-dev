@@ -49,7 +49,7 @@ public class UserController {
 
 
     @GetMapping
-    public Page<User> page(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
+    public Page<BaseAuthorizeDTO> page(@PageableDefault(sort = {"id"},direction = DESC) Pageable pageable){
         return userService.pageUser(pageable);
     }
 
@@ -88,6 +88,7 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userParam,user);
+        user.setSource("SYS_USER");
 
         Role commentRole = roleService.findByEnName("COMMENT");
         User saveUser = userService.save(user);

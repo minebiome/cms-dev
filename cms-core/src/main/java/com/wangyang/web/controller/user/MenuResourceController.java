@@ -6,10 +6,12 @@ import com.wangyang.pojo.authorize.Role;
 import com.wangyang.pojo.authorize.UserDetailDTO;
 import com.wangyang.service.authorize.IMenuResourceService;
 import com.wangyang.util.AuthorizationUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +36,9 @@ public class MenuResourceController {
     public List<MenuResourceDTO> getMenuTree(HttpServletRequest request) {
         UserDetailDTO user = AuthorizationUtil.getUser(request);
         Set<Role> roles = user.getRoles();
+        if (CollectionUtils.isEmpty(roles)) {
+            return new ArrayList<>();
+        }
         return menuResourceService.getMenuTree(roles);
     }
 

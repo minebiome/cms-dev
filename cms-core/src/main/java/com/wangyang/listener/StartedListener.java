@@ -82,7 +82,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
 //        initCms();
         initDatabase(applicationStartedEvent);
         initRun();
-        permissionService.init();
+        // 去掉系统用户、权限、角色初始化功能
+        // permissionService.init();
 //        if(!isInit()){
 //            log.info("### init database!!!");
 //            initDatabase(applicationStartedEvent);
@@ -279,8 +280,6 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 FileUtils.copyFolder(source, htmlPath);
                 log.info(">>> copy ["+source.toString()+"] to ["+templatePath.toString()+"]");
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

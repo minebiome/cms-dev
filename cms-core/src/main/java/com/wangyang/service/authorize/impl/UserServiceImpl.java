@@ -9,13 +9,17 @@ import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.pojo.entity.Attachment;
 import com.wangyang.common.enums.CrudType;
 import com.wangyang.pojo.enums.FileWriteType;
+import com.wangyang.repository.authorize.BaseAuthorizeRepository;
 import com.wangyang.repository.authorize.UserRepository;
+import com.wangyang.repository.authorize.WxUserRepository;
 import com.wangyang.service.authorize.IRoleService;
 import com.wangyang.service.authorize.IUserRoleService;
 import com.wangyang.service.authorize.IUserService;
 import com.wangyang.service.base.AbstractAuthorizeServiceImpl;
 import com.wangyang.service.IAttachmentService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,10 +32,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +48,12 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     private final IUserRoleService userRoleService;
     private final IRoleService roleService;
     private final IAttachmentService attachmentService;
+
+    @Autowired
+    private BaseAuthorizeRepository baseAuthorizeRepository;
+
+    @Autowired
+    private WxUserRepository wxUserRepository;
 
 
     public UserServiceImpl(UserRepository userRepository,
@@ -67,11 +74,18 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     public User addUser(UserParam userParam) {
         User user = new User();
         BeanUtils.copyProperties(userParam,user,CMSUtils.getNullPropertyNames(userParam));
+        user.setSource("SYS_USER");
         return userRepository.save(user);
     }
 
     @Override
     public User updateUser(int id, UserParam userParam) {
+//        BaseAuthorize baseAuthorize = baseAuthorizeRepository.findById(id).orElse(null);
+//        if (baseAuthorize == null) {
+//            throw new UserException("用户不存在");
+//        }
+//        baseAuthorize.setEmail(userParam.getEmail());
+//        baseAuthorize.setUsername(userParam.getUsername());
         User user = findUserById(id);
         BeanUtils.copyProperties(userParam,user, CMSUtils.getNullPropertyNames(userParam));
         return userRepository.save(user);
@@ -136,26 +150,45 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
 
     @Override
     public User delUser(int id) {
-        User user = findById(id);
-        if(user.getUsername().equals("admin")){
+        BaseAuthorize baseAuthorize = baseAuthorizeRepository.findById(id).orElse(null);
+        if(baseAuthorize != null && StringUtils.isNotBlank(baseAuthorize.getUsername())
+                && baseAuthorize.getUsername().equals("admin")){
             throw new UserException("超级管理员不能删除！");
         }
-        List<UserRole> userRoles = userRoleService.findByUserId(user.getId());
+        List<UserRole> userRoles = userRoleService.findByUserId(baseAuthorize.getId());
         userRoleService.deleteAll(userRoles);
-        userRepository.delete(user);
-        return user;
+        baseAuthorizeRepository.delete(baseAuthorize);
+        User build = User.builder().build();
+        build.setId(baseAuthorize.getId());
+        return build;
     }
 
 
 
 
     @Override
-    public Page<User> pageUser(Pageable pageable) {
-        return userRepository.findAll(pageable).map(user -> {
-          User user1 = new User();
-          BeanUtils.copyProperties(user,user1);
-          user1.setPassword("");
-          return user1;
+    public Page<BaseAuthorizeDTO> pageUser(Pageable pageable) {
+        List<User> users = userRepository.findAll();
+        Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(User::getId, v -> v));
+        List<WxUser> wxUsers = wxUserRepository.findAll();
+        Map<Integer, WxUser> wxUserMap = wxUsers.stream().collect(Collectors.toMap(WxUser::getId, v -> v));
+
+        Page<BaseAuthorize> baseAuthorizes = baseAuthorizeRepository.findAll(pageable);
+        return baseAuthorizes.map(baseAuthorize -> {
+            User user = userMap.get(baseAuthorize.getId());
+            BaseAuthorizeDTO dto = new BaseAuthorizeDTO();
+            if (user == null) {
+                WxUser wxUser = wxUserMap.get(baseAuthorize.getId());
+                WxUser w = new WxUser();
+                BeanUtils.copyProperties(wxUser, w);
+                BeanUtils.copyProperties(w, dto);
+
+            } else {
+                User u = new User();
+                BeanUtils.copyProperties(user, u);
+                BeanUtils.copyProperties(u, dto);
+            }
+            return dto;
         });
     }
 
@@ -163,10 +196,10 @@ public class UserServiceImpl extends AbstractAuthorizeServiceImpl<User>
     public UserDetailDTO login(String username, String password) {
         UserDetailDTO userDetailDTO = new UserDetailDTO();
         User user = findUserByUsername(username);
-        if(user==null){
+        if (user == null) {
             throw new UserException("用户名不存在！");
         }
-        if(!user.getPassword().equals(password)){
+        if (!user.getPassword().equals(password)) {
             throw new UserException("用户名或密码错误！");
         }
 

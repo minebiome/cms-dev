@@ -1,10 +1,7 @@
 package com.wangyang.service.authorize;
 
 
-import com.wangyang.pojo.authorize.LoginUser;
-import com.wangyang.pojo.authorize.User;
-import com.wangyang.pojo.authorize.UserDetailDTO;
-import com.wangyang.pojo.authorize.UserParam;
+import com.wangyang.pojo.authorize.*;
 import com.wangyang.pojo.dto.UserDto;
 import com.wangyang.service.base.IAuthorizeService;
 import org.springframework.data.domain.Page;
@@ -28,7 +25,7 @@ public interface IUserService  extends IAuthorizeService<User> {
     User delUser(int id);
     User findUserById(int id);
     List<User> findAllById(Collection<Integer> id);
-    Page<User> pageUser(Pageable pageable);
+    Page<BaseAuthorizeDTO> pageUser(Pageable pageable);
     UserDetailDTO login(String username, String password);
     User findUserByUsername(String username);
 

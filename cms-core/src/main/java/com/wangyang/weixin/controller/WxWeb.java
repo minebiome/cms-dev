@@ -433,11 +433,8 @@ public class WxWeb {
     @PostMapping("/submit")
     @Anonymous
     @ResponseBody
-    public LoginUser phoneAdd(@Valid @RequestBody  WxPhoneParam wxPhoneParam, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
-
-
-
-
+    public LoginUser phoneAdd(@Valid @RequestBody  WxPhoneParam wxPhoneParam, HttpServletResponse response
+            , HttpServletRequest request) throws ServletException, IOException {
         String captchaText = (String) request.getSession().getAttribute("captcha");
 //        String requestURI = request.getRequestURI();
         if (captchaText != null && captchaText.equalsIgnoreCase(wxPhoneParam.getCaptcha())) {
@@ -467,22 +464,10 @@ public class WxWeb {
                 return loginUser;
             } else {
                 throw  new ObjectException("验证码已过期！");
-                // 验证码已过期
-//                return "The captcha has expired.";
-//                return wxPhoneParam.getCurrentUrl()+"?state="+wxPhoneParam.getRedirect();
             }
         } else {
             throw  new ObjectException("验证码不正确！");
-            // 验证码验证失败
-//            return "Invalid captcha.";
-//            request.getRequestDispatcher(wxPhoneParam.getCurrentUrl()).forward(request,response);
-//            return "redirect:"+wxPhoneParam.getCurrentUrl();
-//            return wxPhoneParam.getCurrentUrl()+"?state="+wxPhoneParam.getRedirect();
         }
-
-
-
-
     }
 //    http://192.168.0.178:8080/wx/auth/subscribeMsg?redirect=/&reserved=authUrl=/wx/auth/loginNoSave/aaaa
 
